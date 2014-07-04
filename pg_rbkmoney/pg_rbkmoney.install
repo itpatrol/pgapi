@@ -1,0 +1,20 @@
+<?php
+// $Id: pg_rbkmoney.install,v 1.2 2009/11/25 19:59:05 gor Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+
+function pg_rbkmoney_install() {
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+
+function pg_rbkmoney_uninstall() {
+  variable_del('pg_rbkmoney_eshopId');
+  variable_del('pg_rbkmoney_rate');
+  variable_del('pg_rbkmoney_action');
+  variable_del('pg_rbkmoney_secretkey');
+}

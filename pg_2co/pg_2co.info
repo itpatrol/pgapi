@@ -1,0 +1,6 @@
+; $Id$
+name = 2co
+description = 2co payment gateway.
+package = "Payment Gateway API"
+dependencies[] = pgapi
+core = "6.x"
