@@ -122,36 +122,6 @@ function pg_showtransactions_menu() {
       'type'             => MENU_LOCAL_TASK,
   );
 
-/*  $items['operator'] = array(
-      'title'            => 'Operator',
-      'description'      => 'Operator menu.',
-      'page callback'    => 'pg_showtransactions_operator_history',
-      'access callback'  => 'user_access',
-      'access arguments' => array('operate on transactions'),
-      'file'             => 'pg_showtransactions.operator.inc',
-  );
-
-  $items['operator/showtransactions'] = array(
-      'title'            => 'Show Transactions',
-      'description'      => 'All pgapi data is here.',
-      'page callback'    => 'pg_showtransactions_operator_history',
-      'access callback'  => 'user_access',
-      'access arguments' => array('operate on transactions'),
-      'file'             => 'pg_showtransactions.admin.inc',
-  );
-
-  $items['operator/showtransactions/edit/%txnid'] = array(
-      'title'            => 'Edit transaction',
-      'description'      => 'All pgapi data is here.',
-      'page callback'    => 'drupal_get_form',
-      'page arguments'   => array('pg_showtransactions_edit',4),
-      'access callback'  => 'user_access',
-      'access arguments' => array('operate on transactions'),
-      'file'             => 'pg_showtransactions.admin.inc',
-      'type'             => MENU_CALLBACK,
-  );*/
-
-
   $items['pg_showtransactions/editgroup'] = array(
       'description'      => 'Edit transaction group',
       'page callback'    => 'pg_showtransactions_transactions_editgroup',
@@ -307,7 +277,7 @@ function pg_showtransactions_filters_by_type(){
                        );
   $filters['method']= array('title' => t('Method'),
                           'where' => "t.method = '%s'",
-                          'options' => pgapi_build_method(),
+                          'options' => pgapi_build_gateway(),
                        );
 
   $filters['status'] = array('title' => t('payment status'),
@@ -490,7 +460,7 @@ function pg_showtransactions_history_by_type($module,$subtable){
       $txn->name ? l($txn->name, "user/".$txn->uid) : variable_get('anonymous',t('anonymous')),
       $txn->email,
       $txn->amount,
-      pgapi_get_method_name($txn->method),
+      pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
       format_date($txn->created,'small'),
       format_date($txn->changed,'small'),

@@ -1,5 +1,5 @@
 <?php
-// $Id: pg_linkpoint.admin.inc,v 1.2 2010/10/31 05:12:07 gor Exp $
+
 /********************************************************************
  * Functions callback
  ********************************************************************/
@@ -26,7 +26,7 @@ function pg_linkpoint_settings() {
   $fid = variable_get('pg_linkpoint_transaction_key_fid', '');
   if(!empty($fid)){
     $file=db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = '%d'", $fid));
-    $form['pg_linkpoint_transaction_key'] = array(  
+    $form['pg_linkpoint_transaction_key'] = array(
       '#type' => 'markup',
       '#value' => t('<b>Current file is:</b> !file',array('!file' => $file->filepath))
     );
@@ -47,25 +47,25 @@ function pg_linkpoint_settings() {
     '#title' => t('Transaction Type'),
     '#default_value' => variable_get('pg_linkpoint_transaction_method', 'PREAUTH'),
     '#options' => array(
-      'PREAUTH' => t('PREAUTH'), 
+      'PREAUTH' => t('PREAUTH'),
       'SALE' => t('SALE'),
     ),
     '#description' => t('Linkpoint states for tangible items or anything that will be shipped to always use PREAUTH. If you are selling a download item etc, use SALE. PREAUTH authorizes a credit card but does not charge it. Go to <a target="_blank" href="http://www.linkpointcentral.com">Linkpoint Central</a> > Reports > Transctions to complete the transaction. SALE automatically charges the card.'),
   );
-  
+
   $form['pg_linkpoint_rate'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Rate to site currency'),
     '#default_value' => variable_get('pg_linkpoint_rate','1.00'),
     '#description'   => t("Please enter linkpoint rate according to site currency."),
   );
-  
+
   $form['submit'] = array(
     '#type'  => 'submit',
     '#value' => t('Submit'),
   );
   $form['#attributes']['enctype'] = 'multipart/form-data';
-  
+
   return $form;
 }
 
@@ -79,10 +79,8 @@ function pg_linkpoint_settings_submit($form, &$form_state){
     variable_set('pg_linkpoint_transaction_mode',$form_state['values']['pg_linkpoint_transaction_mode']);
   if(isset($form_state['values']['pg_linkpoint_transaction_method']))
     variable_set('pg_linkpoint_transaction_method',$form_state['values']['pg_linkpoint_transaction_method']);
-    
   if(isset($form_state['values']['pg_linkpoint_rate']))
     variable_set('pg_linkpoint_rate',$form_state['values']['pg_linkpoint_rate']);
-    
   $tmp_path=file_directory_path() .'/'. variable_get('pg_linkpoint_path', 'pg_linkpoint');
   file_check_directory($tmp_path, FILE_CREATE_DIRECTORY);
 
@@ -97,5 +95,3 @@ function pg_linkpoint_settings_submit($form, &$form_state){
     variable_set('pg_linkpoint_transaction_key_fid', $file->fid);
   }
 }
-
-

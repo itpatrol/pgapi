@@ -172,15 +172,14 @@ function pg_rbkmoney_payform($form_state,$post,$t) {
   $t->status=PG_COMPLETED;
   $form['successUrl'] = array(
     '#type' => 'hidden',
-    '#default_value' => url(pgapi_GetBackUrl($t),array('absolute' => TRUE)),
+    '#default_value' => url(pgapi_get_redirect_url($t),array('absolute' => TRUE)),
   );
 
   $t->status=PG_FAILED;
   $form['failUrl'] = array(
     '#type' => 'hidden',
-    '#default_value' => url(pgapi_GetBackUrl($t),array('absolute' => TRUE)),
-  );
-  
+    '#default_value' => url(pgapi_get_redirect_url($t),array('absolute' => TRUE)),
+  );  
   $t->status =$oldstatus;
 
   $form['#attributes'] = array('name' => 'pgpayform');

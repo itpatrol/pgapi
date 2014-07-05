@@ -164,12 +164,6 @@ function pg_roboxchange_settings_submit($form, &$form_state){
 
 function pg_roboxchange_done_payment (){
 
-
- $fp = fopen('/tmp/data-robox.txt', 'a');
-  fwrite($fp, print_r($_POST,true));
-
-
-
   $txnid  = $_POST['InvId'];
   $amount = $_POST['OutSum'];
   $hash   = strtoupper($_POST['SignatureValue']);
@@ -214,6 +208,6 @@ function pg_roboxchange_payment_end ($type){
   global $user;
   $txnid = $_POST['inv_id'];
   $t=pgapi_transaction_load($txnid);
-  $goto = pgapi_GetBackUrl($t);
+  $goto = pgapi_get_redirect_url($t);
   drupal_goto($goto);
 }

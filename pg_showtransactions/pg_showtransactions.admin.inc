@@ -29,7 +29,7 @@ function pg_showtransactions_edit(&$form_state,$t) {
   $form['method']=array(
     '#title'         => t('Payment method'),
     '#type'          => 'select',
-    '#options'       => pgapi_build_method(),
+    '#options'       => pgapi_build_gateway(),
     '#default_value' => $t->method,
   );
 
@@ -84,7 +84,7 @@ function pg_showtransactions_history() {
       $txn->email,
       $txn->title,
       $txn->amount,
-      pgapi_get_method_name($txn->method),
+      pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
       format_date($txn->created,'small'),
       format_date($txn->changed,'small'),
@@ -127,7 +127,7 @@ function pg_showtransactions_operator_history() {
       $txn->email.'&nbsp;',
       $txn->title,
       $txn->amount,
-      pgapi_get_method_name($txn->method),
+      pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
       format_date($txn->created,'small'),
       format_date($txn->changed,'small'),
@@ -177,7 +177,7 @@ function pg_showtransactions_personal_history() {
       $txn->txnid,
       $txn->title,
       $txn->amount,
-      pgapi_get_method_name($txn->method),
+      pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
       format_date($txn->created,'small'),
       $action
@@ -349,7 +349,7 @@ function pg_showtransactions_history_filters(){
                        );
   $filters['method']= array('title' => t('Method'),
                           'where' => "t.method = '%s'",
-                          'options' => pgapi_build_method(),
+                          'options' => pgapi_build_gateway(),
                        );
 
   $filters['status'] = array('title' => t('payment status'),
@@ -384,7 +384,7 @@ function pg_showtransactions_personal_history_filters(){
                        );
   $filters['method']= array('title' => t('Method'),
                          'where' => "t.method = '%s'",
-                         'options' => pgapi_build_method(),
+                         'options' => pgapi_build_gateway(),
                        );
 
   $filters['status'] = array('title' => t('payment status'),

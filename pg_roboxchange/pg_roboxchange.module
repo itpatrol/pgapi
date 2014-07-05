@@ -302,7 +302,7 @@ function pg_roboxchange_payform($form_state,$post,$t) {
  ********************************************************************/
 
 function theme_pg_roboxchange_settings_table(&$form){
-  $output .= t('<b>Your output currency</b>: !curr <br>', array('!curr' => drupal_render($form['currency'])));
+  $output = t('<b>Your output currency</b>: !curr <br>', array('!curr' => drupal_render($form['currency'])));
   $output .= t('<b>Last update time</b>: !time <br>', array('!time' => drupal_render($form['last_update'])));
   $header = array(
     theme('table_select_header_cell'),

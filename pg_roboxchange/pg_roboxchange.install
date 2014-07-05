@@ -23,7 +23,7 @@ function pg_roboxchange_uninstall() {
 
 function pg_roboxchange_schema() {
   $schema['pg_roboxchange_rates'] = array(
-    'description' => t('Stores roboxchange rates information.'),
+    'description' => 'Stores roboxchange rates information.',
     'fields' => array(
       'type'       => array('type' => 'varchar', 'length' =>  64, 'not null' => TRUE, 'default' => ''),
       'name'       => array('type' => 'varchar', 'length' =>  64, 'not null' => TRUE, 'default' => ''),

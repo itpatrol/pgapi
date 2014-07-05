@@ -142,17 +142,17 @@ function pg_paypal_payform($form_state,$post,$t) {
 
   $form['notify_url'] = array(
     '#type' => 'hidden',
-    '#value' => 'http://drupalhosting.ru/paypal/done',
+    '#value' => url('paypal/done',array('absolute' => TRUE)),
   );
 
   $form['return'] = array(
     '#type' => 'hidden',
-    '#value' => url(pgapi_GetBackUrl($t),array('absolute' => TRUE)),
+    '#value' => url(pgapi_get_redirect_url($t),array('absolute' => TRUE)),
   );
 
   $form['cancel_return'] = array(
     '#type' => 'hidden',
-    '#value' => url(pgapi_GetBackUrl($t),array('absolute' => TRUE)),
+    '#value' => url(pgapi_get_redirect_url($t),array('absolute' => TRUE)),
   );
   
   $form['#attributes'] = array('name' => 'pgpayform');

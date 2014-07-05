@@ -269,7 +269,7 @@ function pg_webmoney_payment_end ($type){
   $txnid = $_POST['LMI_PAYMENT_NO'];
   $t=pgapi_transaction_load($txnid);
 
-  $goto = pgapi_GetBackUrl($t);
+  $goto = pgapi_get_redirect_url($t);
   drupal_goto($goto);
 }
 
@@ -355,7 +355,7 @@ Allow overriding URL from Payment Request Form:
 </tr>
 <tr>
 <td nowrap="nowrap">
-Send an error notification to merchant\'s keeper: 
+Send an error notification to merchant\'s keeper:
 
 </td>
 <td align="left">
@@ -429,5 +429,3 @@ function pg_webmoney_get_rate($type){
   }
   return $rate;
 }
-
-

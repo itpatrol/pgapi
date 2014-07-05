@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /********************************************************************
  * Functions callback
  ********************************************************************/
@@ -32,7 +31,7 @@ function pg_2co_settings() {
     '#title' => t('Enable demo mode, allowing you to process fake orders for testing purposes.'),
     '#default_value' => variable_get('pg_2co_demo', TRUE),
   );
-  
+
   $form['pg_2co_language'] = array(
     '#type' => 'select',
     '#title' => t('Language preference'),
@@ -110,10 +109,10 @@ function pg_2co_done_payment (){
   $post+= $ipn;
 
   $request = drupal_http_request(variable_get('pg_2co_validation_url', cPaypalValidationUrl), $headers, 'POST', _query_string_encode($post, array('q')));
-  
+
   $description = t('Payment has been received.');
   $status="completed";
-  
+
   if ($request->data != 'VERIFIED') {
       $handle = fopen('/tmp/paypal.txt', 'a');
       $C = "Answer";
@@ -130,9 +129,9 @@ function pg_2co_done_payment (){
       $description = t('This amount does not match with the original price');
       $status = 'denied';
     }
-    
+
   $currency=variable_get('pg_2co_currency_code','USD');
-   
+  
   if($currency != $payment_currency  ){
       $description = t('This currency does not match with the original currency');
       $status = 'denied';
@@ -144,7 +143,7 @@ function pg_2co_done_payment (){
       $description = t('This receiver email does not match with the original email');
       $status = 'denied';
     }
-    
+
   $t->description=$description;
   $t->status = pgapi_get_status_id($status);
   pgapi_transaction_save($t);
