@@ -5,6 +5,14 @@
  * Provides hook documentation for PGAPI module.
  */
 
+/**
+ * Returns gateway info.
+ *
+ * @return Array keyed by module name.
+ */
+function hook_pgapi_gw_info() {
+}
+
 function hook_pgapi_callback($transaction) {
   
 }
@@ -21,6 +29,20 @@ function hook_pgapi_transaction_all($status, $transaction) {
 
 }
 
+/**
+ * Executes pgapi hook
+ *
+ * @param $op
+ *   The operation to be performed. Possible values:
+ *   - "payment gateway info"
+ *   - "display name"
+ *   - "payment page"
+ *   - "get form"
+ *   - "process form"
+ *   - "edit"
+ * @param unknown_type $a3
+ * @param unknown_type $a4
+ */
 function hook_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
   
 }
