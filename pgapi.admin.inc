@@ -6,65 +6,58 @@
  */
 
 /**
- * Callback function for admin/pgdata page
+ * Menu callback to list sub-items.
  */
-function pgapi_pgdata() {
-  $item = menu_get_item('admin/pgdata');
-  $content = system_admin_menu_block($item);
-  $output = theme('admin_block_content', $content);
+function pgapi_admin_menu_block_page() {
+  $item = menu_get_item();
+  module_load_include('inc', 'system', 'system.admin');
+  if ($content = system_admin_menu_block($item)) {
+    $output = theme('admin_block_content', array('content' => $content));
+  }
+  else {
+    $output = t('You do not have any administrative items.');
+  }
   return $output;
 }
 
 /**
- * Form with common PGAPI settings
+ * Form-builder with common PGAPI settings.
  */
-function pgapi_common() {
-  // Build form
-  $form = array();
-  $form['#tree'] = TRUE;
+function pgapi_admin_settings($form, &$form_state) {
 
-  $pgapi_gw = pgapi_get_enabled_payment_systems()
+  $pgapi_gw = pgapi_get_enabled_payment_systems();
+  $gateways = pgapi_get_gateway_options();
 
-  foreach (module_implements('pgapi_gw') as $module) {
-    if ($module_name = module_invoke($module, 'pgapi_gw','display name')) {
-      $form[$module]['modulename'] = array ('#value' => $module_name);
-      $default = '';
-      if ($pgapi_gw[$module]) {
-        $default = 'checked';
-      }
-      $form[$module]['checkbox']=array(
-        '#type'           => 'checkbox',
-        '#default_value'  => $default,
-        '#domain_setting' => TRUE,
-      );
-    }
+  if (empty($gateways)) {
+    $form['gateways']['#markup'] = t('No payment gateways available.');
   }
-  $form['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Update status of payment gateways'),
-  );
+  else {
+    $form['gateways'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Payment gateways'),
+      '#options' => $gateways,
+      '#default_value' => $pgapi_gw,
+    );
+    // Add the buttons.
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Update status of payment gateways'),
+    );
+  }
 
   return $form;
 }
 
 /**
- * Submit function for PGAPI common settings form
+ * Submit function for PGAPI common settings form.
  */
-function pgapi_common_submit($form, &$form_state){
-  $pgapi_gw = array();
-  foreach ($form_state['values'] as $key => $val) {
-    if ($val['checkbox']) {
-      $pgapi_gw[$key] = true;
-    }
-  }
-  // Save settings for domain module.
-  if (module_exists('domain_conf')) {
-    $current_domain = domain_get_domain();
-    $pgapi_gw = domain_conf_variable_set($current_domain['domain_id'],'pgapi_gw',$pgapi_gw);
-  }
-  else {
-    // Save enabled gateways.
-    variable_set('pgapi_gw', $pgapi_gw);
-  }
+function pgapi_admin_settings_submit($form, &$form_state) {
+  $pgapi_gw = array_filter($form_state['values']['gateways']);
+
+  // Save enabled gateways.
+  variable_set('pgapi_gw', $pgapi_gw);
+
   drupal_set_message(t('Status of payment gateway has been updated.'));
 }
+
