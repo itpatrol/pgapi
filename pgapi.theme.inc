@@ -144,12 +144,12 @@ function theme_pgapi_gateway_price($prices, $type) {
  * @return string
  *   Formated price
  */
-function theme_pgapi_format_price($price, $symbol, $position = FALSE) {
-  if ($position) {
-    $output = '<div class="price"><span class="symbol">' . $symbol . '</span> ' . $price . '</div>';
+function theme_pgapi_format_price($values) {
+  if ($values['position']) {
+    $output = '<div class="price"><span class="symbol">' . $values['symbol'] . '</span> ' . $values['price'] . '</div>';
   }
   else {
-    $output = '<div class="price">' . $price . '<span class="symbol">' . $symbol . '</span></div>';
+    $output = '<div class="price">' . $values['price'] . '<span class="symbol">' . $values['symbol'] . '</span></div>';
   }
   return $output;
 }

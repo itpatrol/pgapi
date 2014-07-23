@@ -76,15 +76,35 @@ function pgapi_menu() {
     'access arguments' => array('administer pgapi'),
     'file'             => 'pgapi.admin.inc',
   );  
-  $items['admin/config/pgapi/settings'] = array(
+  $items['admin/config/pgapi/gateway_settings'] = array(
     'title'            => 'Payment Gateway API Settings',
-    'description'      => 'Configure default settings for Payment Gateway API.',
+    'description'      => 'Configure gateway settings for Payment Gateway API.',
     'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('pgapi_admin_settings'),
+    'page arguments'   => array('pgapi_admin_gateway_settings'),
     'access arguments' => array('administer pgapi'),
     'file'             => 'pgapi.admin.inc',
     'weight'           => -10,
   );
+  $items['admin/config/pgapi/gateway_settings/common'] = array(
+    'title'            => 'Active gateways',
+    'description'      => 'Configure gateway settings for Payment Gateway API.',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('pgapi_admin_gateway_settings'),
+    'access arguments' => array('administer pgapi'),
+    'file'             => 'pgapi.admin.inc',
+    'weight'           => -10,
+    'type'             => MENU_DEFAULT_LOCAL_TASK,    
+  );
+  $items['admin/config/pgapi/currency_settings'] = array(
+    'title'            => 'Payment Gateway Currency Settings',
+    'description'      => 'Configure currency settings for Payment Gateway API.',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('pgapi_admin_currency_settings'),
+    'access arguments' => array('administer pgapi'),
+    'file'             => 'pgapi.admin.inc',
+    'weight'           => -11,
+  );
+
   return $items;
 }
 
@@ -185,15 +205,16 @@ function pgapi_mail($key, &$message, $params) {
  *
  * @return formatted price with price symbol
  */
-function pgapi_format_price($module, $price, $symbol) {
-  $format = module_invoke($module, 'pgapi_format_price');
+function pgapi_format_price($price) {
+  //$format = module_invoke($module, 'pgapi_format_price');
+  $format = variable_get('pgapi_currency', array());
   if ($format) {
-    $formated_price = number_format($price, $format['decimals'], $format['dec_point'], $format['thousands_sep']);
-    $formated = theme('pgapi_format_price', array('price' => $formated_price, 'symbol' => $symbol, 'position' => $format['position']));
+    $formated_price = number_format($price, $format['decimal_places'], $format['decimal'], $format['thousands']);
+    $formated = theme('pgapi_format_price', array('price' => $formated_price, 'symbol' => $format['symbol'], 'position' => $format['symbol_position']));
   }
   else {
     $formated_price = number_format($price, 2, '.', ',');
-    $formated = theme('pgapi_format_price', array('price' => $formated_price, 'symbol' => $symbol, 'position' => TRUE));
+    $formated = theme('pgapi_format_price', array('price' => $formated_price, 'symbol' => '$', 'position' => TRUE));
   }
   return $formated;
 }
@@ -299,7 +320,12 @@ function pgapi_transaction_save(&$transaction) {
 
   if ($transaction->is_new) {
     // Save transaction
+    if(!isset($transaction->extra)){
+      $transaction->extra = array();
+    }
+    
     $transaction->extra = serialize($transaction->extra);
+    
     drupal_write_record('pgapi_transaction', $transaction);
   }
   else {
@@ -307,7 +333,9 @@ function pgapi_transaction_save(&$transaction) {
     module_invoke($transaction->service, 'pgapi_transaction', $transaction->status, $transaction);
     module_invoke($transaction->gateway, 'pgapi_transaction', $transaction->status, $transaction);
     // Update main transaction.
-    $transaction->extra = serialize($transaction->extra);
+    if(isset($transaction->extra)){
+      $transaction->extra = serialize($transaction->extra);
+    }
     drupal_write_record('pgapi_transaction', $transaction, 'txnid');
   }
 
