@@ -1,9 +1,8 @@
 <?php
-// $Id: pg_paypal.module,v 1.1 2009/11/24 22:06:36 gor Exp $
 
-/********************************************************************
+/*
  * Constants
- ********************************************************************/
+ */
 
 define("cPaypalActionUrl" ,"https://www.paypal.com/xclick/");
 define("cPaypalValidationUrl" ,"https://www.paypal.com/cgi-bin/webscr");
@@ -14,7 +13,7 @@ define("cPaypalValidationUrl" ,"https://www.paypal.com/cgi-bin/webscr");
 
 
 /**
- * Implementation of hook_menu()
+ * Implemens hook_menu()
  */
 function pg_paypal_menu() {
   $items['paypal/done'] = array(
@@ -24,9 +23,9 @@ function pg_paypal_menu() {
       'file'            => 'pg_paypal.admin.inc',
       'type'            => MENU_CALLBACK
   );
-  $items['admin/pgdata/pgsettings/paypal'] = array(
+  $items['admin/config/pgapi/gateway_settings/paypal'] = array(
       'title'           => 'Paypal',
-      'description'     => 'Paypal payment settings.',
+      'description'     => 'Paypal gateway payment settings.',
       'page callback'   => 'drupal_get_form',
       'page arguments'  => array('pg_paypal_settings'),
       'access callback' => 'user_access',
@@ -46,7 +45,7 @@ function pg_paypal_pgapi_gw($op,$a3=NULL,$a4=NULL){
         $ret = t('Paypal Payment Gateway');
       break;
     case 'payment gateway info':
-        $ret['name']=theme('image', drupal_get_path('module','pg_paypal').'/paypal.png', t('Paypal'), t('Paypal'));
+        $ret['name']=theme('image', array( 'path' => drupal_get_path('module','pg_paypal').'/paypal.png', 'alt' => t('Paypal'), 'title' => t('Paypal')));
         $prices[variable_get('pg_paypal_currency_code','USD')] = round(($a3*variable_get('pg_paypal_rate','1.00')),2);
         $ret['price']= $prices;
       break;
@@ -58,7 +57,7 @@ function pg_paypal_pgapi_gw($op,$a3=NULL,$a4=NULL){
     case 'process form':
         $form_result = $a4;
         $t = $a3;
-        $ret = pg_paypal_process_form($form_result,$t);
+        $ret = pg_paypal_form($form_result,$t);
       break;
   }
   return $ret;
@@ -79,7 +78,7 @@ function pg_paypal_extraform($form_state,$t){
   return $form;
 }
 
-function pg_paypal_process_form($form_state,$t){
+function pg_paypal_form($form_state,$t){
 
   $amount = number_format($t->amount * variable_get('pg_paypal_rate','1.00'),2);
   $t->extra['amount']=$amount;

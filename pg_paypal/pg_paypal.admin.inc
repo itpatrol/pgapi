@@ -3,7 +3,7 @@
 /********************************************************************
  * Functions callback
  ********************************************************************/
-function pg_paypal_settings() {
+function pg_paypal_settings($form, $form_state) {
   $form['pg_paypal_action_url'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Action url'),

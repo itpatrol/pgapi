@@ -1,6 +1,5 @@
-; $Id: pg_paypal.info,v 1.2 2010/10/31 05:12:08 gor Exp $
 name = Paypal
 description = Paypal payment gateway.
 package = "Payment Gateway API"
 dependencies[] = pgapi
-core = "6.x"
+core = "7.x"
