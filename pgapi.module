@@ -207,7 +207,6 @@ function pgapi_mail($key, &$message, $params) {
  * @return formatted price with price symbol
  */
 function pgapi_format_price($price) {
-  drupal_set_message('test '.$price);
   //$format = module_invoke($module, 'pgapi_format_price');
   $format = variable_get('pgapi_currency', array());
   if ($format) {
