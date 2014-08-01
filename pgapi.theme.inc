@@ -38,41 +38,6 @@ function theme_pgapi_common($form) {
 }
 
 /**
- * Theme function for PGAPI payment form
- * Process form and output it as table
- */
-function theme_pgapi_payment($form) {
-  // Set table headers
-  $header = array(
-    '',
-    t('Payment Gateway'),
-    t('Price')
-  );
-
-  // Create table from rendered form elements
-  $rows = array();
-  foreach ($form as $name => $element) {
-    if (is_array($form[$name]['modulename'])) {
-      $row    = array();
-      $row[]  = drupal_render($form['method'][$name]);
-      $row[]  = drupal_render($form[$name]['modulename']);
-      $row[]  = drupal_render($form[$name]['price']);
-      $rows[] = $row;
-    }
-  }
-  // If no payment gateways - show message
-  if (!$rows) {
-    $rows[] = array(array('data' => t('No payment gateway available.'), 'colspan' => '3'));
-  }
-
-  // Return form table and render remain part of form
-  $output = theme('table', $header, $rows);
-  $output .= drupal_render($form);
-  return $output;
-}
-
-
-/**
  * Theme function for PGAPI gateway select form
  * Process form and output it as table
  */
