@@ -1,6 +1,5 @@
-; $Id: pg_webmoney.info,v 1.3 2010/10/31 05:12:08 gor Exp $
 name = Webmoney
 description = Webmoney payment gateway.
 package = "Payment Gateway API"
 dependencies[] = pgapi
-core = "6.x"
+core = "7.x"
