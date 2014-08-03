@@ -57,15 +57,6 @@ function pgapi_menu() {
     'page callback'    => 'drupal_get_form',
     'page arguments'   => array('pgapi_payment', 1),
     'access callback'  => TRUE,
-    'file'             => 'pgapi.pages.inc',
-    'type'             => MENU_CALLBACK,
-  );
-  $items['ajax/payment/%pgapi_transaction'] = array(
-    'title'            => 'Payment Gateway Extra Form Load',
-    'page callback'    => 'pgapi_extra_form_load_js',
-    'page arguments'   => array(2),
-    'access callback'  => TRUE,
-    'file'             => 'pgapi.pages.inc',
     'type'             => MENU_CALLBACK,
   );
   $items['admin/config/pgapi'] = array(
@@ -206,9 +197,10 @@ function pgapi_mail($key, &$message, $params) {
  *
  * @return formatted price with price symbol
  */
-function pgapi_format_price($price) {
-  //$format = module_invoke($module, 'pgapi_format_price');
-  $format = variable_get('pgapi_currency', array());
+function pgapi_format_price($price,$format = NULL) {
+  if(empty($format)){
+    $format = variable_get('pgapi_currency', array());
+  }
   if ($format) {
     $formated_price = number_format($price, $format['decimal_places'], $format['decimal'], $format['thousands']);
     $formated = theme('pgapi_format_price', array('price' => $formated_price, 'symbol' => $format['symbol'], 'position' => $format['symbol_position']));
@@ -233,15 +225,15 @@ function pgapi_format_price($price) {
  *   String with price symbol (example: '$')
  * @return formatted price with price symbol
  */
-function pgapi_format_price_plain($module,$price,$symbol) {
-  $format = module_invoke($module, 'pgapi_format_price');
+function pgapi_format_price_plain($price) {
+  $format = variable_get('pgapi_currency', array());
   if ($format) {
-    $formated_price = number_format($price,$format['decimals'], $format['dec_point'], $format['thousands_sep']);
-    $formated = theme('pgapi_format_price_plain', array('price' => $formated_price, 'symbol' => $symbol, 'position' => $format['position']));
+    $formated_price = number_format($price, $format['decimal_places'], $format['decimal'], $format['thousands']);
+    $formated = theme('pgapi_format_price_plain', array('price' => $formated_price, 'symbol' => $format['symbol'], 'position' => $format['symbol_position']));
   }
   else{
     $formated_price = number_format($price, 2, '.', ',');
-    $formated = theme('pgapi_format_price_plain', array('price' => $formated_price, 'symbol' => $symbol, 'position' => TRUE));
+    $formated = theme('pgapi_format_price_plain', array('price' => $formated_price, 'symbol' => '$', 'position' => TRUE));
   }
   return $formated;
 }
@@ -566,8 +558,10 @@ function pgapi_payment_title($transaction){
  *   Current transaction
  * @return form
  */
-function pgapi_payment($form, $form_state, $transaction) {
+function pgapi_payment($form, &$form_state, $transaction) {
   global $user;
+  
+  drupal_add_css(drupal_get_path('module', 'pgapi') .'/pgapi.css');
 
   // If someone tries to view not own page before transaction status is pending or workflow is recieved - show access denied page
   if(($user->uid != 1 && $user->uid != $transaction->uid) || ($transaction->status != PG_PENDING) || ($transaction->workflow != PG_WORKFLOW_RECEIVED)){
@@ -585,7 +579,7 @@ function pgapi_payment($form, $form_state, $transaction) {
       $payment_data = module_invoke($module, 'pgapi_gw', 'payment gateway info', $transaction->amount, $transaction);
       if ($payment_data) {
         if($transaction->gateway == $module){
-          $default = $transaction->method;
+          $default = $transaction->gateway;
         }
         else {
           $default = $module;
@@ -596,31 +590,42 @@ function pgapi_payment($form, $form_state, $transaction) {
         
         $prices = '';
         foreach($payment_data['price'] as $cur => $price){
-          $prices .=  $cur . "&nbsp;" . $price;  
+          $prices .=  pgapi_format_price($price,array(
+            'decimal_places' => 2,
+            'decimal' => '.',
+            'thousands' => ',',
+            'symbol_position' => 1,
+            'symbol' => $cur,
+            ));
         }
         $form[$module]['price'] = array(
           '#value' => $prices,
         );
         
-        $options[$module] = $payment_data['name'].$prices;
+        $options[$module]['name'] = $payment_data['name'];
+        $options[$module]['price'] = $prices;
         
         
       }
     }
-
+    $form['description'] = array(
+      '#markup' => t('Please select service that you like to pay with.')
+    );
     $form['service'] = array(
-      '#type'    => 'radios',
+      '#type' => 'tableselect',
+      '#multiple' => FALSE,
+      '#header' => array('name' => t('Payment system'),'price' => t('Amount to pay')),
       '#options' => $options,
       '#default_value' => $default,
-      '#ahah'    => array(
-        'path'     => 'payment/form_load_js/' . $transaction->txnid,
-        'wrapper'  => 'pgapi-wrapper-form',
-        'method'   => 'replace',
-        'effect'   => 'slide',
+      '#empty' => t('Please contact website admin. No one payment gateway are enabled.'),
+      '#ajax'    => array(
+        'wrapper' => 'pgapi-wrapper-form',
+        'callback' => 'pgapi_ajax_form_callback',
+        'effect' => 'slide',
         'progress' => array(
-          'type'     => 'throbber',
-          'message'  => t('Please wait...')
+          'type'     => 'none',
         ),
+        
       ),
     );
   }
@@ -631,45 +636,36 @@ function pgapi_payment($form, $form_state, $transaction) {
     '#tree' => TRUE,
   );
 
-  // If checked default payment system - load special form for it
-/*  if ($default) {
-    //$extra_form = module_invoke($default, 'pgapi_gw','get form', $transaction, $form_state);
-    if (is_array($extra_form)) {
-      $form['pgapi_wrapper'] += $extra_form;
-    }
-  }
-*/
-  $form['#tree'] = TRUE;
-
   $form['txnid'] = array(
-    '#type'  => 'value',
-    '#value' => $transaction->txnid,
+    '#type' => 'value',
+    '#value' => $transaction->txnid
   );
 
   $form['submit'] = array(
     '#type'  => 'submit',
     '#value' => t('Process purchase'),
+    '#submit' => array('pgapi_payment_submit'),
   );
 
   $form['cancel'] = array(
     '#type'  => 'submit',
     '#value' => t('Cancel purchase'),
   );
+
+  if(!empty($form_state['values']['service'])){
+    $default = $form_state['values']['service'];
+  }
+
+  $data = module_invoke($default, 'pgapi_gw','ajax_form', $transaction);
+  $form['pgapi_wrapper'] += $data['element'];
+  $form['submit']['#submit'][] = $data['submit'];
   
   return $form;
 }
 
-/**
- * Validate function for payment form.
- */
-function pgapi_payment_validate($form, &$form_state) {
-  $values = $form_state['values'];
-  if ($values['op'] == $values['submit']) {
-    $transaction = pgapi_transaction_load($values['txnid']);
-//    module_invoke($values['method'], 'pgapi_gw','validate form', $transaction, $values['pgapi_wrapper']);
-  }
+function pgapi_ajax_form_callback($form, &$form_state) {
+  return $form['pgapi_wrapper'];
 }
- 
 
 /**
  * Submit function for payment form
@@ -679,11 +675,13 @@ function pgapi_payment_submit($form, &$form_state) {
   $values = $form_state['values'];
   if ($values['txnid']) {
     // Load transaction by ID
-    $transaction = pgapi_transaction_load($values['txnid']);
+    $t = pgapi_transaction_load($form_state['values']['txnid']);
     if ($values['op'] == $values['submit']){
-      // If user clicked "Submit" button - process transcaction
-//      $transaction = module_invoke($values['service'], 'pgapi_gw','process form', $transaction , $values['pgapi_wrapper']);
-      $form_state['redirect'] = pgapi_get_redirect_url($transaction);
+      $t->gateway = $form_state['values']['service'];
+      pgapi_transaction_save($t);
+    }
+  }
+/*      $form_state['redirect'] = pgapi_get_redirect_url($transaction);
     }
     elseif($values['op'] == $values['cancel']){
       // If user clicked "Cancel" button - cancel transaction
@@ -693,6 +691,6 @@ function pgapi_payment_submit($form, &$form_state) {
       pgapi_transaction_save($transaction);
       $form_state['redirect'] = pgapi_get_redirect_url($transaction);
     }
-  }
+  }*/
 }
 
