@@ -119,11 +119,6 @@ function pgapi_permission() {
  */
 function pgapi_theme() {
   return array(
-    // Price formatters.
-    'pgapi_gateway_price' => array(
-      'variables' => array('prices' => array(), 'service' => NULL),
-      'file' => 'pgapi.theme.inc',
-    ),
     'pgapi_format_price' => array(
       'variables' => array('price' => NULL, 'symbol' => NULL, 'position' => NULL),
       'file' => 'pgapi.theme.inc',
@@ -131,11 +126,7 @@ function pgapi_theme() {
     'pgapi_format_price_plain' => array(
       'variables' => array('price' => NULL, 'symbol' => NULL, 'position' => NULL),
       'file' => 'pgapi.theme.inc',
-    ),
-    'pgapi_payment' => array(
-      'render element' => 'form',
-      'file' => 'pgapi.theme.inc',
-    ),
+    )
   );
 }
 
