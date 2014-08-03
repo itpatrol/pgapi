@@ -172,9 +172,8 @@ function pg_webmoney_submit($form, $form_state) {
   $output = drupal_render($form);
   $output = str_ireplace('accept-charset="UTF-8"','accept-charset="cp1251"',$output);
 
-  echo '<html><body>'.$output.'</body>';
+  echo '<html><body>'.$output.'<script>pgpayform.submit();</script></body>';
   exit();
-//  echo '<html><body>'.$output.'<script>pgpayform.submit();</script></body>';
 }
 
  
