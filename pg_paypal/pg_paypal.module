@@ -59,18 +59,26 @@ function pg_paypal_pgapi_gw($op,$a3=NULL,$a4=NULL){
         $t = $a3;
         $ret = pg_paypal_form($form_result,$t);
       break;
+    case 'ajax_form':
+        $t=$a3;
+        return array(
+          'element' => pg_webmoney_get_markup($t),
+          'submit' => 'pg_paypal_submit',
+        );
+      break;
+      
   }
   return $ret;
 }
 
-function pg_paypal_pgapi_transaction($status,&$t){
+function pg_paypal_pgapi_transaction($status,$t){
   switch($status){
     case PG_PENDING:
         $t->extra['amount'] =  round(($t->amount * variable_get('pg_paypal_rate','1.00')),2);
       break;
   }
 }
-function pg_paypal_extraform($form_state,$t){
+function pg_webmoney_get_markup($t){
   $form['message'] = array(
     '#type' => 'markup',
     '#value' => '<!-- -->',
@@ -78,24 +86,22 @@ function pg_paypal_extraform($form_state,$t){
   return $form;
 }
 
-function pg_paypal_form($form_state,$t){
+function pg_paypal_submit($form,$form_state){
 
-  $amount = number_format($t->amount * variable_get('pg_paypal_rate','1.00'),2);
-  $t->extra['amount']=$amount;
+  $form = drupal_build_form('pg_paypal_payform',$form_state);
+  $output = drupal_render($form);
   
-  $output = drupal_get_form('pg_paypal_payform',$form_state,$t);
-  $t->method = 'pg_paypal';
-  
-  pgapi_transaction_save($t);
   echo '<html><body>'.$output.'<script>pgpayform.submit();</script></body>';
-//  echo '<html><body>'.$output.'</body>';
   exit();
 }
 
-function pg_paypal_payform($form_state,$post,$t) {
+function pg_paypal_payform($form, $form_state) {
   global $user;
-
   global $language;
+  
+  $values = $form_state['values'];
+  $t = pgapi_transaction_load($values['txnid']);
+
   
   $form['lc'] = array(
     '#type' => 'hidden',
@@ -115,7 +121,7 @@ function pg_paypal_payform($form_state,$post,$t) {
   
   $form['amount'] = array(
     '#type' => 'hidden',
-    '#value' => $t->extra['amount'],
+    '#value' => round(($t->amount * variable_get('pg_paypal_rate','1.00')),2),
   );
 
   $form['business'] = array(
