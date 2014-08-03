@@ -131,12 +131,12 @@ function theme_pgapi_format_price($values) {
  * @return string
  *   Formated price
  */
-function theme_pgapi_format_price_plain($price, $symbol, $position = FALSE) {
-  if ($position) {
-    $output = $symbol . ' ' . $price;
+function theme_pgapi_format_price_plain($values) {
+  if ($values['position']) {
+    $output = $values['symbol'] . ' ' . $values['price'];
   }
   else {
-    $output = $price . ' ' . $symbol;
+    $output = $values['price'] . ' ' . $values['symbol'];
   }
   return $output;
 }
