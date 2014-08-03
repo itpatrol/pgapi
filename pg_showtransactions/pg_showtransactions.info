@@ -1,8 +1,11 @@
-; $Id: pg_showtransactions.info,v 1.2 2010/10/31 05:12:08 gor Exp $
 name = Show transactions
 description = Show transactions in PGAPI.
+
 dependencies[] = pgapi
+dependencies[] = altpager
+dependencies[] = formfilterapi
+
 package = "Payment Gateway API Tools"
 version = VERSION
-core = 6.x
+core = 7.x
 

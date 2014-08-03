@@ -57,43 +57,68 @@ function pg_showtransactions_edit_submit($form, &$form_state) {
 
 
 function pg_showtransactions_history() {
-  $filters = pg_showtransactions_build_filter_query('history_filter');
+
   $header = array(
-    array('data' => t('ID'), 'field' => 't.txnid', 'sort' => 'desc'),
-    array('data' => t('User'), 'field' => 'u.name'),
-    array('data' => t('Email'), 'field' => 't.email'),
-    array('data' => t('Title'), 'field' => 't.title'),
-    array('data' => t('amount'), 'field' => 't.amount'),
-    array('data' => t('Method'), 'field' => 't.method'),
-    array('data' => t('payment status'), 'field' => 't.status'),
-    array('data' => t('created'), 'field' => 't.created'),
-    array('data' => t('changed'), 'field' => 't.changed'),
-    t('Operations')
+    'txnid' => array('data' => t('ID'), 'field' => 'pgt.txnid', 'sort' => 'desc'),
+    'name' => array('data' => t('User'), 'field' => 'u.name'),
+    'email' => array('data' => t('Email'), 'field' => 'pgt.email'),
+    'title' => array('data' => t('Title'), 'field' => 'pgt.title'),
+    'amount' => array('data' => t('amount'), 'field' => 'pgt.amount'),
+    'gateway' => array('data' => t('Gateway'), 'field' => 'pgt.gateway'),
+    'status' => array('data' => t('payment status'), 'field' => 'pgt.status'),
+    'created' => array('data' => t('created'), 'field' => 'pgt.created'),
+    'changed' => array('data' => t('changed'), 'field' => 'pgt.changed'),
+    'operations' => t('Operations')
   );
 
-  $sql='SELECT t.*, u.name FROM {pgapi_transaction} t LEFT JOIN {users} u ON u.uid=t.uid '.$filters['join'].' '.$filters['where'].tablesort_sql($header);
+$query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('TableSort')->extend('FormFilterAPI');
+  $query->fields('pgt');    
+  $query->leftjoin('users', 'u', 'pgt.uid = %alias.uid');
+  $query->fields('u',array('name'));
+  $query->processFilters('pg_showtransactions_history');  
+  $query->extend('TableSort');
+  $query->orderByHeader($header);
+  
+  $transactions= $query->execute()->fetchAll();
 
-  $result = pager_query($sql, variable_get('pg_showtransactions_default_num',10), 0, NULL, $filters['args']);
 
-  while ($txn = db_fetch_object($result)) {
-    $action=l(t('Edit'), "admin/reports/showtransactions/edit/".$txn->txnid, array('query' => drupal_get_destination()));
+  foreach ($transactions as $txn) {
+
+    $action='';//l(t('Edit'), "admin/reports/showtransactions/edit/".$txn->txnid, array('query' => drupal_get_destination()));
+    $account = user_load($txn->uid);
+    $class = array( 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
+    
     $rows[] = array(
-      '<input type="checkbox" name="items['.$txn->txnid.']">',
-      $txn->txnid,
-      $txn->name ? l($txn->name, "user/".$txn->uid) : variable_get('anonymous',t('anonymous')),
-      $txn->email,
-      $txn->title,
-      $txn->amount,
-      pgapi_get_gateway_name($txn->method),
-      pgapi_get_status($txn->status),
-      format_date($txn->created,'small'),
-      format_date($txn->changed,'small'),
-      $action
+      'data'=>array(
+        $txn->txnid,
+        $txn->name ? l($txn->name, "user/".$txn->uid) : variable_get('anonymous',t('anonymous')),
+        $txn->email,
+        $txn->title,
+        $txn->amount,
+        pgapi_get_gateway_name($txn->gateway),
+        pgapi_get_status($txn->status),
+        format_date($txn->created,'small'),
+        format_date($txn->changed,'small'),
+        $action
+      ),
+      'class' => $class,  
     );
   }//while
-  $filter_form = drupal_get_form('pg_showtransactions_filter_form','history_filter');
+  if(empty($rows)){
+    $rows[] = array(array('data' => t('No data available.'), 'colspan' => '10'));
+  }  
+  $pagerCountShow = theme('altpager');
 
-  $output = theme('pg_showtransactions_history',$rows,$filter_form);
+  $form = formfilterapi_get_form('pg_showtransactions_history');
+  $output = drupal_render($form);
+  $output .= '<br>'; 
+  $output .= $pagerCountShow;
+  $output .= '<div width=99% style="overflow-x: auto; ">';
+  $output .=  theme('table', array( 'header' => $header, 'rows' => $rows));
+  $output .= "</div>";
+  $output .= $pagerCountShow;
+  
+  
   return $output;
 
 }
