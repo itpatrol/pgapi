@@ -66,7 +66,7 @@ function pg_webmoney_list() {
 
   $header = array(
     'purse' => array('data' => t('Purse'), 'field' => 'purse', 'sort' => 'desc'),
-    'secretkey' => array('data' => t('Secret Key'), 'field' => 'secret_key'),
+    'secret_key' => array('data' => t('Secret Key'), 'field' => 'secret_key'),
     'rate' => array('data' => t('Rate'), 'field' => 'rate'),
     'operations' => array('data' => t('Operations')),
   );
@@ -124,24 +124,31 @@ function pg_webmoney_list_submit($form, &$form_state){
 }
 
 
-function pg_webmoney_edit(&$form_state, $wmtype){
-  $pursed = db_fetch_object(db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = "%s" ',$wmtype));
+function pg_webmoney_edit($form, &$form_state, $wmtype){
+  $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = :type ',array(':type' => $wmtype))->fetchObject();
   $form['type'] = array(
-    '#type'          => 'hidden',
-    '#value'         => $wmtype
+    '#type' => 'value',
+    '#value' => $wmtype
   );
   $form['purse'] = array(
-    '#type'          => 'markup',
-    '#title'         => t('Wallet'),
-    '#value' => $pursed->purse,
+    '#type' => 'textfield',
+    '#title' => t('Wallet'),
+    '#default_value' => $pursed->purse,
+    '#required'      => TRUE,
   );
+  $form['rate'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Rate'),
+    '#default_value' => $pursed->rate,
+    '#required' => TRUE,
+  );
+
   $form['secret_key'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Secret key'),
     '#default_value' => $pursed->secret_key,
     '#maxlength'     => 64,
     '#description'   => t("Please enter secret key. If your leave it blank, secret key will not apply."),
-//    '#required'      => TRUE,
   );
   $form['submit'] = array(
     '#type'  => 'submit',
@@ -153,14 +160,10 @@ function pg_webmoney_edit(&$form_state, $wmtype){
 
 function pg_webmoney_edit_submit($form, &$form_state){
 
-  if(!empty($form_state['values']['type']) ){
-    $wmtype=substr($form_state['values']['type'],2,1);
-    $rate=pg_webmoney_get_rate($wmtype);
-    db_query("UPDATE {pg_webmoney_rates} set  secret_key = '%s' ,rate = '%s' WHERE type='%s'", $form_state['values']['secret_key'],$rate, $form_state['values']['type']);
-    drupal_set_message(t('Your wallet type %type has been modified.',array('%type' => $wmtype)));
+  if(drupal_write_record('pg_webmoney_rates',$form_state['values'],array('type'))){
+    drupal_set_message(t('Your wallet type %type has been modified.',array('%type' => $form_state['values']['type'])));
   }
  
-  pg_webmoney_cron();
   $form_state['redirect'] = 'admin/config/pgapi/gateway_settings/webmoney/list';
 }
 
@@ -228,20 +231,8 @@ function pg_webmoney_add_submit($form, &$form_state){
 
 }
 
-
-function pg_webmoney_payment_end ($type){
-  global $user;
-  $txnid = $_POST['LMI_PAYMENT_NO'];
-  $t=pgapi_transaction_load($txnid);
-
-  $goto = pgapi_get_redirect_url($t);
-  drupal_goto($goto);
-}
-
-
-
 function pg_webmoney_example($purse = NULL){
-  $pursed = db_fetch_object(db_query('SELECT * FROM {pg_webmoney_rates} WHERE purse = "%s" ',$purse));
+  $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE purse = :purse ',array(':purse' => $purse))->fetchObject();
   $output=t('<h1>Merchant purse settings</h1>
 <table>
 <tbody><tr>
@@ -351,46 +342,9 @@ Send an error notification to merchant\'s keeper:
      '!purse' => $pursed->purse,
      '!tradename' => variable_get('site_name', 'Drupal'),
      '!secret_key' => $pursed->secret_key,
-     '!success' => url('webmoney/success',array('absolute' => TRUE)),
+     '!success' => url('payment/success/webmoney',array('absolute' => TRUE)),
      '!done' => url('webmoney/done',array('absolute' => TRUE)),
-     '!fail' => url('webmoney/fail',array('absolute' => TRUE)),
+     '!fail' => url('payment/fail/webmoney',array('absolute' => TRUE)),
      ));
   return ($output);
-}
-
-
-/********************************************************************
- * Other Functions
- ********************************************************************/
-
-
-function pg_webmoney_get_rate($type){
-  require_once('XML/Unserializer.php');
-  $unserializer_options = array (
-   'parseAttributes' => TRUE
-  );
-  $unserializer = &new XML_Unserializer($unserializer_options);
-  $result = $unserializer->unserialize(variable_get('pg_webmoney_rate_url',cWebMoneyRateUrl),true);
-  $data = $unserializer->getUnserializedData();
-  $wmrate='WM'.$type.' - '.variable_get('pg_webmoney_type_wm','WMR');
-  if(is_array($data)){
-    foreach($data['row'] as $key => $val){
-      if($val['Direct'] == $wmrate){
-        $pul=substr($val['BaseRate'],0,1);
-        if($pul == '-'){
-          $rate=1/substr($val['BaseRate'],1);
-        }else{
-          $rate=$val['BaseRate'];
-        }
-      }
-    }
-  }else{
-    $rate=1;
-  }
-  if('WM'.$type==variable_get('pg_webmoney_type_wm','WMR')){
-    $rate=variable_get('pg_webmoney_rate_wm','1.00');
-  }else{
-    $rate= variable_get('pg_webmoney_rate_wm','1.00') / $rate;
-  }
-  return $rate;
 }
