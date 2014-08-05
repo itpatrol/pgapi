@@ -1,10 +1,18 @@
 <?php
-// $Id: pg_showtransactions.admin.inc,v 1.1 2009/11/24 22:06:36 gor Exp $
-/********************************************************************
- * Functions callback
- ********************************************************************/
 
-function pg_showtransactions_edit(&$form_state,$t) {
+function pg_showtransactions_edit($form, &$form_state,$t) {
+
+  $form['title'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Title'),
+    '#default_value' => $t->title,
+  );
+
+  $form['description'] = array(
+    '#type'          => 'textarea',
+    '#title'         => t('Description'),
+    '#default_value' => $t->description,
+  );
 
   $form['email'] = array(
     '#type'          => 'textfield',
@@ -26,11 +34,11 @@ function pg_showtransactions_edit(&$form_state,$t) {
     '#default_value' => $t->status,
   );
 
-  $form['method']=array(
+  $form['gateway']=array(
     '#title'         => t('Payment method'),
     '#type'          => 'select',
-    '#options'       => pgapi_build_gateway(),
-    '#default_value' => $t->method,
+    '#options'       => pgapi_get_gateway_options(),
+    '#default_value' => $t->gateway,
   );
 
   $form['txnid']=array(
@@ -39,7 +47,7 @@ function pg_showtransactions_edit(&$form_state,$t) {
   );
   $form['submit'] = array(
     '#type'  => 'submit',
-    '#value' => t('Send'),
+    '#value' => t('Save'),
   );
 
   return $form;
@@ -48,10 +56,12 @@ function pg_showtransactions_edit(&$form_state,$t) {
 function pg_showtransactions_edit_submit($form, &$form_state) {
   $txnid = $form_state['values']['txnid'];
   $t = pgapi_transaction_load($txnid);
-  $t->method   = $form_state['values']['method'];
-  $t->status   = $form_state['values']['status'];
+  $t->gateway = $form_state['values']['gateway'];
+  $t->status = $form_state['values']['status'];
   $t->workflow = $form_state['values']['workflow'];
-  $t->email    = $form_state['values']['email'];
+  $t->email = $form_state['values']['email'];
+  $t->title = $form_state['values']['title'];
+  $t->description = $form_state['values']['description'];
   pgapi_transaction_save($t);
 }
 
@@ -84,7 +94,12 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
 
   foreach ($transactions as $txn) {
 
-    $action='';//l(t('Edit'), "admin/reports/showtransactions/edit/".$txn->txnid, array('query' => drupal_get_destination()));
+    $action = array(
+      array( 'href' => "admin/reports/showtransactions/edit/".$txn->txnid,
+             'title' => t('Edit'),
+             'query' => drupal_get_destination()
+           ),
+    );           
     $account = user_load($txn->uid);
     $class = array( 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
     
@@ -99,7 +114,7 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
         pgapi_get_status($txn->status),
         format_date($txn->created,'small'),
         format_date($txn->changed,'small'),
-        $action
+        theme('links',array('links' => $action))
       ),
       'class' => $class,  
     );

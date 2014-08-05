@@ -38,7 +38,7 @@ function pg_showtransactions_menu() {
 
   );
 
-  $items['admin/reports/showtransactions/edit/%txnid'] = array(
+  $items['admin/reports/showtransactions/edit/%pgapi_transaction'] = array(
       'title'            => 'Edit transaction',
       'description'      => 'All pgapi data is here.',
       'page callback'    => 'drupal_get_form',
