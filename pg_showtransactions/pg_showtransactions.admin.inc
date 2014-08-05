@@ -68,6 +68,9 @@ function pg_showtransactions_edit_submit($form, &$form_state) {
 
 function pg_showtransactions_history() {
 
+  drupal_add_css(drupal_get_path('module', 'pg_showtransactions') .'/pg_showtransactions.css');
+
+
   $header = array(
     'txnid' => array('data' => t('ID'), 'field' => 'pgt.txnid', 'sort' => 'desc'),
     'name' => array('data' => t('User'), 'field' => 'u.name'),
@@ -101,7 +104,11 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
            ),
     );           
     $account = user_load($txn->uid);
-    $class = array( 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
+    $operation = 'sub';
+    if($txn->amount > 0){
+      $operation = 'add';
+    }
+    $class = array($operation, 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
     
     $rows[] = array(
       'data'=>array(
@@ -109,7 +116,7 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
         $txn->name ? l($txn->name, "user/".$txn->uid) : variable_get('anonymous',t('anonymous')),
         $txn->email,
         $txn->title,
-        $txn->amount,
+        array( 'data' => pgapi_format_price($txn->amount), 'class' => array('amount')),
         pgapi_get_gateway_name($txn->gateway),
         pgapi_get_status($txn->status),
         format_date($txn->created,'small'),
