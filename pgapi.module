@@ -314,8 +314,8 @@ function pgapi_transaction_save(&$transaction) {
   }
   else {
     // Allow involved service and gateway to update the transactions.
-    module_invoke($transaction->service, 'pgapi_transaction', $transaction->status, $transaction);
-    module_invoke($transaction->gateway, 'pgapi_transaction', $transaction->status, $transaction);
+    module_invoke($transaction->service, 'pgapi_transaction', $transaction->status, $transaction , 'service');
+    module_invoke($transaction->gateway, 'pgapi_transaction', $transaction->status, $transaction , 'gateway');
     // Update main transaction.
     if(isset($transaction->extra)){
       $transaction->extra = serialize($transaction->extra);
