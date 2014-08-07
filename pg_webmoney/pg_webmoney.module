@@ -84,7 +84,7 @@ function pg_webmoney_menu() {
 }
 
 /*
- * Pgapi Gateway Hooks
+ * Implements hook_pgapi_gw
  */
  
 function pg_webmoney_pgapi_gw($op,$a3=NULL,$a4=NULL){
@@ -96,23 +96,13 @@ function pg_webmoney_pgapi_gw($op,$a3=NULL,$a4=NULL){
         $ret = url('payment/webmoney/'.$a3 ,array('absolute' => TRUE));
       break;
     case 'payment gateway info':
-        $ret['name']=theme('image', array('path' => drupal_get_path('module','pg_webmoney').'/webmoney.png', 'alt' => t('Webmoney'), 'title' => t('Webmoney')));
+        $ret['name'] = theme('image', array('path' => drupal_get_path('module','pg_webmoney').'/webmoney.png', 'alt' => t('Webmoney'), 'title' => t('Webmoney')));
         $result = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
         foreach($result as $rr){
         	$prices[$rr->type] = round(($a3*$rr->rate),2);
         }
         $ret['price']= $prices;
-      break;        
-    case 'process form':
-        $form_result = $a4;
-        $t = $a3;
-        $ret = pg_webmoney_form($form_result,$t);
       break;
-    case 'get form':
-        $t=$a3;
-        $form_result = $a4;
-        $ret = pg_webmoney_extraform($form_result,$t);
-      break; 
     case 'ajax_form':
         $t=$a3;
         return array(
@@ -159,7 +149,6 @@ function pg_webmoney_get_wallets($t) {
         '#title' => t("Wallet type"),
         '#options' => $purses,
         '#default_value' => $def_purse,
-        '#submit' => 'pg_webmoney_form'
       );  
   return $form;    
 }
