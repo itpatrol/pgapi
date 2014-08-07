@@ -193,7 +193,7 @@ function pgapi_format_price($price,$format = NULL) {
     $format = variable_get('pgapi_currency', array());
   }
   if ($format) {
-    $formated_price = number_format($price, $format['decimal_places'], $format['decimal'], $format['thousands']);
+    $formated_price = number_format((double)$price, $format['decimal_places'], $format['decimal'], $format['thousands']);
     $formated = theme('pgapi_format_price', array('price' => $formated_price, 'symbol' => $format['symbol'], 'position' => $format['symbol_position']));
   }
   else {
@@ -535,7 +535,7 @@ function pgapi_get_workflow_id($name) {
  */
 
 function pgapi_payment_title($transaction){
-  return check_plain($transaction->title);
+  return strip_tags($transaction->title);
 }
 
 /**
