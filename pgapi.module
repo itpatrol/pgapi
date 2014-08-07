@@ -54,8 +54,8 @@ function pgapi_menu() {
   $items['payment/%pgapi_transaction'] = array(
     'title callback'   => 'pgapi_payment_title',
     'title arguments'  => array(1),
-    'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('pgapi_payment', 1),
+    'page callback'    => 'pgapi_payment_page',
+    'page arguments'   => array(1),
     'access callback'  => TRUE,
     'type'             => MENU_CALLBACK,
   );
@@ -238,6 +238,8 @@ function pgapi_format_price_plain($price) {
  *   An object with transaction info
  */
 function pgapi_get_redirect_url($transaction) {
+  print_r($transaction);
+  exit();
   return module_invoke($transaction->service, 'pgapi_callback', $transaction);
 }
 
@@ -533,11 +535,36 @@ function pgapi_get_workflow_id($name) {
  *   Current transaction
  * @return title
  */
-
 function pgapi_payment_title($transaction){
   return strip_tags($transaction->title);
 }
 
+/**
+ * Page callback for payment/% page
+ *
+ * Return form with payment methods
+ *
+ * @param  $transaction
+ *   Current transaction
+ * @return form
+ */
+function pgapi_payment_page($transaction){
+  global $user;
+  // If someone tries to view not own page before transaction status is pending - show access denied page
+  if(($user->uid != 1 && $user->uid != $transaction->uid)){
+    drupal_access_denied();
+  }
+  $output = '';
+  drupal_add_css(drupal_get_path('module', 'pgapi') .'/pgapi.css');
+  if($transaction->status == PG_PENDING){
+    $form = drupal_get_form('pgapi_payment',$transaction);
+    $output .= drupal_render($form);
+  }else{
+    $output .= '<pre>'.print_r($transaction,true).'</pre>';
+  }
+
+  return $output;
+}
 /**
  * Page callback for payment/% page
  *
@@ -552,13 +579,10 @@ function pgapi_payment_title($transaction){
 function pgapi_payment($form, &$form_state, $transaction) {
   global $user;
   
-  drupal_add_css(drupal_get_path('module', 'pgapi') .'/pgapi.css');
-
-  // If someone tries to view not own page before transaction status is pending or workflow is recieved - show access denied page
-  if(($user->uid != 1 && $user->uid != $transaction->uid) || ($transaction->status != PG_PENDING) || ($transaction->workflow != PG_WORKFLOW_RECEIVED)){
+  if(($transaction->status != PG_PENDING) || ($transaction->workflow != PG_WORKFLOW_RECEIVED)){
     drupal_access_denied();
   }
-
+  
   // Get array with enabled payment systems
   $pgapi_gw = pgapi_get_enabled_payment_systems();
   $default  = '';
@@ -602,7 +626,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
     $form['description'] = array(
       '#markup' => t('Please select service that you like to pay with.')
     );
-    $form['service'] = array(
+    $form['gateway'] = array(
       '#type' => 'tableselect',
       '#multiple' => FALSE,
       '#header' => array('name' => t('Payment system'),'price' => t('Amount to pay')),
@@ -643,8 +667,8 @@ function pgapi_payment($form, &$form_state, $transaction) {
     '#value' => t('Cancel purchase'),
   );
 
-  if(!empty($form_state['values']['service'])){
-    $default = $form_state['values']['service'];
+  if(!empty($form_state['values']['gateway'])){
+    $default = $form_state['values']['gateway'];
   }
 
   $data = module_invoke($default, 'pgapi_gw','ajax_form', $transaction);
@@ -666,22 +690,19 @@ function pgapi_payment_submit($form, &$form_state) {
   $values = $form_state['values'];
   if ($values['txnid']) {
     // Load transaction by ID
-    $t = pgapi_transaction_load($form_state['values']['txnid']);
+    $transaction = pgapi_transaction_load($values['txnid']);
     if ($values['op'] == $values['submit']){
-      $t->gateway = $form_state['values']['service'];
-      pgapi_transaction_save($t);
-    }
-  }
-/*      $form_state['redirect'] = pgapi_get_redirect_url($transaction);
-    }
-    elseif($values['op'] == $values['cancel']){
+      $transaction->gateway = $values['gateway'];
+      pgapi_transaction_save($transaction);
+      
+    }elseif($values['op'] == $values['cancel']){
       // If user clicked "Cancel" button - cancel transaction
       $transaction->status = PG_CANCELED ;
       $transaction->workflow = PG_WORKFLOW_CANCELED;
-      $transaction->description = t('User has canceled payment');
+      $transaction->description = t('User canceled payment');
       pgapi_transaction_save($transaction);
-      $form_state['redirect'] = pgapi_get_redirect_url($transaction);
     }
-  }*/
+  }
+  
 }
 
