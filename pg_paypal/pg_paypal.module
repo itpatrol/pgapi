@@ -48,17 +48,7 @@ function pg_paypal_pgapi_gw($op,$a3=NULL,$a4=NULL){
         $ret['name']=theme('image', array( 'path' => drupal_get_path('module','pg_paypal').'/paypal.png', 'alt' => t('Paypal'), 'title' => t('Paypal')));
         $prices[variable_get('pg_paypal_currency_code','USD')] = round(($a3*variable_get('pg_paypal_rate','1.00')),2);
         $ret['price']= $prices;
-      break;
-    case 'get form':
-        $t=$a3;
-        $form_result = $a4;
-        $ret = pg_paypal_extraform($form_result,$t);
-      break;       
-    case 'process form':
-        $form_result = $a4;
-        $t = $a3;
-        $ret = pg_paypal_form($form_result,$t);
-      break;
+      break;   
     case 'ajax_form':
         $t=$a3;
         return array(
