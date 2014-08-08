@@ -4,6 +4,9 @@
   font-weight: bold;
 }
 
+#pgapi-payment {
+  padding-left: 140px; 
+}
 
 #pgapi-payment .price {
   text-align: right;
