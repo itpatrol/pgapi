@@ -236,20 +236,6 @@ function pgapi_format_price_plain($price) {
 }
 
 /**
- * Return redirect url after transaction
- *
- * Add hook_pgapi_callback()
- *
- * @param  $transaction
- *   An object with transaction info
- */
-function pgapi_get_redirect_url($transaction) {
-  print_r($transaction);
-  exit();
-  return module_invoke($transaction->service, 'pgapi_callback', $transaction);
-}
-
-/**
  * Returns array with enabled payment systems.
  */
 function pgapi_get_enabled_payment_systems() {
