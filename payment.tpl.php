@@ -12,7 +12,7 @@
  <dd><?php print format_date($transaction->changed,'custom',' d M Y H:i:s') ?></dd>
 
  <dt><?php print t('Status')?></dt>
- <dd><?php print pgapi_get_status($transaction->status) ?></dd>
+ <dd class="status-<?php print $transaction->status ?>"><?php print pgapi_get_status($transaction->status) ?></dd>
 
  <?php if (!empty($transaction->gateway)) : ?>
  <dt><?php print t('Paid with')?></dt>
