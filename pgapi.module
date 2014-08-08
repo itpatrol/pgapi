@@ -119,6 +119,12 @@ function pgapi_permission() {
  */
 function pgapi_theme() {
   return array(
+    'payment' => array(
+      'render element' => 'elements',
+      'template'  => 'payment',      
+      'file' => 'pgapi.theme.inc',
+    ),
+
     'pgapi_format_price' => array(
       'variables' => array('price' => NULL, 'symbol' => NULL, 'position' => NULL),
       'file' => 'pgapi.theme.inc',
@@ -559,12 +565,12 @@ function pgapi_payment_page($transaction){
   if($transaction->status == PG_PENDING){
     $form = drupal_get_form('pgapi_payment',$transaction);
     $output .= drupal_render($form);
-  }else{
-    $output .= '<pre>'.print_r($transaction,true).'</pre>';
   }
-
+  
+  $output .= theme('payment',array('transaction' => $transaction));
   return $output;
 }
+
 /**
  * Page callback for payment/% page
  *
