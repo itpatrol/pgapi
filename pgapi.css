@@ -39,3 +39,16 @@ dl.payment dd p {padding: 0; }
   color: red;
   font-weight: bold;
 }
+
+#pgapi-payment table tr th, #pgapi-payment table tr th a, #pgapi-payment table tr th a:hover{
+  background-color: white;
+  color: black;
+}
+
+#pgapi-payment tr.even{
+  background-color: white;
+}
+
+#pgapi-payment tr.odd {
+  background-color: #f9f9f9;
+}
