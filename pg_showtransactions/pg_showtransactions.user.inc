@@ -40,9 +40,9 @@ function pg_showtransactions_personal_history($account) {
         array( 'data' => pgapi_format_price($txn->amount), 'class' => array('amount')),
         pgapi_get_gateway_name($txn->gateway),
         pgapi_get_status($txn->status),
-        format_date($txn->created,'small'),
-        format_date($txn->changed,'small'),
-        $action
+        array( 'data' => format_date($txn->created,'custom',' d M Y'), 'class' => 'date'),
+        array( 'data' => format_date($txn->changed,'custom',' d M Y'), 'class' => 'date'),
+        array( 'data' => $action, 'class' => 'status')
       ),
       'class' => $class,  
     );

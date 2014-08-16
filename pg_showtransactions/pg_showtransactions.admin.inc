@@ -115,8 +115,8 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
         array( 'data' => pgapi_format_price($txn->amount), 'class' => array('amount')),
         pgapi_get_gateway_name($txn->gateway),
         pgapi_get_status($txn->status),
-        format_date($txn->created,'small'),
-        format_date($txn->changed,'small'),
+        array( 'data' => format_date($txn->created,'custom',' d M Y'), 'class' => 'date'),
+        array( 'data' => format_date($txn->changed,'custom',' d M Y'), 'class' => 'date'),
         theme('links',array('links' => $action))
       ),
       'class' => $class,  
