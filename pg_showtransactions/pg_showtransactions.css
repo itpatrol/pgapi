@@ -1,11 +1,7 @@
 
 /* table part */
 
-tr.sub td.amount {
-  color: red;
-}
-
-tr.add td.amount {
+tr td.amount {
   color: green;
 }
 

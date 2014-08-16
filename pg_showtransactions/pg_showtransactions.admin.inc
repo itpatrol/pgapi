@@ -76,7 +76,7 @@ function pg_showtransactions_history() {
     'name' => array('data' => t('User'), 'field' => 'u.name'),
     'email' => array('data' => t('Email'), 'field' => 'pgt.email'),
     'title' => array('data' => t('Title'), 'field' => 'pgt.title'),
-    'amount' => array('data' => t('amount'), 'field' => 'pgt.amount'),
+    'amount' => array('data' => t('Amount'), 'field' => 'pgt.amount'),
     'gateway' => array('data' => t('Gateway'), 'field' => 'pgt.gateway'),
     'status' => array('data' => t('payment status'), 'field' => 'pgt.status'),
     'created' => array('data' => t('created'), 'field' => 'pgt.created'),
@@ -104,11 +104,7 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
            ),
     );           
     $account = user_load($txn->uid);
-    $operation = 'sub';
-    if($txn->amount > 0){
-      $operation = 'add';
-    }
-    $class = array($operation, 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
+    $class = array( 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
     
     $rows[] = array(
       'data'=>array(
@@ -135,7 +131,7 @@ $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('Tabl
   $output = drupal_render($form);
   $output .= '<br>'; 
   $output .= $pagerCountShow;
-  $output .= '<div width=99% style="overflow-x: auto; ">';
+  $output .= '<div class="pg_showtransaction_history">';
   $output .=  theme('table', array( 'header' => $header, 'rows' => $rows));
   $output .= "</div>";
   $output .= $pagerCountShow;
@@ -183,55 +179,6 @@ function pg_showtransactions_operator_history() {
   }//while
   $filter_form = drupal_get_form('pg_showtransactions_filter_form','history_filter');
   $output = theme('pg_showtransactions_operator_history',$rows,$filter_form);
-  return $output;
-
-}
-
-function pg_showtransactions_personal_history() {
-  global $user;
-
-  drupal_add_js(drupal_get_path('module', 'pg_showtransactions') .'/pg_showtransactions.js');
-
-  $filters = pg_showtransactions_build_filter_query('personal_history_filter');
-
-  $header = array(
-    array('data' => t('ID'), 'field' => 't.txnid', 'sort' => 'desc'),
-    array('data' => t('Title'), 'field' => 't.title'),
-    array('data' => t('amount'), 'field' => 't.amount'),
-    array('data' => t('Method'), 'field' => 't.method'),
-    array('data' => t('payment status'), 'field' => 't.status'),
-    array('data' => t('created'), 'field' => 't.created'),
-    array('data' => t('changed'), 'field' => 't.changed'),
-    t('Operations')
-  );
-  if(empty($filters['where'])){
-    $filters['where'] = "WHERE t.uid='".$user->uid."'";
-  } else {
-    $filters['where'] .= " AND t.uid='".$user->uid."'";
-  }
-  $sql='SELECT t.* FROM {pgapi_transaction} t '.$filters['join'].' '.$filters['where'].tablesort_sql($header);
-  $result = pager_query($sql, variable_get('pg_showtransactions_'.$user->uid.'_num',10), 0, NULL, $filters['args']);
-
-  while ($txn = db_fetch_object($result)) {
-    if($txn->status == PG_PENDING ){
-      $action=l(t('Pay'), "payment/".$txn->txnid);
-    }else{
-      $action='';
-    }
-
-    $rows[] = array(
-      //'<input type="checkbox" name="items['.$txn->txnid.']">',
-      $txn->txnid,
-      $txn->title,
-      $txn->amount,
-      pgapi_get_gateway_name($txn->method),
-      pgapi_get_status($txn->status),
-      format_date($txn->created,'small'),
-      $action
-    );
-  }//while
-  $filter_form = drupal_get_form('pg_showtransactions_filter_form', 'personal_history_filter');
-  $output.= theme('pg_showtransactions_personal_history', $rows, $filter_form);
   return $output;
 
 }

@@ -53,6 +53,7 @@ function pg_showtransactions_menu() {
       'title'            => 'Show Transactions',
       'description'      => 'There is transaction history.',
       'page callback'    => 'pg_showtransactions_personal_history',
+      'page arguments'   => array(1),      
       'access callback'  => 'user_access',
       'access arguments' => array('show personal transaction'),
       'file'             => 'pg_showtransactions.user.inc',
@@ -115,29 +116,32 @@ function pg_showtransactions_formfilterapi($op,$session_name,&$a1 = NULL){
             );          
 
         break;
-      case 'pg_account_operator_history';
-            
-            $filters['name']= array(
+      case 'pg_showtransactions_personal_history';
+            $filters['id']= array(
               '#type'  => 'textfield',
-              '#title' => t('User'),
-              '#where' => "u.name",
+              '#title' => t('Ttansaction id'),
+              '#where' => "pgt.txnid",
             );
-          
+
             $filters['price']= array(
               '#type'  => 'textfield',
               '#title' => t('Amount'),
               '#where' => "pgt.amount",
             );
-            $filters['action']= array(
-              '#type'  => 'select',
-              '#title' => t('Payments'),
-              '#where' => array('operation' => "pgt.amount"),
-              '#options' => array(
-                '> 0' => t('received'),
-                '< 0' => t('sent'),
-              ),
+
+            $filters['title']= array(
+              '#type'  => 'textfield',
+              '#title' => t('Title'),
+              '#where' => array('like' => "pgt.title"),
             );
-          
+
+            $filters['gateway'] = array(
+              '#type'  => 'select',
+              '#title' => t('Gateway'),
+              '#where' => 'pgt.gateway',
+              '#options' => pgapi_get_gateway_options(),
+            );          
+
             $filters['status'] = array(
               '#type'  => 'select',
               '#title' => t('Payment status'),
