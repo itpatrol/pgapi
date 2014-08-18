@@ -1,0 +1,238 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  pgapi.admin.inc: n/a
+#  pgapi.module: n/a
+#  pgapi.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2014-08-18 18:15+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: pgapi.admin.inc:18
+msgid "You do not have any administrative items."
+msgstr ""
+
+#: pgapi.admin.inc:36
+msgid "Symbol"
+msgstr ""
+
+#: pgapi.admin.inc:38
+msgid "Please enter symbol of the Account Balance currency."
+msgstr ""
+
+#: pgapi.admin.inc:45
+msgid "Decimal places"
+msgstr ""
+
+#: pgapi.admin.inc:47
+msgid "Please enter number of decimal places."
+msgstr ""
+
+#: pgapi.admin.inc:53
+msgid "Decimal delimiter"
+msgstr ""
+
+#: pgapi.admin.inc:55
+msgid "Please enter decimal delimiter."
+msgstr ""
+
+#: pgapi.admin.inc:61
+msgid "Thousands places"
+msgstr ""
+
+#: pgapi.admin.inc:63
+msgid "Please enter thousands delimeter."
+msgstr ""
+
+#: pgapi.admin.inc:69
+msgid "Simbol position"
+msgstr ""
+
+#: pgapi.admin.inc:70
+msgid "Left"
+msgstr ""
+
+#: pgapi.admin.inc:70
+msgid "Right"
+msgstr ""
+
+#: pgapi.admin.inc:72
+msgid "Please select symbol position."
+msgstr ""
+
+#: pgapi.admin.inc:78
+msgid "Save currency settings"
+msgstr ""
+
+#: pgapi.admin.inc:93
+msgid "Currency settings saved."
+msgstr ""
+
+#: pgapi.admin.inc:105
+msgid "No payment gateways available."
+msgstr ""
+
+#: pgapi.admin.inc:110
+msgid "Payment gateways"
+msgstr ""
+
+#: pgapi.admin.inc:118
+msgid "Update status of payment gateways"
+msgstr ""
+
+#: pgapi.admin.inc:134
+msgid "Status of payment gateway has been updated."
+msgstr ""
+
+#: pgapi.module:110
+msgid "Administer pgapi"
+msgstr ""
+
+#: pgapi.module:111
+msgid "Allows to choose payment gateways and change configurations"
+msgstr ""
+
+#: pgapi.module:169
+msgid "New Payment Notification from !site"
+msgstr ""
+
+#: pgapi.module:170
+msgid "Dear !username\nPayment #!txnid has been created.\n\nAmount: !pg_amount\nType: !pg_type\nMethod: !pg_method\n\nBest regards,\n!site"
+msgstr ""
+
+#: pgapi.module:173
+msgid "Payment !txnid Change Notification from !site"
+msgstr ""
+
+#: pgapi.module:174
+msgid "Dear !username\nPayment #!txnid has been changed.\n\nAmount: !pg_amount\nType: !pg_type\nMethod: !pg_method\nStatus: !status\nWorkflow: !workflow\n\nBest regards,\n!site"
+msgstr ""
+
+#: pgapi.module:410
+msgid "pending"
+msgstr ""
+
+#: pgapi.module:411;475
+msgid "completed"
+msgstr ""
+
+#: pgapi.module:412
+msgid "failed"
+msgstr ""
+
+#: pgapi.module:413
+msgid "denied"
+msgstr ""
+
+#: pgapi.module:414
+msgid "refunded"
+msgstr ""
+
+#: pgapi.module:415;474
+msgid "canceled"
+msgstr ""
+
+#: pgapi.module:416;470
+msgid "received"
+msgstr ""
+
+#: pgapi.module:440
+msgid "undefined status"
+msgstr ""
+
+#: pgapi.module:471
+msgid "invoiced"
+msgstr ""
+
+#: pgapi.module:472
+msgid "shipped"
+msgstr ""
+
+#: pgapi.module:473
+msgid "awaiting customer response"
+msgstr ""
+
+#: pgapi.module:476
+msgid "security violation"
+msgstr ""
+
+#: pgapi.module:500
+msgid "undefined workflow"
+msgstr ""
+
+#: pgapi.module:623
+msgid "Please select service that you like to pay with."
+msgstr ""
+
+#: pgapi.module:628
+msgid "Payment system"
+msgstr ""
+
+#: pgapi.module:628
+msgid "Amount to pay"
+msgstr ""
+
+#: pgapi.module:631
+msgid "Please contact website admin. No one payment gateway are enabled."
+msgstr ""
+
+#: pgapi.module:657
+msgid "Process purchase"
+msgstr ""
+
+#: pgapi.module:663
+msgid "Cancel purchase"
+msgstr ""
+
+#: pgapi.module:698
+msgid "User canceled payment"
+msgstr ""
+
+#: pgapi.module:63
+msgid "Payment Gateway API Tools"
+msgstr ""
+
+#: pgapi.module:64
+msgid "Manage Payment Gateway API's Tools."
+msgstr ""
+
+#: pgapi.module:72
+msgid "Payment Gateway API Settings"
+msgstr ""
+
+#: pgapi.module:73;82
+msgid "Configure gateway settings for Payment Gateway API."
+msgstr ""
+
+#: pgapi.module:81
+msgid "Active gateways"
+msgstr ""
+
+#: pgapi.module:91
+msgid "Payment Gateway Currency Settings"
+msgstr ""
+
+#: pgapi.module:92
+msgid "Configure currency settings for Payment Gateway API."
+msgstr ""
+
+#: pgapi.info:0;0
+msgid "Payment Gateway API"
+msgstr ""
+
+#: pgapi.info:0
+msgid "Payment Gateway API."
+msgstr ""
+
