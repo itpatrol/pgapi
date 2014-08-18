@@ -697,6 +697,7 @@ function pgapi_payment_submit($form, &$form_state) {
       $transaction->workflow = PG_WORKFLOW_CANCELED;
       $transaction->description = t('User canceled payment');
       pgapi_transaction_save($transaction);
+      drupal_goto('payment/'.$transaction->txnid);
     }
   }
   
