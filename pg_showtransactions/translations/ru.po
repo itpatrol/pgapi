@@ -7,20 +7,23 @@
 #  pg_showtransactions.module: n/a
 #  pg_showtransactions.info: n/a
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2014-08-19 14:18+0000\n"
-"PO-Revision-Date: 2014-08-19 14:18+0000\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-08-19 17:26+0200\n"
+"Last-Translator: Sergei <sergiy.pavlenko@gmail.com>\n"
 "Language-Team: Russian <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n"
+"%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.6.7\n"
 
-#: pg_showtransactions.admin.inc:7;78;155;199;394;429 pg_showtransactions.module:99;181
+#: pg_showtransactions.admin.inc:7;78;155;199;394;429
+#: pg_showtransactions.module:99;181
 msgid "Title"
 msgstr "Заголовок"
 
@@ -28,27 +31,29 @@ msgstr "Заголовок"
 msgid "Description"
 msgstr "Описание"
 
-#: pg_showtransactions.admin.inc:19;77;154;379 pg_showtransactions.module:87;171
+#: pg_showtransactions.admin.inc:19;77;154;379
+#: pg_showtransactions.module:87;171
 msgid "Email"
 msgstr "Email"
 
 #: pg_showtransactions.admin.inc:24
 msgid "Payment workflow"
-msgstr ""
+msgstr "Оплата рабочего процесса"
 
 #: pg_showtransactions.admin.inc:31 pg_showtransactions.module:112;143
 msgid "Payment status"
-msgstr ""
+msgstr "Статус оплаты"
 
 #: pg_showtransactions.admin.inc:38
 msgid "Payment method"
-msgstr ""
+msgstr "Cпособ оплаты"
 
 #: pg_showtransactions.admin.inc:50
 msgid "Save"
 msgstr "Сохранить"
 
-#: pg_showtransactions.admin.inc:75;152;198;370;413 pg_showtransactions.module:162
+#: pg_showtransactions.admin.inc:75;152;198;370;413
+#: pg_showtransactions.module:162
 msgid "ID"
 msgstr ""
 
@@ -58,23 +63,24 @@ msgstr "Пользователь"
 
 #: pg_showtransactions.admin.inc:79;156;200
 msgid "amount"
-msgstr ""
+msgstr "сумма"
 
 #: pg_showtransactions.admin.inc:80 pg_showtransactions.module:105
 msgid "Gateway"
-msgstr ""
+msgstr "Шлюз"
 
-#: pg_showtransactions.admin.inc:81;158;202;402;437 pg_showtransactions.module:189
+#: pg_showtransactions.admin.inc:81;158;202;402;437
+#: pg_showtransactions.module:189
 msgid "payment status"
-msgstr ""
+msgstr "статус оплаты"
 
 #: pg_showtransactions.admin.inc:82;159;203
 msgid "created"
-msgstr ""
+msgstr "создано"
 
 #: pg_showtransactions.admin.inc:83;160;204
 msgid "changed"
-msgstr ""
+msgstr "изменено"
 
 #: pg_showtransactions.admin.inc:84;161;205
 msgid "Operations"
@@ -86,27 +92,28 @@ msgstr "Правка"
 
 #: pg_showtransactions.admin.inc:116;173
 msgid "anonymous"
-msgstr ""
+msgstr "анонимно"
 
 #: pg_showtransactions.admin.inc:130
 msgid "No data available."
-msgstr ""
+msgstr "Нет данных."
 
-#: pg_showtransactions.admin.inc:157;201;397;432 pg_showtransactions.module:184
+#: pg_showtransactions.admin.inc:157;201;397;432
+#: pg_showtransactions.module:184
 msgid "Method"
 msgstr "Метод"
 
 #: pg_showtransactions.admin.inc:217
 msgid "Pay"
-msgstr ""
+msgstr "Оплатить"
 
 #: pg_showtransactions.admin.inc:249
 msgid "Show payment where"
-msgstr ""
+msgstr "Показать оплаты"
 
 #: pg_showtransactions.admin.inc:265
 msgid "<em>and</em> where <strong>%property</strong> - <strong>%value</strong>"
-msgstr ""
+msgstr "<em>и</em> где <strong>%property</strong> - <strong>%value</strong>"
 
 #: pg_showtransactions.admin.inc:268
 msgid "<strong>%property</strong> - <strong>%value</strong>"
@@ -134,31 +141,31 @@ msgstr "Обновить"
 
 #: pg_showtransactions.admin.inc:384;418
 msgid "Pay amount more than"
-msgstr ""
+msgstr "Оплатить сумму более"
 
 #: pg_showtransactions.admin.inc:389;423
 msgid "Pay amount less than"
-msgstr ""
+msgstr "Оплатить сумму менее"
 
 #: pg_showtransactions.module:10
 msgid "Administer pg_showtransaction"
-msgstr ""
+msgstr "Администрирование  pg_showtransaction"
 
 #: pg_showtransactions.module:11
 msgid "Allow to see admin/reports/pg_showtransaction page"
-msgstr ""
+msgstr "Доступ к странице admin/reports/pg_showtransaction"
 
 #: pg_showtransactions.module:15
 msgid "Send money"
-msgstr ""
+msgstr "Отправить деньги"
 
 #: pg_showtransactions.module:16
 msgid "User can send money to another user"
-msgstr ""
+msgstr "Пользователь может отправлять деньги другому пользователю."
 
 #: pg_showtransactions.module:77
-msgid "Ttansaction id"
-msgstr ""
+msgid "Transaction id"
+msgstr "ID транзакции"
 
 #: pg_showtransactions.module:82
 msgid "Username"
@@ -166,11 +173,11 @@ msgstr "Имя пользователя"
 
 #: pg_showtransactions.module:93;128;176
 msgid "Amount"
-msgstr ""
+msgstr "Сумма"
 
 #: pg_showtransactions.module:133
 msgid "Payments"
-msgstr ""
+msgstr "Платежы"
 
 #: pg_showtransactions.module:136
 msgid "received"
@@ -178,41 +185,40 @@ msgstr "принят"
 
 #: pg_showtransactions.module:137
 msgid "sent"
-msgstr ""
+msgstr "отправить"
 
 #: pg_showtransactions.module:31
 msgid "PGAPI Transactions"
-msgstr ""
+msgstr "PGAPI Транзакции"
 
 #: pg_showtransactions.module:37
 msgid "Transaction information."
-msgstr ""
+msgstr "Информация транзакции"
 
 #: pg_showtransactions.module:42
 msgid "Edit transaction"
-msgstr ""
+msgstr "Изменить транзакцию"
 
 #: pg_showtransactions.module:43
 msgid "All pgapi data is here."
-msgstr ""
+msgstr "Все pgapi данные."
 
 #: pg_showtransactions.module:53
 msgid "Show Transactions"
-msgstr ""
+msgstr "Показать транзакции"
 
 #: pg_showtransactions.module:54
 msgid "There is transaction history."
-msgstr ""
+msgstr "История транзакции."
 
 #: pg_showtransactions.info:0
 msgid "Show transactions"
-msgstr ""
+msgstr "Показать транзакции"
 
 #: pg_showtransactions.info:0
 msgid "Show transactions in PGAPI."
-msgstr ""
+msgstr "Показать транзакции в PGAPI"
 
 #: pg_showtransactions.info:0
 msgid "Payment Gateway API Tools"
 msgstr "PGAPI: инструменты API"
-

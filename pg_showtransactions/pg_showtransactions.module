@@ -59,14 +59,14 @@ function pg_showtransactions_menu() {
       'type'             => MENU_LOCAL_TASK,
 	  'weight'           => 30,
   );
-  
+
   return $items;
 }
 
 /**
  * Implements hook_formfilterapi().
  */
- 
+
 function pg_showtransactions_formfilterapi($op,$session_name,&$a1 = NULL){
   if($op == 'filters'){
     $filters = array();
@@ -74,7 +74,7 @@ function pg_showtransactions_formfilterapi($op,$session_name,&$a1 = NULL){
       case 'pg_showtransactions_history';
             $filters['id']= array(
               '#type'  => 'textfield',
-              '#title' => t('Ttansaction id'),
+              '#title' => t('Transaction id'),
               '#where' => "pgt.txnid",
             );
             $filters['name']= array(
@@ -105,24 +105,24 @@ function pg_showtransactions_formfilterapi($op,$session_name,&$a1 = NULL){
               '#title' => t('Gateway'),
               '#where' => 'pgt.gateway',
               '#options' => pgapi_get_gateway_options(),
-            );          
+            );
 
             $filters['status'] = array(
               '#type'  => 'select',
               '#title' => t('Payment status'),
               '#where' => 'pgt.status',
               '#options' => pgapi_build_status(),
-            );          
+            );
 
         break;
       case 'pg_account_operator_history';
-            
+
             $filters['name']= array(
               '#type'  => 'textfield',
               '#title' => t('User'),
               '#where' => "u.name",
             );
-          
+
             $filters['price']= array(
               '#type'  => 'textfield',
               '#title' => t('Amount'),
@@ -137,16 +137,16 @@ function pg_showtransactions_formfilterapi($op,$session_name,&$a1 = NULL){
                 '< 0' => t('sent'),
               ),
             );
-          
+
             $filters['status'] = array(
               '#type'  => 'select',
               '#title' => t('Payment status'),
               '#where' => 'pgt.status',
               '#options' => pgapi_build_status(),
-            );          
+            );
 
         break;
-            
+
     }
     return $filters;
   }
