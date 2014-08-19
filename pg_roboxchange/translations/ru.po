@@ -7,71 +7,76 @@
 #  pg_roboxchange.module,v 1.4 2010/10/31 05:12:08 gor
 #  pg_roboxchange.info,v 1.3 2010/10/31 05:12:08 gor
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2014-08-19 14:28+0000\n"
-"PO-Revision-Date: 2014-08-19 14:28+0000\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-08-19 17:53+0200\n"
+"Last-Translator: Sergei <sergiy.pavlenko@gmail.com>\n"
 "Language-Team: Russian <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n"
+"%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.6.7\n"
 
 #: pg_roboxchange.admin.inc:10
 msgid "You have to install !url, otherwise RoboXchange Gateway will not work."
-msgstr ""
+msgstr "Вы должны установить !url, иначе ROBOXchange шлюз не будет работать."
 
 #: pg_roboxchange.admin.inc:15
 msgid "Rate url"
 msgstr "Ссылка на курсы"
 
 #: pg_roboxchange.admin.inc:17
-msgid "Please enter rate url.\nDefault: !url"
+msgid ""
+"Please enter rate url.\n"
+"Default: !url"
 msgstr ""
-"Пожалуйста, введите ссылку на курсы "
-"обмена WM-валют.\n"
+"Пожалуйста, введите ссылку на курсы обмена WM-валют.\n"
 " По умолчанию: !url"
 
 #: pg_roboxchange.admin.inc:25;32
 msgid "Rate information"
-msgstr ""
+msgstr "Информация о курс"
 
 #: pg_roboxchange.admin.inc:26
 msgid "Please fill and save \"Merchant Login\" first"
-msgstr ""
+msgstr "Пожалуйста, заполните и сохраните \"Merchant Login\""
 
 #: pg_roboxchange.admin.inc:34
 msgid "Please check all currency that you want to accept"
-msgstr ""
+msgstr "Пожалуйста, проверьте все валюты, что вы хотите принимать"
 
 #: pg_roboxchange.admin.inc:66
 msgid "Action url"
 msgstr "URL действия"
 
 #: pg_roboxchange.admin.inc:68
-msgid "Please enter action url.\nDefault: !url"
+msgid ""
+"Please enter action url.\n"
+"Default: !url"
 msgstr ""
 "Пожалуйста, введите action URL.\n"
 "По умолчанию: !url"
 
 #: pg_roboxchange.admin.inc:72
 msgid "Merchant Login"
-msgstr ""
+msgstr "Логин магазина"
 
 #: pg_roboxchange.admin.inc:74;81;88
 msgid "Please enter Merchant Login."
-msgstr ""
+msgstr "Пожалуйста, введите логин Магазина"
 
 #: pg_roboxchange.admin.inc:79
 msgid "Merchant Pass 1"
-msgstr ""
+msgstr "Пароль от магазина 1"
 
 #: pg_roboxchange.admin.inc:86
 msgid "Merchant Pass 2"
-msgstr ""
+msgstr "Пароль от магазина 2"
 
 #: pg_roboxchange.admin.inc:94
 msgid "Rate to site currency"
@@ -80,10 +85,11 @@ msgstr "Цена в валюте сайта"
 #: pg_roboxchange.admin.inc:96
 msgid "Please enter RoboXchange rate according to site currency."
 msgstr ""
+"Пожалуйста, введите ROBOXchange ставку в соответствии с валютой на сайте."
 
 #: pg_roboxchange.admin.inc:103
 msgid "Urls(result,success,fail) for merchant interfase"
-msgstr ""
+msgstr "URL-адреса (result,success,fail) для торгового интерфейса"
 
 #: pg_roboxchange.admin.inc:108
 msgid "Result url"
@@ -91,7 +97,7 @@ msgstr ""
 
 #: pg_roboxchange.admin.inc:110;117;123
 msgid "Just for copy."
-msgstr ""
+msgstr "Просто для копирования."
 
 #: pg_roboxchange.admin.inc:115
 msgid "Success url"
@@ -111,47 +117,46 @@ msgstr "%rate должна быть более 0."
 
 #: pg_roboxchange.admin.inc:178
 msgid "This number does not match the original price"
-msgstr ""
-"Это число не совпадает с суммой "
-"заказа."
+msgstr "Это число не совпадает с суммой заказа."
 
 #: pg_roboxchange.admin.inc:182
 msgid "Security check failed"
-msgstr ""
-"Платеж не прошел проверку "
-"безопасности"
+msgstr "Платеж не прошел проверку безопасности"
 
 #: pg_roboxchange.admin.inc:186
 msgid "Payment was accepted."
-msgstr ""
+msgstr "Оплата принята."
 
 #: pg_roboxchange.module:110;122
 msgid "%err"
 msgstr ""
 
 #: pg_roboxchange.module:129
-msgid "We have a communication problem with Roboxchange interface. Please try late"
+msgid ""
+"We have a communication problem with Roboxchange interface. Please try late"
 msgstr ""
+"У нас есть проблемы со связью с интерфейсом Roboxchange. Пожалуйста, "
+"попробуйте позже"
 
 #: pg_roboxchange.module:152
 msgid "Wrong request"
-msgstr ""
+msgstr "Неверный запрос"
 
 #: pg_roboxchange.module:155
 msgid "Wrong sIncCurrLabel field"
-msgstr ""
+msgstr "Неправильное поле sIncCurrLabel"
 
 #: pg_roboxchange.module:158
 msgid "Wrong OutCurrLabel field"
-msgstr ""
+msgstr "Неправильное поле OutCurrLabel"
 
 #: pg_roboxchange.module:161
 msgid "MerchantLogin doesnot exist"
-msgstr ""
+msgstr "MerchantLogin не найден"
 
 #: pg_roboxchange.module:164
 msgid "nOutCnt isnot correct"
-msgstr ""
+msgstr "nOutCnt не корректный"
 
 #: pg_roboxchange.module:176
 msgid "RoboXchange Payment Gateway"
@@ -167,11 +172,11 @@ msgstr "Cпособ оплаты"
 
 #: pg_roboxchange.module:305
 msgid "<b>Your output currency</b>: !curr <br>"
-msgstr ""
+msgstr "<b>Ваша выходная цена</b>: !curr <br>"
 
 #: pg_roboxchange.module:306
 msgid "<b>Last update time</b>: !time <br>"
-msgstr ""
+msgstr "<b>Время последнего обновления</b>: !time <br>"
 
 #: pg_roboxchange.module:309
 msgid "Name"
@@ -187,17 +192,16 @@ msgstr "Внутренние данные"
 
 #: pg_roboxchange.module:42;50
 msgid "RoboXchange processing"
-msgstr ""
+msgstr "RoboXchange обработка"
 
 #: pg_roboxchange.module:60
 msgid "RoboXchange payment settings."
-msgstr ""
+msgstr "RoboXchange настройки платежей"
 
 #: pg_roboxchange.info:0
 msgid "RoboXchange payment gateway in E-Commerce."
-msgstr ""
+msgstr "ROBOXchange платежный шлюз в области электронной торговли."
 
 #: pg_roboxchange.info:0
 msgid "Payment Gateway API"
 msgstr ""
-
