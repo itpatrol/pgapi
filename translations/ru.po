@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2014-08-18 18:23+0000\n"
-"PO-Revision-Date: 2014-08-18 21:33+0200\n"
+"PO-Revision-Date: 2014-08-19 08:15+0200\n"
 "Last-Translator: Sergei <sergiy.pavlenko@gmail.com>\n"
 "Language-Team: Russian <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr "Символ"
 
 #: pgapi.admin.inc:38
 msgid "Please enter symbol of the Account Balance currency."
-msgstr ""
+msgstr "Пожалуйста, введите символ валюты баланса."
 
 #: pgapi.admin.inc:45
 msgid "Decimal places"
@@ -40,55 +40,55 @@ msgstr "Число знаков после запятой"
 
 #: pgapi.admin.inc:47
 msgid "Please enter number of decimal places."
-msgstr ""
+msgstr "Пожалуйста, введите количество знаков после запятой."
 
 #: pgapi.admin.inc:53
 msgid "Decimal delimiter"
-msgstr ""
+msgstr "Десятичный разделитель"
 
 #: pgapi.admin.inc:55
 msgid "Please enter decimal delimiter."
-msgstr ""
+msgstr "Пожалуйста, введите десятичный разделитель."
 
 #: pgapi.admin.inc:61
 msgid "Thousands places"
-msgstr ""
+msgstr "Тысячи мест"
 
 #: pgapi.admin.inc:63
 msgid "Please enter thousands delimeter."
-msgstr ""
+msgstr "Пожалуйста, введите тысячный разделитель."
 
 #: pgapi.admin.inc:69
-msgid "Simbol position"
-msgstr ""
+msgid "Symbol position"
+msgstr "Позиция символа"
 
 #: pgapi.admin.inc:70
 msgid "Left"
-msgstr ""
+msgstr "Левый"
 
 #: pgapi.admin.inc:70
 msgid "Right"
-msgstr ""
+msgstr "Правый"
 
 #: pgapi.admin.inc:72
 msgid "Please select symbol position."
-msgstr ""
+msgstr "Пожалуйста, выберите положение символа."
 
 #: pgapi.admin.inc:78
 msgid "Save currency settings"
-msgstr ""
+msgstr "Сохранить настройки валюты"
 
 #: pgapi.admin.inc:93
 msgid "Currency settings saved."
-msgstr ""
+msgstr "Настройки валюты сохранены."
 
 #: pgapi.admin.inc:105
 msgid "No payment gateways available."
-msgstr ""
+msgstr "Нет доступных платежных шлюзов."
 
 #: pgapi.admin.inc:110
 msgid "Payment gateways"
-msgstr ""
+msgstr "Платежные шлюзы"
 
 #: pgapi.admin.inc:118
 msgid "Update status of payment gateways"
@@ -100,15 +100,15 @@ msgstr "Статус платежных систем был обновлен"
 
 #: pgapi.module:110
 msgid "Administer pgapi"
-msgstr ""
+msgstr "Администрирование pgapi"
 
 #: pgapi.module:111
 msgid "Allows to choose payment gateways and change configurations"
-msgstr ""
+msgstr "Разрешить выбрать платежные шлюзы и изменить конфигурацию"
 
 #: pgapi.module:169
 msgid "New Payment Notification from !site"
-msgstr ""
+msgstr "Новое уведомление оплаты с !site"
 
 #: pgapi.module:170
 msgid ""
@@ -122,10 +122,19 @@ msgid ""
 "Best regards,\n"
 "!site"
 msgstr ""
+"Дорогой !username\n"
+"Платеж #!txnid был создан.\n"
+"\n"
+"Сумма: !pg_amount\n"
+"Тип: !pg_type\n"
+"Метод: !pg_method\n"
+"\n"
+"С уважением,\n"
+"!site"
 
 #: pgapi.module:173
 msgid "Payment !txnid Change Notification from !site"
-msgstr ""
+msgstr "Платеж !txnid уведомления об изменении с !site"
 
 #: pgapi.module:174
 msgid ""
@@ -141,6 +150,17 @@ msgid ""
 "Best regards,\n"
 "!site"
 msgstr ""
+"Дорогой !username\n"
+"Платеж #!txnid был изменен.\n"
+"\n"
+"Сумма: !pg_amount\n"
+"Тип: !pg_type\n"
+"Метод: !pg_method\n"
+"Статус: !status\n"
+"Workflow: !workflow\n"
+"\n"
+"С уважением,\n"
+"!site"
 
 #: pgapi.module:410
 msgid "pending"
@@ -172,11 +192,11 @@ msgstr "принят"
 
 #: pgapi.module:440
 msgid "undefined status"
-msgstr ""
+msgstr "неопределенный статус"
 
 #: pgapi.module:471
 msgid "invoiced"
-msgstr ""
+msgstr "выставлен счет"
 
 #: pgapi.module:472
 msgid "shipped"
@@ -192,23 +212,25 @@ msgstr "нарушение безопасности"
 
 #: pgapi.module:500
 msgid "undefined workflow"
-msgstr ""
+msgstr "неопределенный статус работы"
 
 #: pgapi.module:623
 msgid "Please select service that you like to pay with."
-msgstr ""
+msgstr "Пожалуйста, выберите сервис, с помощью которого вы хотите оплатить."
 
 #: pgapi.module:628
 msgid "Payment system"
-msgstr ""
+msgstr "Платежная система"
 
 #: pgapi.module:628
 msgid "Amount to pay"
-msgstr ""
+msgstr "Сумма к оплате"
 
 #: pgapi.module:631
 msgid "Please contact website admin. No one payment gateway are enabled."
 msgstr ""
+"Пожалуйста, свяжитесь с администратор сайта. Не один платежный шлюз не "
+"включен."
 
 #: pgapi.module:657
 msgid "Process purchase"
@@ -220,7 +242,7 @@ msgstr "Отменить"
 
 #: pgapi.module:698
 msgid "User canceled payment"
-msgstr ""
+msgstr "Пользователь отменил оплату"
 
 #: pgapi.module:63
 msgid "Payment Gateway API Tools"
@@ -228,7 +250,7 @@ msgstr "PGAPI: инструменты API"
 
 #: pgapi.module:64
 msgid "Manage Payment Gateway API's Tools."
-msgstr ""
+msgstr "PGAPI: управление инструментами"
 
 #: pgapi.module:72
 msgid "Payment Gateway API Settings"
@@ -236,19 +258,19 @@ msgstr "PGAPI: настройки API"
 
 #: pgapi.module:73;82
 msgid "Configure gateway settings for Payment Gateway API."
-msgstr ""
+msgstr "Настройка параметров шлюза для PGAPI."
 
 #: pgapi.module:81
 msgid "Active gateways"
-msgstr ""
+msgstr "Активные шлюзы"
 
 #: pgapi.module:91
 msgid "Payment Gateway Currency Settings"
-msgstr ""
+msgstr "PG: Настройки Валюты"
 
 #: pgapi.module:92
 msgid "Configure currency settings for Payment Gateway API."
-msgstr ""
+msgstr "Настройка параметров валюты для PGAPI."
 
 #: pgapi.info:0;0
 msgid "Payment Gateway API"
