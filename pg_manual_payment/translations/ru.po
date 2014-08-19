@@ -8,26 +8,28 @@
 #  pg_manual_payment.info,v 1.2 2010/10/31 05:12:07 gor
 #  pg_manual_payment.install,v 1.2 2009/11/25 19:59:05 gor
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2014-08-19 17:25+0000\n"
-"PO-Revision-Date: 2014-08-19 17:25+0000\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-08-19 20:49+0200\n"
+"Last-Translator: Sergei <sergiy.pavlenko@gmail.com>\n"
 "Language-Team: Russian <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n"
+"%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.6.7\n"
 
 #: pg_manual_payment.admin.inc:21
 msgid "Delete checked Accounts"
-msgstr ""
+msgstr "Удалить выбранные аккаунты"
 
 #: pg_manual_payment.admin.inc:32
 msgid "Your account %name has been deleted."
-msgstr ""
+msgstr "Ваш аккаунт %name был удален."
 
 #: pg_manual_payment.admin.inc:47;92
 msgid "Name"
@@ -35,31 +37,31 @@ msgstr "Имя"
 
 #: pg_manual_payment.admin.inc:49;94
 msgid "Please, enter Payment system name."
-msgstr ""
+msgstr "Пожалуйста, введите имя платежной системы."
 
 #: pg_manual_payment.admin.inc:54;99 pg_manual_payment.module:297
 msgid "Account Number"
-msgstr ""
+msgstr "Номер аккаунта"
 
 #: pg_manual_payment.admin.inc:56;101
 msgid "Please, enter Payment system account number."
-msgstr ""
+msgstr "Пожалуйста, введите номер аккаунта платежной системы."
 
 #: pg_manual_payment.admin.inc:61;106
 msgid "Currency Symbol"
-msgstr ""
+msgstr "Символ валюты"
 
 #: pg_manual_payment.admin.inc:63;108
 msgid "Please, enter Payment system Currency symbol."
-msgstr ""
+msgstr "Пожалуйста, введите символ валюты для платежной системы."
 
 #: pg_manual_payment.admin.inc:69;114
 msgid "Currency rate"
-msgstr ""
+msgstr "Курс валют"
 
 #: pg_manual_payment.admin.inc:71;116
 msgid "Please, enter Payment system Currency rate."
-msgstr ""
+msgstr "Пожалуйста, введите валютную ставку для платежной системы."
 
 #: pg_manual_payment.admin.inc:77
 msgid "Save"
@@ -67,15 +69,15 @@ msgstr "Сохранить"
 
 #: pg_manual_payment.admin.inc:85
 msgid "Your Account %name has been modified."
-msgstr ""
+msgstr "Ваш аккаунт %name был изменен."
 
 #: pg_manual_payment.admin.inc:122 pg_manual_payment.module:109
 msgid "Add Account"
-msgstr ""
+msgstr "Добавить аккаунт"
 
 #: pg_manual_payment.admin.inc:130
 msgid "Your Account %name has been added."
-msgstr ""
+msgstr "Ваш аккаунт %name был добавлен."
 
 #: pg_manual_payment.admin.inc:139
 msgid "Admin email with notification emails"
@@ -84,30 +86,67 @@ msgstr ""
 #: pg_manual_payment.admin.inc:141
 msgid "Please enter email address for receive a notify and warning messages."
 msgstr ""
+"Пожалуйста, введите адрес электронной почты для получения уведомлений и "
+"предупреждающие сообщения."
 
 #: pg_manual_payment.module:43;55
 msgid "Payment Notification from !site"
-msgstr ""
+msgstr "Уведомление о платеже от !site"
 
 #: pg_manual_payment.module:44
-msgid "Dear !username\nYour Payment #!txnid will be checked today.\n\nAmount: !price\nPayment Account: !purse\n\nBest regards,\n!site\n"
+msgid ""
+"Dear !username\n"
+"Your Payment #!txnid will be checked today.\n"
+"\n"
+"Amount: !price\n"
+"Payment Account: !purse\n"
+"\n"
+"Best regards,\n"
+"!site\n"
 msgstr ""
+"Уважаемый !username\n"
+"Ваш Оплата #!txnid будут проверены сегодня.\n"
+"\n"
+"Сумма: !price\n"
+"Оплата счета: !purse\n"
+"\n"
+"С уважением,\n"
+"!site\n"
 
 #: pg_manual_payment.module:56
-msgid "Dear Admin\nUser !username just sent a payment #!txnid\n\nAmount: !price\nPayment Account: !purse\n\nPlease check it out and process it.\n\nBest regards,\n!site\n"
+msgid ""
+"Dear Admin\n"
+"User !username just sent a payment #!txnid\n"
+"\n"
+"Amount: !price\n"
+"Payment Account: !purse\n"
+"\n"
+"Please check it out and process it.\n"
+"\n"
+"Best regards,\n"
+"!site\n"
 msgstr ""
+"Уважаемый Админ\n"
+"Пользователь !username отправили платеж #!txnid\n"
+"\n"
+"Сумма: !price\n"
+"Оплата счета: !purse\n"
+"Пожалуйста, проверьте его и обработайте.\n"
+"\n"
+"С уважением,\n"
+"!site\n"
 
 #: pg_manual_payment.module:148
 msgid "Manual Payment Payment Gateway"
-msgstr ""
+msgstr "Руководство по оплате через платежный шлюз"
 
 #: pg_manual_payment.module:154;238;82;90 pg_manual_payment.info:0
 msgid "Manual Payment"
-msgstr ""
+msgstr "Руководство оплаты"
 
 #: pg_manual_payment.module:204
 msgid "Type of account"
-msgstr ""
+msgstr "Типа аккаунта"
 
 #: pg_manual_payment.module:207
 msgid "What type of currency will be used."
@@ -115,27 +154,27 @@ msgstr "Тип валюты, который будет использован."
 
 #: pg_manual_payment.module:239
 msgid "Please make a payment and click submit"
-msgstr ""
+msgstr "Пожалуйста, произведите оплату и нажмите на кнопку отправить"
 
 #: pg_manual_payment.module:245;252
 msgid "Please send your payment on this wallet"
-msgstr ""
+msgstr "Пожалуйста, пришлите ваш платеж на этот кошелек"
 
 #: pg_manual_payment.module:250
 msgid "Ammount"
-msgstr ""
+msgstr "Сумма"
 
 #: pg_manual_payment.module:257
 msgid "Purchase for site !sitename. Transaction !txnid"
-msgstr ""
+msgstr "Покупка на сайте !sitename. Транзакция !txnid"
 
 #: pg_manual_payment.module:262
 msgid "Payment description"
-msgstr ""
+msgstr "Описание платежа"
 
 #: pg_manual_payment.module:264
 msgid "Please put this description"
-msgstr ""
+msgstr "Пожалуйста, введите описание"
 
 #: pg_manual_payment.module:268
 msgid "Submit"
@@ -143,7 +182,7 @@ msgstr "Отправить"
 
 #: pg_manual_payment.module:296
 msgid "Account Name"
-msgstr ""
+msgstr "Имя аккаунта"
 
 #: pg_manual_payment.module:298
 msgid "Rate"
@@ -151,11 +190,11 @@ msgstr "Курс"
 
 #: pg_manual_payment.module:91
 msgid "Manual Payment payment settings."
-msgstr ""
+msgstr "Ручные настройки оплаты."
 
 #: pg_manual_payment.module:100
 msgid "Accounts"
-msgstr ""
+msgstr "Аккаунты"
 
 #: pg_manual_payment.module:119
 msgid "Edit Wallet"
@@ -167,19 +206,16 @@ msgstr "Настройки"
 
 #: pg_manual_payment.module:130
 msgid "Manual Payment Settings"
-msgstr ""
+msgstr "Ручные настройки оплаты"
 
 #: pg_manual_payment.install:26
 msgid "Stores webmoney rates information."
-msgstr ""
-"Сохраняет информацию о соотношениях "
-"валют webmoney"
+msgstr "Сохраняет информацию о соотношениях валют webmoney"
 
 #: pg_manual_payment.info:0
 msgid "Manual payment with human verification."
-msgstr ""
+msgstr "Руководство оплаты с ручной проверкой."
 
 #: pg_manual_payment.info:0
 msgid "Payment Gateway API"
 msgstr "PGAPI"
-
