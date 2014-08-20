@@ -5,7 +5,6 @@
  * Functions callback
  ********************************************************************/
 function pg_roboxchange_settings() {
-
   if (FALSE === @include('XML/Unserializer.php')) {
     drupal_set_message(t('You have to install !url, otherwise RoboXchange Gateway will not work.', array('!url' => l('XML/Serializer', 'http://pear.php.net/package/XML_Serializer'))), 'error');
   }
@@ -16,9 +15,11 @@ function pg_roboxchange_settings() {
     '#default_value' => variable_get('pg_roboxchange_rate_url', cRoboXchangeRateUrl),
     '#description' => t("Please enter rate url.\nDefault: !url", array('!url' => cRoboXchangeRateUrl)),
   );
+
   $form['#tree'] = TRUE;
 
   $mrh = variable_get('pg_roboxchange_mrh', '');
+
   if (empty($mrh)) {
     $form['rate'] = array(
       '#type' => 'fieldset',
@@ -28,22 +29,27 @@ function pg_roboxchange_settings() {
   }
   else {
     pg_roboxchange_cron();
+
     $form['rate'] = array(
       '#type' => 'fieldset',
       '#title' => t('Rate information'),
       '#theme' => 'pg_roboxchange_settings_table',
       '#description' => t('Please check all currency that you want to accept'),
     );
+
     $form['rate']['currency'] = array(
       '#type' => 'markup',
       '#value' => variable_get('pg_roboxchange_out_curr', ''),
     );
+
     $form['rate']['last_update'] = array(
       '#type' => 'markup',
       '#value' => variable_get('pg_roboxchange_last_update', ''),
     );
+
     $result = db_query('SELECT * FROM {pg_roboxchange_rates} ORDER BY type');
     $checked = variable_get('pg_roboxchange_checked', '');
+
     while ($rr = db_fetch_object($result)) {
       $form['rate']['type'][$rr->type] = array(
         '#type' => 'checkbox',
@@ -67,6 +73,7 @@ function pg_roboxchange_settings() {
     '#default_value' => variable_get('pg_roboxchange_action_url', cRoboXchangeActionUrl),
     '#description' => t("Please enter action url.\nDefault: !url", array('!url' => cRoboXchangeActionUrl)),
   );
+
   $form['pg_roboxchange_mrh'] = array(
     '#type' => 'textfield',
     '#title' => t('Merchant Login'),
@@ -74,6 +81,7 @@ function pg_roboxchange_settings() {
     '#description' => t("Please enter Merchant Login."),
     '#required' => TRUE,
   );
+
   $form['pg_roboxchange_mps1'] = array(
     '#type' => 'textfield',
     '#title' => t('Merchant Pass 1'),

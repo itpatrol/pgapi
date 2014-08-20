@@ -29,9 +29,7 @@ function pg_roboxchange_theme() {
 /**
  * Implementation of hook_menu()
  */
-
 function pg_roboxchange_menu() {
-
   $items['roboxchange/done'] = array(
     'title' => 'Internal Data',
     'page callback' => 'pg_roboxchange_done_payment',
@@ -45,7 +43,7 @@ function pg_roboxchange_menu() {
     'page arguments' => array('success'),
     'access callback' => TRUE,
     'file' => 'pg_roboxchange.admin.inc',
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
   );
   $items['roboxchange/fail'] = array(
     'title' => 'RoboXchange processing',
@@ -53,9 +51,8 @@ function pg_roboxchange_menu() {
     'page arguments' => array('fail'),
     'access callback' => TRUE,
     'file' => 'pg_roboxchange.admin.inc',
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
   );
-
   $items['admin/pgdata/pgsettings/roboxchange'] = array(
     'title' => 'RoboXchange',
     'description' => 'RoboXchange payment settings.',
@@ -66,14 +63,13 @@ function pg_roboxchange_menu() {
     'file' => 'pg_roboxchange.admin.inc',
     'type' => MENU_LOCAL_TASK,
   );
+
   return $items;
 }
-
 
 /**
  * Implementation of hook_cron()
  */
-
 function pg_roboxchange_cron() {
   require_once('XML/Unserializer.php');
   $unserializer_options = array(
@@ -230,7 +226,6 @@ function pg_roboxchange_process_form($form_state, $t) {
 }
 
 function pg_roboxchange_extraform($form_state, $t) {
-
   $first = TRUE;
   $result = db_query('SELECT * FROM {pg_roboxchange_rates} ORDER BY type');
   $checked = variable_get('pg_roboxchange_checked', '');
@@ -301,11 +296,9 @@ function pg_roboxchange_payform($form_state, $post, $t) {
   return $form;
 }
 
-
 /********************************************************************
  * Functions theme
  ********************************************************************/
-
 function theme_pg_roboxchange_settings_table(&$form) {
   $output = t('<b>Your output currency</b>: !curr <br>', array('!curr' => drupal_render($form['currency'])));
   $output .= t('<b>Last update time</b>: !time <br>', array('!time' => drupal_render($form['last_update'])));
@@ -329,4 +322,3 @@ function theme_pg_roboxchange_settings_table(&$form) {
   $output .= drupal_render($form);
   return $output;
 }
-
