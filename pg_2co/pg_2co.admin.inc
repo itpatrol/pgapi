@@ -96,11 +96,8 @@ function pg_2co_done_payment() {
   fclose($handle);
 
   $txnid = $_POST['item_number'];
-  $payment_status = check_plain($_POST['payment_status']);
   $payment_amount = check_plain($_POST['mc_gross']);
   $payment_currency = check_plain($_POST['mc_currency']);
-  $receiver_email = check_plain($_POST['receiver_email']);
-  $payer_email = check_plain($_POST['payer_email']);
   $receiver_email = check_plain($_POST['receiver_email']);
 
   $headers = array(
@@ -121,9 +118,8 @@ function pg_2co_done_payment() {
     $handle = fopen('/tmp/paypal.txt', 'a');
     $C = "Answer";
     $C .= print_r($request, TRUE);
-    fwrite($handle, $answer);
+    fwrite($handle, $C);
     fclose($handle);
-    $res = t('Verification has been failed');
     $status = 'denied';
   }
 
