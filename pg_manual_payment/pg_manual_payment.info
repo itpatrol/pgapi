@@ -1,14 +1,5 @@
-; $Id: pg_manual_payment.info,v 1.2 2010/10/31 05:12:07 gor Exp $
 name = Manual Payment
 description = Manual payment with human verification.
 package = "Payment Gateway API"
-version = VERSION
 dependencies[] = pgapi
 core = 6.x
-
-; Information added by drupal.org packaging script on 2009-11-25
-version = "6.x-1.2-beta4"
-core = "6.x"
-project = "pgapi"
-datestamp = "1259179310"
-
