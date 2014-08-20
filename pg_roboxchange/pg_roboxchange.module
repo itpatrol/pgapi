@@ -7,9 +7,9 @@
 /**
  * Constants.
  */
-define("cRoboXchangeActionUrl", "https://merchant.roboxchange.com/Index.aspx");
-define("cRoboXchangeRateUrl", "https://merchant.roboxchange.com/WebService/Service.asmx/GetRates");
-define("XML_SERIALIZER_URL", "http://pear.php.net/package/XML_Serializer/");
+define("PG_ROBOXCHANGE_ACTION_URL", 'https://merchant.roboxchange.com/Index.aspx');
+define("PG_ROBOXCHANGE_RATE_URL", 'https://merchant.roboxchange.com/WebService/Service.asmx/GetRates');
+define("XML_SERIALIZER_URL", 'http://pear.php.net/package/XML_Serializer/');
 
 /**
  * Implements hook_theme().
@@ -93,7 +93,7 @@ function pg_roboxchange_cron() {
   rtrim($fields_string, '&');
 
   $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, variable_get('pg_roboxchange_rate_url', cRoboXchangeRateUrl));
+  curl_setopt($ch, CURLOPT_URL, variable_get('pg_roboxchange_rate_url', PG_ROBOXCHANGE_RATE_URL));
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_POST, count($data));
   curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
@@ -287,7 +287,7 @@ function pg_roboxchange_payform($form_state, $post, $t) {
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = variable_get('pg_roboxchange_action_url', cRoboXchangeActionUrl);
+  $form['#action'] = variable_get('pg_roboxchange_action_url', PG_ROBOXCHANGE_ACTION_URL);
   return $form;
 }
 

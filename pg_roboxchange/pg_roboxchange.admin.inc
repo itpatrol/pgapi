@@ -17,8 +17,8 @@ function pg_roboxchange_settings() {
   $form['pg_roboxchange_rate_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Rate url'),
-    '#default_value' => variable_get('pg_roboxchange_rate_url', cRoboXchangeRateUrl),
-    '#description' => t("Please enter rate url.\nDefault: !url", array('!url' => cRoboXchangeRateUrl)),
+    '#default_value' => variable_get('pg_roboxchange_rate_url', PG_ROBOXCHANGE_RATE_URL),
+    '#description' => t("Please enter rate url.\nDefault: !url", array('!url' => PG_ROBOXCHANGE_RATE_URL)),
   );
 
   $form['#tree'] = TRUE;
@@ -75,8 +75,8 @@ function pg_roboxchange_settings() {
   $form['pg_roboxchange_action_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Action url'),
-    '#default_value' => variable_get('pg_roboxchange_action_url', cRoboXchangeActionUrl),
-    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => cRoboXchangeActionUrl)),
+    '#default_value' => variable_get('pg_roboxchange_action_url', PG_ROBOXCHANGE_ACTION_URL),
+    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => PG_ROBOXCHANGE_ACTION_URL)),
   );
 
   $form['pg_roboxchange_mrh'] = array(
