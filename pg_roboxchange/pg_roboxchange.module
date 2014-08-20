@@ -94,6 +94,7 @@ function pg_roboxchange_cron() {
     'OutSum' => 1,
   );
 
+  $fields_string = '';
   foreach ($data as $key => $value) {
     $fields_string .= $key . '=' . $value . '&';
   }
