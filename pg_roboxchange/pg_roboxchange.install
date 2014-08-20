@@ -1,5 +1,4 @@
 <?php
-// $Id: pg_roboxchange.install,v 1.2 2009/11/25 19:59:05 gor Exp $
 
 /**
  * Implementation of hook_install().

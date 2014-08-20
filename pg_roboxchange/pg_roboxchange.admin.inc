@@ -1,5 +1,4 @@
 <?php
-// $Id: pg_roboxchange.admin.inc,v 1.4 2010/10/31 05:12:08 gor Exp $
 
 /********************************************************************
  * Functions callback
