@@ -1,11 +1,8 @@
 <?php
-
 /**
- * Implements hook_uninstall().
+ * @file
+ * Install file for pg_roboxchange.module.
  */
-function pg_roboxchange_uninstall() {
-  drupal_uninstall_schema('pg_roboxchange');
-}
 
 /**
  * Implements hook_schema().
