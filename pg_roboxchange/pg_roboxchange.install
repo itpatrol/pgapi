@@ -1,13 +1,6 @@
 <?php
 
 /**
- * Implements hook_install().
- */
-function pg_roboxchange_install() {
-  drupal_install_schema('pg_roboxchange');
-}
-
-/**
  * Implements hook_uninstall().
  */
 function pg_roboxchange_uninstall() {
