@@ -11,8 +11,8 @@ function pg_2co_settings() {
   $form['pg_2co_action_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Action url'),
-    '#default_value' => variable_get('pg_2co_action_url', c2coActionUrlSingle),
-    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => c2coActionUrlSingle)),
+    '#default_value' => variable_get('pg_2co_action_url', PG_2CO_ACTION_URL_SINGLE),
+    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => PG_2CO_ACTION_URL_SINGLE)),
   );
   $form['pg_2co_sid'] = array(
     '#type' => 'textfield',

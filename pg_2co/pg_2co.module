@@ -3,8 +3,8 @@
 /**
  * Constants.
  */
-define("c2coActionUrlSingle", "https://www.2checkout.com/checkout/spurchase");
-define("c2coActionUrlMulti", "https://www.2checkout.com/checkout/spurchase");
+define("PG_2CO_ACTION_URL_SINGLE", 'https://www.2checkout.com/checkout/spurchase');
+define("PG_2CO_ACTION_URL_MULTI", 'https://www.2checkout.com/checkout/spurchase');
 
 /**
  * Implements hook_menu().
@@ -122,7 +122,7 @@ function pg_2co_payform($form_state, $post, $t) {
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = variable_get('pg_2co_action_url', c2coActionUrlSingle);
+  $form['#action'] = variable_get('pg_2co_action_url', PG_2CO_ACTION_URL_SINGLE);
 
   return $form;
 }
