@@ -168,10 +168,10 @@ function pg_2co_done_payment() {
 }
 
 /**
- * Convert string
+ * Convert string.
  *
  * @param string $query
- *   String
+ *   String.
  * @param array $exclude
  *   Query params.
  * @param string $parent
