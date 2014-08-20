@@ -1,18 +1,15 @@
 <?php
+/**
+ * @file
+ * RoboXchange payment gateway in E-Commerce.
+ */
 
-/********************************************************************
- * Constants
- ********************************************************************/
-
+/**
+ * Constants.
+ */
 define("cRoboXchangeActionUrl", "https://merchant.roboxchange.com/Index.aspx");
-//define("cRoboXchangeRateUrl"    ,"http://www.roboxchange.com/xml/rate.asp");
 define("cRoboXchangeRateUrl", "https://merchant.roboxchange.com/WebService/Service.asmx/GetRates");
 define("XML_SERIALIZER_URL", "http://pear.php.net/package/XML_Serializer/");
-
-/********************************************************************
- * Drupal Hooks
- ********************************************************************/
-
 
 /**
  * Implements hook_theme().
@@ -34,8 +31,9 @@ function pg_roboxchange_menu() {
     'page callback' => 'pg_roboxchange_done_payment',
     'access callback' => TRUE,
     'file' => 'pg_roboxchange.admin.inc',
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
   );
+
   $items['roboxchange/success'] = array(
     'title' => 'RoboXchange processing',
     'page callback' => 'pg_roboxchange_payment_end',
@@ -44,6 +42,7 @@ function pg_roboxchange_menu() {
     'file' => 'pg_roboxchange.admin.inc',
     'type' => MENU_CALLBACK,
   );
+
   $items['roboxchange/fail'] = array(
     'title' => 'RoboXchange processing',
     'page callback' => 'pg_roboxchange_payment_end',
@@ -52,6 +51,7 @@ function pg_roboxchange_menu() {
     'file' => 'pg_roboxchange.admin.inc',
     'type' => MENU_CALLBACK,
   );
+
   $items['admin/pgdata/pgsettings/roboxchange'] = array(
     'title' => 'RoboXchange',
     'description' => 'RoboXchange payment settings.',
@@ -70,16 +70,13 @@ function pg_roboxchange_menu() {
  * Implements hook_cron().
  */
 function pg_roboxchange_cron() {
-  require_once('XML/Unserializer.php');
+  require_once ('XML/Unserializer.php');
   $unserializer_options = array(
-    'parseAttributes' => TRUE
+    'parseAttributes' => TRUE,
   );
+
   $unserializer = & new XML_Unserializer($unserializer_options);
 
-// make request
-  /*$data = "<robox.rate.req>
-    <merchant_login>".variable_get('pg_roboxchange_mrh','')."</merchant_login>
-  </robox.rate.req>";*/
   global $language;
 
   $data = array(
@@ -100,24 +97,22 @@ function pg_roboxchange_cron() {
   curl_setopt($ch, CURLOPT_HEADER, 0);
   curl_setopt($ch, CURLOPT_POST, count($data));
   curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-// CURLOPT_RETURNTRANSFER doesn't work
+  // CURLOPT_RETURNTRANSFER doesn't work.
   $fp = tmpfile();
   curl_setopt($ch, CURLOPT_FILE, $fp);
   if (!curl_exec($ch)) {
     form_set_error('rate_url', t('%err', array('%err' => curl_error($ch))));
     return "";
   }
+
   curl_close($ch);
   fseek($fp, 0, SEEK_SET);
 
-  /*  $contents = fread($fp, 1000);
-    echo $contents;
-  */
   $result = $unserializer->unserialize($fp);
 
   if (isset($result->message)) {
     form_set_error('rate_url', t('%err', array('%err' => $result->message)));
-    return "";
+    return '';
   }
 
   $data = $unserializer->getUnserializedData();
@@ -128,15 +123,9 @@ function pg_roboxchange_cron() {
   }
   switch ($data['retval']) {
     case 0:
-//				variable_set('pg_roboxchange_out_curr',$data['out_curr']);
-//				variable_set('pg_roboxchange_last_update',$data['date']);
-      //db_query("DELETE FROM {pg_roboxchange_rates}");
-
-      //print_r($data);
-
-      foreach ($data['Groups']['Group'] as $key => $group) {
+      foreach ($data['Groups']['Group'] as $group) {
         if (isset($group['Items']['Currency'][0])) {
-          foreach ($group['Items']['Currency'] as $key2 => $rate) {
+          foreach ($group['Items']['Currency'] as $rate) {
             db_query("REPLACE INTO {pg_roboxchange_rates} (type,name,rate) VALUES ('%s','%s','%f')", $rate['Label'], $rate['Name'], $rate['Rate']['IncSum']);
           }
         }
@@ -146,37 +135,42 @@ function pg_roboxchange_cron() {
         }
       }
       break;
+
     case -100:
       drupal_set_message(t('Wrong request'), 'error');
       break;
+
     case 1:
       drupal_set_message(t('Wrong sIncCurrLabel field'), 'error');
       break;
+
     case 2:
       drupal_set_message(t('Wrong OutCurrLabel field'), 'error');
       break;
+
     case 3:
       drupal_set_message(t('MerchantLogin doesnot exist'), 'error');
       break;
+
     case 4:
       drupal_set_message(t('nOutCnt isnot correct'), 'error');
       break;
-
   }
-  //switch
 }
 
-/********************************************************************
- * Pgapi Gateway Hooks
- ********************************************************************/
+/**
+ * Implements hook_pgapi_gw().
+ */
 function pg_roboxchange_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
     case 'display name':
       $ret = t('RoboXchange Payment Gateway');
       break;
+
     case 'payment page':
       $ret = url('payment/roboxchange/' . $a3, array('absolute' => TRUE));
       break;
+
     case 'payment gateway info':
       $ret['name'] = theme('image', drupal_get_path('module', 'pg_roboxchange') . '/robokassa.png', t('RoboXchange'), t('RoboXchange'));
       $result = db_query('SELECT * FROM {pg_roboxchange_rates} ORDER BY type');
@@ -189,20 +183,26 @@ function pg_roboxchange_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
       }
       $ret['price'] = $prices;
       break;
+
     case 'process form':
       $t = $a3;
       $form_result = $a4;
       $ret = pg_roboxchange_process_form($form_result, $t);
       break;
+
     case 'get form':
       $t = $a3;
       $form_result = $a4;
       $ret = pg_roboxchange_extraform($form_result, $t);
       break;
   }
+
   return $ret;
 }
 
+/**
+ * Implements hook_pgapi_transaction().
+ */
 function pg_roboxchange_pgapi_transaction($status, &$t) {
   switch ($status) {
     case PG_PENDING:
@@ -211,17 +211,12 @@ function pg_roboxchange_pgapi_transaction($status, &$t) {
   }
 }
 
-/********************************************************************
- * Other Functions
- ********************************************************************/
 function pg_roboxchange_process_form($form_state, $t) {
   $output = drupal_get_form('pg_roboxchange_payform', $form_state, $t);
-  //$output = str_ireplace('accept-charset="UTF-8"','accept-charset="cp1251"',$output);
   $t->method = 'pg_roboxchange';
   pgapi_transaction_save($t);
   echo '<html><body>' . $output . '<script>pgpayform.submit();</script></body>';
-//  echo '<html><body>'.$output.'</body>';
-  exit();
+  drupal_exit();
 }
 
 function pg_roboxchange_extraform($form_state, $t) {
@@ -247,6 +242,7 @@ function pg_roboxchange_extraform($form_state, $t) {
     '#options' => $prices,
     '#default_value' => $def_purse,
   );
+
   return $form;
 }
 
@@ -295,12 +291,14 @@ function pg_roboxchange_payform($form_state, $post, $t) {
   return $form;
 }
 
-/********************************************************************
- * Functions theme
- ********************************************************************/
 function theme_pg_roboxchange_settings_table(&$form) {
-  $output = t('<b>Your output currency</b>: !curr <br>', array('!curr' => drupal_render($form['currency'])));
-  $output .= t('<b>Last update time</b>: !time <br>', array('!time' => drupal_render($form['last_update'])));
+  $output = t('<b>Your output currency</b>: !curr <br />', array(
+    '!curr' => drupal_render($form['currency']),
+  ));
+  $output .= t('<b>Last update time</b>: !time <br />', array(
+    '!time' => drupal_render($form['last_update']),
+  ));
+
   $header = array(
     theme('table_select_header_cell'),
     t('Name'),

@@ -1,11 +1,17 @@
 <?php
+/**
+ * @file
+ * Administer module.
+ */
 
 /**
  * Roboxchange settings page.
  */
 function pg_roboxchange_settings() {
-  if (FALSE === @include('XML/Unserializer.php')) {
-    drupal_set_message(t('You have to install !url, otherwise RoboXchange Gateway will not work.', array('!url' => l('XML/Serializer', 'http://pear.php.net/package/XML_Serializer'))), 'error');
+  if (FALSE === @require ('XML/Unserializer.php')) {
+    drupal_set_message(t('You have to install !url, otherwise RoboXchange Gateway will not work.', array(
+      '!url' => l(t('XML/Serializer'), 'http://pear.php.net/package/XML_Serializer'),
+    )), 'error');
   }
 
   $form['pg_roboxchange_rate_url'] = array(
@@ -52,7 +58,7 @@ function pg_roboxchange_settings() {
     while ($rr = db_fetch_object($result)) {
       $form['rate']['type'][$rr->type] = array(
         '#type' => 'checkbox',
-        '#default_value' => $checked[$rr->type]
+        '#default_value' => $checked[$rr->type],
       );
       $form['rate']['name'][$rr->type] = array(
         '#type' => 'markup',
@@ -107,7 +113,7 @@ function pg_roboxchange_settings() {
   $form['url'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
-    '#title' => t('Urls(result,success,fail) for merchant interfase')
+    '#title' => t('Urls(result,success,fail) for merchant interfase'),
   );
 
   $form['url']['result'] = array(
