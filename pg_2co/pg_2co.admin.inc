@@ -1,7 +1,12 @@
 <?php
-/********************************************************************
- * Functions callback
- ********************************************************************/
+/**
+ * @file
+ * Admin settings pg_2co.module.
+ */
+
+/**
+ * Page with settings module.
+ */
 function pg_2co_settings() {
   $form['pg_2co_action_url'] = array(
     '#type' => 'textfield',
@@ -49,7 +54,6 @@ function pg_2co_settings() {
     '#description' => t("Please enter 2co rate according to site currency."),
   );
 
-
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
@@ -58,12 +62,18 @@ function pg_2co_settings() {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_validate().
+ */
 function pg_2co_settings_validate($form, &$form_state) {
   if ($form_state['values']['pg_2co_rate'] <= 0) {
     form_set_error('pg_2co_rate', t('%rate must be more 0.', array('%rate' => $form_state['values']['pg_2co_rate'])));
   }
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_2co_settings_submit($form, &$form_state) {
   if (isset($form_state['values']['pg_2co_action_url'])) {
     variable_set('pg_2co_action_url', $form_state['values']['pg_2co_action_url']);
@@ -88,11 +98,14 @@ function pg_2co_settings_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Processing a new payment.
+ */
 function pg_2co_done_payment() {
   $handle = fopen('/tmp/paypal.txt', 'a');
-  $C = "First";
-  $C .= print_r($_POST, TRUE);
-  fwrite($handle, $C);
+  $c = "First";
+  $c .= print_r($_POST, TRUE);
+  fwrite($handle, $c);
   fclose($handle);
 
   $txnid = $_POST['item_number'];
@@ -103,22 +116,27 @@ function pg_2co_done_payment() {
   $headers = array(
     'Content-Type' => 'application/x-www-form-urlencoded',
   );
+
   $ipn = $_POST;
   $post = array(
     'cmd' => '_notify-validate',
   );
   $post += $ipn;
 
-  $request = drupal_http_request(variable_get('pg_2co_validation_url', cPaypalValidationUrl), $headers, 'POST', _query_string_encode($post, array('q')));
+  $request = drupal_http_request(variable_get('pg_2co_validation_url', cPaypalValidationUrl), array(
+    'headers' => $headers,
+    'method' => 'POST',
+    'data' => pg_2co_query_string_encode($post, array('q')),
+  ));
 
   $description = t('Payment has been received.');
   $status = "completed";
 
   if ($request->data != 'VERIFIED') {
     $handle = fopen('/tmp/paypal.txt', 'a');
-    $C = "Answer";
-    $C .= print_r($request, TRUE);
-    fwrite($handle, $C);
+    $c = "Answer";
+    $c .= print_r($request, TRUE);
+    fwrite($handle, $c);
     fclose($handle);
     $status = 'denied';
   }
@@ -147,13 +165,22 @@ function pg_2co_done_payment() {
   $t->description = $description;
   $t->status = pgapi_get_status_id($status);
   pgapi_transaction_save($t);
-
 }
 
-/********************************************************************
- * Other Functions
- ********************************************************************/
-function _query_string_encode($query, $exclude = array(), $parent = '') {
+/**
+ * Convert string
+ *
+ * @param string $query
+ *   String
+ * @param array $exclude
+ *   Query params.
+ * @param string $parent
+ *   String before all keys.
+ *
+ * @return string
+ *   New string.
+ */
+function pg_2co_query_string_encode($query, $exclude = array(), $parent = '') {
   $params = array();
 
   foreach ($query as $key => $value) {
@@ -167,7 +194,7 @@ function _query_string_encode($query, $exclude = array(), $parent = '') {
     }
 
     if (is_array($value)) {
-      $params[] = _query_string_encode($value, $exclude, $key);
+      $params[] = pg_2co_query_string_encode($value, $exclude, $key);
     }
     else {
       $params[] = $key . '=' . urlencode($value);
