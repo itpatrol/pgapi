@@ -79,6 +79,7 @@ function pg_2co_extraform($form_state, $t) {
 }
 
 function pg_2co_process_form($form_result, $t) {
+  $form_state = array();
   $output = drupal_get_form('pg_2co_payform', $form_state, $t);
   //$output = str_ireplace('accept-charset="UTF-8"','accept-charset="cp1251"',$output);
   $t->method = '2co';
@@ -89,8 +90,6 @@ function pg_2co_process_form($form_result, $t) {
 }
 
 function pg_2co_payform($form_state, $post, $t) {
-  global $user;
-
   $form['sid'] = array(
     '#type' => 'hidden',
     '#default_value' => variable_get('pg_2co_sid', ''),
