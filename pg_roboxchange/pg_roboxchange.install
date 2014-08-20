@@ -25,9 +25,25 @@ function pg_roboxchange_schema() {
   $schema['pg_roboxchange_rates'] = array(
     'description' => 'Stores roboxchange rates information.',
     'fields' => array(
-      'type'       => array('type' => 'varchar', 'length' =>  64, 'not null' => TRUE, 'default' => ''),
-      'name'       => array('type' => 'varchar', 'length' =>  64, 'not null' => TRUE, 'default' => ''),
-      'rate'       => array('type' => 'numeric', 'size' => 'normal', 'precision' => 12, 'scale' => 6, 'default' => 0),
+      'type' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'rate' => array(
+        'type' => 'numeric',
+        'size' => 'normal',
+        'precision' => 12,
+        'scale' => 6,
+        'default' => 0
+      ),
     ),
     'primary key' => array('type'),
   );
