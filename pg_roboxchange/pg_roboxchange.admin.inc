@@ -122,6 +122,7 @@ function pg_roboxchange_settings() {
     '#value' => url('roboxchange/success', array('absolute' => TRUE)),
     '#description' => t("Just for copy."),
   );
+
   $form['url']['fail'] = array(
     '#type' => 'textfield',
     '#title' => t('Fail url'),
@@ -214,11 +215,12 @@ function pg_roboxchange_done_payment() {
     fclose($fp);
     echo $answer;
   }
+
   drupal_exit();
 }
 
 function pg_roboxchange_payment_end() {
-  $txnid = $_POST['inv_id'];
+  $txnid = (int) $_POST['inv_id'];
   $t = pgapi_transaction_load($txnid);
   $goto = pgapi_get_redirect_url($t);
   drupal_goto($goto);
