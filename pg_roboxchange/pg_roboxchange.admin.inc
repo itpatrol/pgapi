@@ -1,8 +1,8 @@
 <?php
 
-/********************************************************************
- * Functions callback
- ********************************************************************/
+/**
+ * Roboxchange settings page.
+ */
 function pg_roboxchange_settings() {
   if (FALSE === @include('XML/Unserializer.php')) {
     drupal_set_message(t('You have to install !url, otherwise RoboXchange Gateway will not work.', array('!url' => l('XML/Serializer', 'http://pear.php.net/package/XML_Serializer'))), 'error');
@@ -88,6 +88,7 @@ function pg_roboxchange_settings() {
     '#description' => t("Please enter Merchant Login."),
     '#required' => TRUE,
   );
+
   $form['pg_roboxchange_mps2'] = array(
     '#type' => 'textfield',
     '#title' => t('Merchant Pass 2'),
@@ -138,12 +139,18 @@ function pg_roboxchange_settings() {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_validate().
+ */
 function pg_roboxchange_settings_validate($form, &$form_state) {
   if ($form_state['values']['pg_roboxchange_rate'] <= 0) {
     form_set_error('pg_roboxchange_rate', t('%rate must be more 0.', array('%rate' => $form_state['values']['pg_roboxchange_rate'])));
   }
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_roboxchange_settings_submit($form, &$form_state) {
   if (isset($form_state['values']['pg_roboxchange_action_url'])) {
     variable_set('pg_roboxchange_action_url', $form_state['values']['pg_roboxchange_action_url']);
@@ -174,6 +181,9 @@ function pg_roboxchange_settings_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Processing a new payment.
+ */
 function pg_roboxchange_done_payment() {
   $txnid = $_POST['InvId'];
   $amount = $_POST['OutSum'];

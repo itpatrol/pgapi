@@ -15,7 +15,7 @@ define("XML_SERIALIZER_URL", "http://pear.php.net/package/XML_Serializer/");
 
 
 /**
- * Implementation of hook_theme()
+ * Implements hook_theme().
  */
 function pg_roboxchange_theme() {
   return array(
@@ -26,7 +26,7 @@ function pg_roboxchange_theme() {
 }
 
 /**
- * Implementation of hook_menu()
+ * Implements hook_menu().
  */
 function pg_roboxchange_menu() {
   $items['roboxchange/done'] = array(
@@ -67,7 +67,7 @@ function pg_roboxchange_menu() {
 }
 
 /**
- * Implementation of hook_cron()
+ * Implements hook_cron().
  */
 function pg_roboxchange_cron() {
   require_once('XML/Unserializer.php');
