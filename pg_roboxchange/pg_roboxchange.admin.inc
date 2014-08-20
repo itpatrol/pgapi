@@ -207,11 +207,10 @@ function pg_roboxchange_done_payment() {
     fclose($fp);
     echo $answer;
   }
-  exit();
+  drupal_exit();
 }
 
-function pg_roboxchange_payment_end($type) {
-  global $user;
+function pg_roboxchange_payment_end() {
   $txnid = $_POST['inv_id'];
   $t = pgapi_transaction_load($txnid);
   $goto = pgapi_get_redirect_url($t);
