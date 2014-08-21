@@ -144,7 +144,7 @@ function pg_webmoney_edit($form, &$form_state, $wmtype) {
 
   $form['type'] = array(
     '#type' => 'value',
-    '#value' => $wmtype
+    '#value' => $wmtype,
   );
 
   $form['purse'] = array(
