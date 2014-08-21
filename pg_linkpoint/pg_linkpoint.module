@@ -203,7 +203,7 @@ function pg_linkpoint_process_form($form_result, $t) {
   curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_SSLCERT, $file->filepath);
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   $buffer = curl_exec($ch);
 
   if ($error = curl_error($ch)) {
