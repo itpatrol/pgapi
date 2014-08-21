@@ -224,7 +224,6 @@ function pg_linkpoint_process_form($form_result, $t) {
     $n++;
   }
 
-  $response = split('\,', $buffer);
   $x_response_code = $retarr['r_approved'];
   $x_response_text = $retarr['r_error'];
   $x_approval_code = $retarr['r_code'];
