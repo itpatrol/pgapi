@@ -45,7 +45,7 @@ function pg_paypal_settings($form, $form_state) {
     'PLN' => 'PLN - Polish Zloty',
     'NOK' => 'NOK - Norwegian Krone',
     'HUF' => 'HUF - Hungarian Forint',
-    'CZK' => 'CZK - Czech Koruna'
+    'CZK' => 'CZK - Czech Koruna',
   );
 
   $form['pg_paypal_currency_code'] = array(
