@@ -100,7 +100,7 @@ function pg_webmoney_list() {
           'href' => 'admin/config/pgapi/gateway_settings/webmoney/example/' . $template->purse,
           'title' => t('example'),
         ),
-      )
+      ),
     ));
   }
 
