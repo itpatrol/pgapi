@@ -74,7 +74,7 @@ function pg_linkpoint_extraform() {
 
   $form['cc']['cart_owner'] = array(
     '#type' => 'textfield',
-    '#title' => t('Card Owner')
+    '#title' => t('Card Owner'),
   );
 
   $form['cc']['cart_number'] = array(
@@ -100,7 +100,7 @@ function pg_linkpoint_extraform() {
   $form['cc']['exp_month'] = array(
     '#type' => 'select',
     '#title' => t('Expiration Month'),
-    '#options' => $options
+    '#options' => $options,
   );
 
   $options = array(
