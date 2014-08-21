@@ -122,12 +122,16 @@ function pg_webmoney_list_submit($form, &$form_state) {
 
   foreach ($form_state['values']['check'] as $key => $val) {
     if ($key === $val) {
-      db_query("DELETE FROM {pg_webmoney_rates} WHERE type = '%s'", $val);
+      db_delete('pg_webmoney_rates')
+        ->condition('type', $val)
+        ->execute();
       $wmtype .= ' ' . $val;
     }
   }
 
-  drupal_set_message(t('Your wallet types %wmtype has been deleted.', array('%wmtype' => $wmtype)));
+  drupal_set_message(t('Your wallet types %wmtype has been deleted.', array(
+    '%wmtype' => $wmtype,
+  )));
   pg_webmoney_cron();
 }
 
