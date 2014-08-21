@@ -138,61 +138,61 @@ function pg_linkpoint_process_form($form_result, $t) {
   $xml = "<order>";
 
   $xml .= "<billing>";
-  $xml .= "<name>" . $t->extra['billing_addr']['first_name'] . " " . $t->extra['billing_addr']['last_name'] . "</name>" . "\n";
-  $xml .= "<company>" . $t->extra['billing_addr']['company'] . "</company>" . "\n";
-  $xml .= "<address1>" . $t->extra['billing_addr']['address'] . "</address1>" . "\n";
-  $xml .= "<address2></address2>" . "\n";
-  $xml .= "<addrnum>" . $t->extra['billing_addr']['address'] . "</addrnum>" . "\n";
-  $xml .= "<city>" . $t->extra['billing_addr']['city'] . "</city>" . "\n";
-  $xml .= "<state>" . $t->extra['billing_addr']['state'] . "</state>" . "\n";
-  $xml .= "<zip>" . $t->extra['billing_addr']['postal_code'] . "</zip>" . "\n";
-  $xml .= "<country>" . $t->extra['billing_addr']['country'] . "</country>" . "\n";
-  $xml .= "<phone>" . $t->extra['billing_addr']['phone'] . "</phone>" . "\n";
-  $xml .= "<email>" . $t->email . "</email>" . "\n";
-  $xml .= "</billing>" . "\n";
+  $xml .= "<name>" . $t->extra['billing_addr']['first_name'] . " " . $t->extra['billing_addr']['last_name'] . "</name>\n";
+  $xml .= "<company>" . $t->extra['billing_addr']['company'] . "</company>\n";
+  $xml .= "<address1>" . $t->extra['billing_addr']['address'] . "</address1>\n";
+  $xml .= "<address2></address2>\n";
+  $xml .= "<addrnum>" . $t->extra['billing_addr']['address'] . "</addrnum>\n";
+  $xml .= "<city>" . $t->extra['billing_addr']['city'] . "</city>\n";
+  $xml .= "<state>" . $t->extra['billing_addr']['state'] . "</state>\n";
+  $xml .= "<zip>" . $t->extra['billing_addr']['postal_code'] . "</zip>\n";
+  $xml .= "<country>" . $t->extra['billing_addr']['country'] . "</country>\n";
+  $xml .= "<phone>" . $t->extra['billing_addr']['phone'] . "</phone>\n";
+  $xml .= "<email>" . $t->email . "</email>\n";
+  $xml .= "</billing>\n";
 
-  $xml .= "<shipping>" . "\n";
-  $xml .= "<name>" . $t->extra['shipping_addr']['first_name'] . " " . $t->extra['shipping_addr']['last_name'] . "</name>" . "\n";
-  $xml .= "<address1>" . $t->extra['shipping_addr']['address'] . "</address1>" . "\n";
-  $xml .= "<address2></address2>" . "\n";
-  $xml .= "<city>" . $t->extra['shipping_addr']['city'] . "</city>" . "\n";
-  $xml .= "<state>" . $t->extra['shipping_addr']['state'] . "</state>" . "\n";
-  $xml .= "<zip>" . $t->extra['shipping_addr']['postal_code'] . "</zip>" . "\n";
-  $xml .= "<country>" . $t->extra['shipping_addr']['country'] . "</country>" . "\n";
-  $xml .= "</shipping>" . "\n";
+  $xml .= "<shipping>\n";
+  $xml .= "<name>" . $t->extra['shipping_addr']['first_name'] . " " . $t->extra['shipping_addr']['last_name'] . "</name>\n";
+  $xml .= "<address1>" . $t->extra['shipping_addr']['address'] . "</address1>\n";
+  $xml .= "<address2></address2>\n";
+  $xml .= "<city>" . $t->extra['shipping_addr']['city'] . "</city>\n";
+  $xml .= "<state>" . $t->extra['shipping_addr']['state'] . "</state>\n";
+  $xml .= "<zip>" . $t->extra['shipping_addr']['postal_code'] . "</zip>\n";
+  $xml .= "<country>" . $t->extra['shipping_addr']['country'] . "</country>\n";
+  $xml .= "</shipping>\n";
 
-  $xml .= "<orderoptions>" . "\n";
-  $xml .= "<result>" . variable_get('pg_linkpoint_transaction_mode', '') . "</result>" . "\n";
-  $xml .= "<ordertype>" . variable_get('pg_linkpoint_transaction_method', '') . "</ordertype>" . "\n";
-  $xml .= "</orderoptions>" . "\n";
+  $xml .= "<orderoptions>\n";
+  $xml .= "<result>" . variable_get('pg_linkpoint_transaction_mode', '') . "</result>\n";
+  $xml .= "<ordertype>" . variable_get('pg_linkpoint_transaction_method', '') . "</ordertype>\n";
+  $xml .= "</orderoptions>\n";
 
-  $xml .= "<merchantinfo>" . "\n";
-  $xml .= "<configfile>" . variable_get('pg_linkpoint_login_id', '') . "</configfile>" . "\n";
-  $xml .= "</merchantinfo>" . "\n";
+  $xml .= "<merchantinfo>\n";
+  $xml .= "<configfile>" . variable_get('pg_linkpoint_login_id', '') . "</configfile>\n";
+  $xml .= "</merchantinfo>\n";
 
-  $xml .= "<creditcard>" . "\n";
-  $xml .= "<cardnumber>" . $form_result['cc']['cart_number'] . "</cardnumber>" . "\n";
-  $xml .= "<cardexpmonth>" . $form_result['cc']['exp_month'] . "</cardexpmonth>" . "\n";
-  $xml .= "<cardexpyear>" . $form_result['cc']['exp_year'] . "</cardexpyear> " . "\n";
-  $xml .= "<cvmvalue>" . $form_result['cc']['cvv'] . "</cvmvalue>" . "\n";
-  $xml .= "<cvmindicator>provided</cvmindicator>" . "\n";
-  $xml .= "</creditcard>" . "\n";
+  $xml .= "<creditcard>\n";
+  $xml .= "<cardnumber>" . $form_result['cc']['cart_number'] . "</cardnumber>\n";
+  $xml .= "<cardexpmonth>" . $form_result['cc']['exp_month'] . "</cardexpmonth>\n";
+  $xml .= "<cardexpyear>" . $form_result['cc']['exp_year'] . "</cardexpyear>\n";
+  $xml .= "<cvmvalue>" . $form_result['cc']['cvv'] . "</cvmvalue>\n";
+  $xml .= "<cvmindicator>provided</cvmindicator>\n";
+  $xml .= "</creditcard>\n";
 
-  $xml .= "<payment>" . "\n";
-  $xml .= "<chargetotal>" . $amount . "</chargetotal>" . "\n";
-  $xml .= "</payment>" . "\n";
+  $xml .= "<payment>\n";
+  $xml .= "<chargetotal>" . $amount . "</chargetotal>\n";
+  $xml .= "</payment>\n";
 
-  $xml .= "<transactiondetails>" . "\n";
-  $xml .= "<transactionorigin>ECI</transactionorigin>" . "\n";
-  $xml .= "<oid>" . $t->txnid . "</oid>" . "\n";
-  $xml .= "<ip>" . ip_address() . "</ip>" . "\n";
-  $xml .= "</transactiondetails>" . "\n";
+  $xml .= "<transactiondetails>\n";
+  $xml .= "<transactionorigin>ECI</transactionorigin>\n";
+  $xml .= "<oid>" . $t->txnid . "</oid>\n";
+  $xml .= "<ip>" . ip_address() . "</ip>\n";
+  $xml .= "</transactiondetails>\n";
 
-  $xml .= "<notes>" . "\n";
-  $xml .= "<comments>" . t('Buying ticket(s) from Umatax') . "</comments>" . "\n";
-  $xml .= "</notes>" . "\n";
+  $xml .= "<notes>\n";
+  $xml .= "<comments>" . t('Buying ticket(s) from Umatax') . "</comments>\n";
+  $xml .= "</notes>\n";
 
-  $xml .= "</order>" . "\n";
+  $xml .= "</order>\n";
 
   $fid = variable_get('pg_linkpoint_transaction_key_fid', '');
   $file = db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = '%d'", $fid));
