@@ -94,7 +94,6 @@ function pg_paypal_submit($form, $form_state) {
 }
 
 function pg_paypal_payform($form, $form_state) {
-  global $user;
   global $language;
 
   $values = $form_state['values'];
