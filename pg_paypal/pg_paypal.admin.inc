@@ -11,15 +11,15 @@ function pg_paypal_settings($form, $form_state) {
   $form['pg_paypal_action_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Action url'),
-    '#default_value' => variable_get('pg_paypal_action_url', cPaypalActionUrl),
-    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => cPaypalActionUrl)),
+    '#default_value' => variable_get('pg_paypal_action_url', PG_PAYPAL_ACTION_URL),
+    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => PG_PAYPAL_ACTION_URL)),
   );
 
   $form['pg_paypal_validation_url'] = array(
     '#type' => 'textfield',
     '#title' => t('PayPal IPN "request back" validation URL'),
-    '#default_value' => variable_get('pg_paypal_validation_url', cPaypalValidationUrl),
-    '#description' => t("URL where IPN 'request back' is posted to validate the transaction.\nDefault: !url", array('!url' => cPaypalValidationUrl)),
+    '#default_value' => variable_get('pg_paypal_validation_url', PG_PAYPAL_VALIDATION_URL),
+    '#description' => t("URL where IPN 'request back' is posted to validate the transaction.\nDefault: !url", array('!url' => PG_PAYPAL_VALIDATION_URL)),
   );
 
   $form['pg_paypal_email'] = array(
@@ -123,7 +123,7 @@ function pg_paypal_done_payment() {
   );
   $post += $ipn;
 
-  $request = drupal_http_request(variable_get('pg_paypal_validation_url', cPaypalValidationUrl), $headers, 'POST', _query_string_encode($post, array('q')));
+  $request = drupal_http_request(variable_get('pg_paypal_validation_url', PG_PAYPAL_VALIDATION_URL), $headers, 'POST', _query_string_encode($post, array('q')));
 
   $description = t('Payment has been received.');
   $status = "completed";

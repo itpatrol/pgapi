@@ -9,8 +9,8 @@
 /**
  * Constants.
  */
-define("cPaypalActionUrl", "https://www.paypal.com/xclick/");
-define("cPaypalValidationUrl", "https://www.paypal.com/cgi-bin/webscr");
+define("PG_PAYPAL_ACTION_URL", 'https://www.paypal.com/xclick/');
+define("PG_PAYPAL_VALIDATION_URL", 'https://www.paypal.com/cgi-bin/webscr');
 
 /**
  * Implements hook_menu().
@@ -159,7 +159,7 @@ function pg_paypal_payform($form, $form_state) {
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = variable_get('pg_paypal_action_url', cPaypalActionUrl);
+  $form['#action'] = variable_get('pg_paypal_action_url', PG_PAYPAL_ACTION_URL);
 
   return $form;
 }
