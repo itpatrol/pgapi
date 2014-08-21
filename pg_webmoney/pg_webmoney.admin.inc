@@ -70,7 +70,7 @@ function pg_webmoney_list() {
     'purse' => array(
       'data' => t('Purse'),
       'field' => 'purse',
-      'sort' => 'desc'
+      'sort' => 'desc',
     ),
     'secret_key' => array('data' => t('Secret Key'), 'field' => 'secret_key'),
     'rate' => array('data' => t('Rate'), 'field' => 'rate'),
