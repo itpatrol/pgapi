@@ -121,7 +121,6 @@ function pg_paypal_done_payment() {
     $c .= print_r($request, TRUE);
     fwrite($handle, $c);
     fclose($handle);
-    $res = t('Verification has been failed');
     $status = 'denied';
   }
 
