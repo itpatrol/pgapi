@@ -185,7 +185,7 @@ function pg_linkpoint_process_form($form_result, $t) {
   $xml .= "<transactiondetails>" . "\n";
   $xml .= "<transactionorigin>ECI</transactionorigin>" . "\n";
   $xml .= "<oid>" . $t->txnid . "</oid>" . "\n";
-  $xml .= "<ip>" . $_SERVER['REMOTE_ADDR'] . "</ip>" . "\n";
+  $xml .= "<ip>" . ip_address() . "</ip>" . "\n";
   $xml .= "</transactiondetails>" . "\n";
 
   $xml .= "<notes>" . "\n";
