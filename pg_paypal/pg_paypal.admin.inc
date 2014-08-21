@@ -123,7 +123,11 @@ function pg_paypal_done_payment() {
   );
   $post += $ipn;
 
-  $request = drupal_http_request(variable_get('pg_paypal_validation_url', PG_PAYPAL_VALIDATION_URL), $headers, 'POST', _query_string_encode($post, array('q')));
+  $request = drupal_http_request(variable_get('pg_paypal_validation_url', PG_PAYPAL_VALIDATION_URL), array(
+    'headers' => $headers,
+    'method' => 'POST',
+    'data' => pg_paypal_query_string_encode($post, array('q')),
+  ));
 
   $description = t('Payment has been received.');
   $status = "completed";
@@ -163,7 +167,7 @@ function pg_paypal_done_payment() {
   pgapi_transaction_save($t);
 }
 
-function _query_string_encode($query, $exclude = array(), $parent = '') {
+function pg_paypal_query_string_encode($query, $exclude = array(), $parent = '') {
   $params = array();
 
   foreach ($query as $key => $value) {
@@ -177,7 +181,7 @@ function _query_string_encode($query, $exclude = array(), $parent = '') {
     }
 
     if (is_array($value)) {
-      $params[] = _query_string_encode($value, $exclude, $key);
+      $params[] = pg_paypal_query_string_encode($value, $exclude, $key);
     }
     else {
       $params[] = $key . '=' . urlencode($value);
