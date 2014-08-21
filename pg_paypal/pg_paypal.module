@@ -63,7 +63,6 @@ function pg_paypal_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
         'element' => pg_webmoney_get_markup($t),
         'submit' => 'pg_paypal_submit',
       );
-      break;
   }
 
   return $ret;
