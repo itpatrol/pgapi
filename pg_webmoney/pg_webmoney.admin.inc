@@ -9,16 +9,16 @@ function pg_webmoney_done_payment() {
   $txnid = $_POST['LMI_PAYMENT_NO'];
   $purse = $_POST['LMI_PAYEE_PURSE'];
   $price = $_POST['LMI_PAYMENT_AMOUNT'];
-  $LMI_MODE = $_POST['LMI_MODE'];
-  $LMI_SYS_INVS_NO = $_POST['LMI_SYS_INVS_NO'];
-  $LMI_SYS_TRANS_NO = $_POST['LMI_SYS_TRANS_NO'];
-  $LMI_SYS_TRANS_DATE = $_POST['LMI_SYS_TRANS_DATE'];
-  $LMI_SECRET_KEY = $_POST['LMI_SECRET_KEY'];
-  $LMI_PAYER_PURSE = $_POST['LMI_PAYER_PURSE'];
-  $LMI_PAYER_WM = $_POST['LMI_PAYER_WM'];
+  $lmi_mode = $_POST['LMI_MODE'];
+  $lmi_sys_invs_no = $_POST['LMI_SYS_INVS_NO'];
+  $lmi_sys_trans_no = $_POST['LMI_SYS_TRANS_NO'];
+  $lmi_sys_trans_date = $_POST['LMI_SYS_TRANS_DATE'];
+  $lmi_secret_key = $_POST['LMI_SECRET_KEY'];
+  $lmi_payer_purse = $_POST['LMI_PAYER_PURSE'];
+  $lmi_payer_wm = $_POST['LMI_PAYER_WM'];
   $prerequest = $_POST['LMI_PREREQUEST'];
   $hash = $_POST['LMI_HASH'];
-  $tocheck = strtoupper(md5($purse . $price . $txnid . $LMI_MODE . $LMI_SYS_INVS_NO . $LMI_SYS_TRANS_NO . $LMI_SYS_TRANS_DATE . $LMI_SECRET_KEY . $LMI_PAYER_PURSE . $LMI_PAYER_WM));
+  $tocheck = strtoupper(md5($purse . $price . $txnid . $lmi_mode . $lmi_sys_invs_no . $lmi_sys_trans_no . $lmi_sys_trans_date . $lmi_secret_key . $lmi_payer_purse . $lmi_payer_wm));
 
   $t = pgapi_transaction_load($txnid);
   $wmtype = 'WM' . substr($purse, 0, 1);
@@ -48,8 +48,8 @@ function pg_webmoney_done_payment() {
   if ($prerequest != 1) {
     if ($res == "YES") {
       $description = t('Payment from WM %WM and Wallet %purse', array(
-        '%WM' => $LMI_PAYER_WM,
-        '%purse' => $LMI_PAYER_PURSE
+        '%WM' => $lmi_payer_wm,
+        '%purse' => $lmi_payer_purse
       ));
       $t->description = $description;
       $t->status = pgapi_get_status_id('completed');
