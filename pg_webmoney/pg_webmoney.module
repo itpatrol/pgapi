@@ -9,8 +9,8 @@
 /**
  * Constants.
  */
-define("cWebMoneyPayActionUrl", "https://merchant.webmoney.ru/lmi/payment.asp");
-define("cWebMoneyRateUrl", "https://wm.exchanger.ru/asp/XMLbestRates.asp");
+define("PG_WEBMONEY_PAY_ACTION_URL", 'https://merchant.webmoney.ru/lmi/payment.asp');
+define("PG_WEBMONEY_RATE_URL", 'https://wm.exchanger.ru/asp/XMLbestRates.asp');
 
 /**
  * Implements hook_menu().
@@ -193,7 +193,7 @@ function pg_webmoney_payform($form, $form_state) {
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = cWebMoneyPayActionUrl;
+  $form['#action'] = PG_WEBMONEY_PAY_ACTION_URL;
 
   return $form;
 }
