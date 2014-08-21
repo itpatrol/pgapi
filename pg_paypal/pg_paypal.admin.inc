@@ -117,9 +117,9 @@ function pg_paypal_done_payment() {
 
   if ($request->data != 'VERIFIED') {
     $handle = fopen('/tmp/paypal.txt', 'a');
-    $C = "Answer";
-    $C .= print_r($request, TRUE);
-    fwrite($handle, $answer);
+    $c = "Answer";
+    $c .= print_r($request, TRUE);
+    fwrite($handle, $c);
     fclose($handle);
     $res = t('Verification has been failed');
     $status = 'denied';
