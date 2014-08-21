@@ -231,7 +231,7 @@ function pg_linkpoint_process_form($form_result, $t) {
   if ($x_response_code != 'APPROVED') {
     $res = t('Credit card declined. Error: !error, code:!code', array(
       '!error' => $x_response_text,
-      '!code' => $x_approval_code
+      '!code' => $x_approval_code,
     ));
     $status = 'denied';
   }
