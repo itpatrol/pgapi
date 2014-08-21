@@ -21,7 +21,7 @@ function pg_paypal_menu() {
     'page callback' => 'pg_paypal_done_payment',
     'access callback' => TRUE,
     'file' => 'pg_paypal.admin.inc',
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
   );
 
   $items['admin/config/pgapi/gateway_settings/paypal'] = array(
@@ -51,7 +51,7 @@ function pg_paypal_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
       $ret['name'] = theme('image', array(
         'path' => drupal_get_path('module', 'pg_paypal') . '/paypal.png',
         'alt' => t('Paypal'),
-        'title' => t('Paypal')
+        'title' => t('Paypal'),
       ));
       $prices[variable_get('pg_paypal_currency_code', 'USD')] = round(($a3 * variable_get('pg_paypal_rate', '1.00')), 2);
       $ret['price'] = $prices;
