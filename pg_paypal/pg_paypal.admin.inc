@@ -1,8 +1,12 @@
 <?php
-// $Id: pg_paypal.admin.inc,v 1.1 2009/11/24 22:06:36 gor Exp $
-/********************************************************************
- * Functions callback
- ********************************************************************/
+/**
+ * @file
+ * Administer pages for pg_paypal.module.
+ */
+
+/**
+ * Setting page.
+ */
 function pg_paypal_settings($form, $form_state) {
   $form['pg_paypal_action_url'] = array(
     '#type' => 'textfield',
@@ -67,12 +71,18 @@ function pg_paypal_settings($form, $form_state) {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_validate().
+ */
 function pg_paypal_settings_validate($form, &$form_state) {
   if ($form_state['values']['pg_paypal_rate'] <= 0) {
     form_set_error('pg_paypal_rate', t('%rate must be more 0.', array('%rate' => $form_state['values']['pg_paypal_rate'])));
   }
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_paypal_settings_submit($form, &$form_state) {
   if (isset($form_state['values']['pg_paypal_action_url'])) {
     variable_set('pg_paypal_action_url', $form_state['values']['pg_paypal_action_url']);
@@ -95,6 +105,9 @@ function pg_paypal_settings_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Finished payment.
+ */
 function pg_paypal_done_payment() {
   $txnid = $_POST['item_number'];
   $payment_amount = check_plain($_POST['mc_gross']);
@@ -150,9 +163,6 @@ function pg_paypal_done_payment() {
   pgapi_transaction_save($t);
 }
 
-/********************************************************************
- * Other Functions
- ********************************************************************/
 function _query_string_encode($query, $exclude = array(), $parent = '') {
   $params = array();
 

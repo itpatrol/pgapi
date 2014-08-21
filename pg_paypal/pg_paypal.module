@@ -1,19 +1,19 @@
 <?php
-
-/*
- * Constants
+/**
+ * @file
+ * Paypal.
+ *
+ * Paypal payment gateway.
  */
 
+/**
+ * Constants.
+ */
 define("cPaypalActionUrl", "https://www.paypal.com/xclick/");
 define("cPaypalValidationUrl", "https://www.paypal.com/cgi-bin/webscr");
 
-/********************************************************************
- * Drupal Hooks
- ********************************************************************/
-
-
 /**
- * Implemens hook_menu()
+ * Implements hook_menu().
  */
 function pg_paypal_menu() {
   $items['paypal/done'] = array(
@@ -38,8 +38,8 @@ function pg_paypal_menu() {
   return $items;
 }
 
-/*
- * Implements hook_pgapi_gw
+/**
+ * Implements hook_pgapi_gw().
  */
 function pg_paypal_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
@@ -69,6 +69,9 @@ function pg_paypal_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
   return $ret;
 }
 
+/**
+ * Implements hook_pgapi_transaction().
+ */
 function pg_paypal_pgapi_transaction($status, $t) {
   switch ($status) {
     case PG_PENDING:
