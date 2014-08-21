@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Administer pages for pg_webmoney.module.
+ */
 
 function pg_webmoney_done_payment() {
   drupal_set_header('Content-type: text/html; charset=iso-8859-1');
@@ -60,7 +64,6 @@ function pg_webmoney_done_payment() {
 
   echo $res;
 }
-
 
 function pg_webmoney_list() {
   $header = array(

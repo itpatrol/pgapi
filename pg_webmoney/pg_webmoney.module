@@ -1,6 +1,13 @@
 <?php
 /**
- * Constants
+ * @file
+ * Webmoney.
+ *
+ * Webmoney payment gateway.
+ */
+
+/**
+ * Constants.
  */
 define("cWebMoneyPayActionUrl", "https://merchant.webmoney.ru/lmi/payment.asp");
 define("cWebMoneyRateUrl", "https://wm.exchanger.ru/asp/XMLbestRates.asp");

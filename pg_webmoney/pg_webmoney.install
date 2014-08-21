@@ -1,5 +1,10 @@
 <?php
 /**
+ * @file
+ * Installation file for pg_webmoney.module.
+ */
+
+/**
  * Implements hook_schema().
  */
 function pg_webmoney_schema() {
