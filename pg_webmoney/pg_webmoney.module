@@ -97,7 +97,7 @@ function pg_webmoney_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
       $ret['name'] = theme('image', array(
         'path' => drupal_get_path('module', 'pg_webmoney') . '/webmoney.png',
         'alt' => t('Webmoney'),
-        'title' => t('Webmoney')
+        'title' => t('Webmoney'),
       ));
       $result = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
       foreach ($result as $rr) {
