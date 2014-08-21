@@ -99,7 +99,6 @@ function pg_paypal_done_payment() {
   $txnid = $_POST['item_number'];
   $payment_amount = check_plain($_POST['mc_gross']);
   $payment_currency = check_plain($_POST['mc_currency']);
-  $receiver_email = check_plain($_POST['receiver_email']);
   $payer_email = check_plain($_POST['payer_email']);
   $receiver_email = check_plain($_POST['receiver_email']);
 
