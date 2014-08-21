@@ -7,7 +7,7 @@
 /**
  * Constants.
  */
-define("cLinkPointGAPIURL", "https://secure.linkpt.net:1129/LSGSXML");
+define("PG_LINKPOINT_GAPI_URL", 'https://secure.linkpt.net:1129/LSGSXML');
 
 /**
  * Implements hook_menu().
@@ -197,7 +197,7 @@ function pg_linkpoint_process_form($form_result, $t) {
   $fid = variable_get('pg_linkpoint_transaction_key_fid', '');
   $file = db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = '%d'", $fid));
   $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, variable_get('pg_linkpoint_action_url', cLinkPointGAPIURL));
+  curl_setopt($ch, CURLOPT_URL, variable_get('pg_linkpoint_action_url', PG_LINKPOINT_GAPI_URL));
   curl_setopt($ch, CURLOPT_VERBOSE, 0);
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);

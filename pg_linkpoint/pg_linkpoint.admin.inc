@@ -11,8 +11,8 @@ function pg_linkpoint_settings() {
   $form['pg_linkpoint_action_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Action url'),
-    '#default_value' => variable_get('pg_linkpoint_action_url', cLinkPointGAPIURL),
-    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => cLinkPointGAPIURL)),
+    '#default_value' => variable_get('pg_linkpoint_action_url', PG_LINKPOINT_GAPI_URL),
+    '#description' => t("Please enter action url.\nDefault: !url", array('!url' => PG_LINKPOINT_GAPI_URL)),
   );
 
   $form['pg_linkpoint_login_id'] = array(
