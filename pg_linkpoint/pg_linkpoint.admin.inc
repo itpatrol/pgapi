@@ -35,7 +35,7 @@ function pg_linkpoint_settings() {
     $file = db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = '%d'", $fid));
     $form['pg_linkpoint_transaction_key'] = array(
       '#type' => 'markup',
-      '#value' => t('<b>Current file is:</b> !file', array('!file' => $file->filepath))
+      '#value' => t('<b>Current file is:</b> !file', array('!file' => $file->filepath)),
     );
   };
 
