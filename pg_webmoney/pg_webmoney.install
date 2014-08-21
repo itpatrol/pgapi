@@ -3,8 +3,11 @@
  * Implements hook_schema().
  */
 function pg_webmoney_schema() {
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
   $schema['pg_webmoney_rates'] = array(
-    'description' => t('Stores webmoney rates information.'),
+    'description' => $t('Stores webmoney rates information.'),
     'fields' => array(
       'type' => array(
         'type' => 'varchar',
