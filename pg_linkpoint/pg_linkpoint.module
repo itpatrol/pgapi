@@ -121,7 +121,7 @@ function pg_linkpoint_extraform() {
   $form['cc']['exp_year'] = array(
     '#type' => 'select',
     '#title' => t('Expiration Year'),
-    '#options' => $options
+    '#options' => $options,
   );
 
   $form['cc']['cvv'] = array(
