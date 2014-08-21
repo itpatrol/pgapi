@@ -49,7 +49,7 @@ function pg_webmoney_done_payment() {
     if ($res == "YES") {
       $description = t('Payment from WM %WM and Wallet %purse', array(
         '%WM' => $lmi_payer_wm,
-        '%purse' => $lmi_payer_purse
+        '%purse' => $lmi_payer_purse,
       ));
       $t->description = $description;
       $t->status = pgapi_get_status_id('completed');
