@@ -1,8 +1,4 @@
 <?php
-/********************************************************************
- * Functions callback
- ********************************************************************/
-
 
 function pg_webmoney_done_payment() {
   drupal_set_header('Content-type: text/html; charset=iso-8859-1');
@@ -30,7 +26,9 @@ function pg_webmoney_done_payment() {
     $res = $price . ' This number does not match the original price' . $stored_price . ' ' . $txnid;
     $status = 'failed';
   }
+
   $wallet = db_fetch_object(db_query('SELECT * FROM {pg_webmoney_rates} WHERE type="%s" ', $wmtype));
+
   if ($wallet->purse != $purse) {
     $res = $purse . 'Your wallet number does not match the original' . $wallet->purse;
     $status = 'failed';
@@ -60,14 +58,11 @@ function pg_webmoney_done_payment() {
     }
   }
 
-
   echo $res;
-
 }
 
 
 function pg_webmoney_list() {
-
   $header = array(
     'purse' => array(
       'data' => t('Purse'),
@@ -104,9 +99,7 @@ function pg_webmoney_list() {
         ),
       )
     ));
-
   }
-  //while
 
   $form['list'] = array(
     '#type' => 'tableselect',
@@ -124,13 +117,16 @@ function pg_webmoney_list() {
 }
 
 function pg_webmoney_list_submit($form, &$form_state) {
-  print_r($form_state['values']['check']);
+  // @fixme print_r($form_state['values']['check']);
+  $wmtype = '';
+
   foreach ($form_state['values']['check'] as $key => $val) {
     if ($key === $val) {
       db_query("DELETE FROM {pg_webmoney_rates} WHERE type = '%s'", $val);
       $wmtype .= ' ' . $val;
     }
   }
+
   drupal_set_message(t('Your wallet types %wmtype has been deleted.', array('%wmtype' => $wmtype)));
   pg_webmoney_cron();
 }
@@ -138,16 +134,19 @@ function pg_webmoney_list_submit($form, &$form_state) {
 
 function pg_webmoney_edit($form, &$form_state, $wmtype) {
   $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = :type ', array(':type' => $wmtype))->fetchObject();
+
   $form['type'] = array(
     '#type' => 'value',
     '#value' => $wmtype
   );
+
   $form['purse'] = array(
     '#type' => 'textfield',
     '#title' => t('Wallet'),
     '#default_value' => $pursed->purse,
     '#required' => TRUE,
   );
+
   $form['rate'] = array(
     '#type' => 'textfield',
     '#title' => t('Rate'),
@@ -162,6 +161,7 @@ function pg_webmoney_edit($form, &$form_state, $wmtype) {
     '#maxlength' => 64,
     '#description' => t("Please enter secret key. If your leave it blank, secret key will not apply."),
   );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update Wallet'),
@@ -171,7 +171,6 @@ function pg_webmoney_edit($form, &$form_state, $wmtype) {
 }
 
 function pg_webmoney_edit_submit($form, &$form_state) {
-
   if (drupal_write_record('pg_webmoney_rates', $form_state['values'], array('type'))) {
     drupal_set_message(t('Your wallet type %type has been modified.', array('%type' => $form_state['values']['type'])));
   }
@@ -189,6 +188,7 @@ function pg_webmoney_add() {
     '#description' => t("Please, enter Wallet number."),
     '#required' => TRUE,
   );
+
   $form['rate'] = array(
     '#type' => 'textfield',
     '#title' => t('Rate'),
@@ -197,6 +197,7 @@ function pg_webmoney_add() {
     '#description' => t("Please, enter rate to website rate."),
     '#required' => TRUE,
   );
+
   $form['secret_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Secret key'),
@@ -204,6 +205,7 @@ function pg_webmoney_add() {
     '#maxlength' => 64,
     '#description' => t("Please enter secret key. If your leave it blank, secret key will not apply."),
   );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Add Wallet'),
@@ -217,6 +219,7 @@ function pg_webmoney_add_validate($form, &$form_state) {
     $type = substr($form_state['values']['purse'], 0, 1);
     $wmtype = 'WM' . $type;
     $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = :type ', array(':type' => $wmtype))->fetchObject();
+
     if (isset($pursed->type)) {
       form_set_error('purse', t('!type already exists.Please enter another wallet number.', array('!type' => $wmtype)));
     }
@@ -238,9 +241,8 @@ function pg_webmoney_add_submit($form, &$form_state) {
     drupal_set_message(t('Your wallet %wallet has been added.', array('%wallet' => $form_state['values']['purse'])));
   }
 
-//  pg_webmoney_cron();
+  // @fixme pg_webmoney_cron();
   $form_state['redirect'] = 'admin/config/pgapi/gateway_settings/webmoney/list';
-
 }
 
 function pg_webmoney_example($purse = NULL) {
@@ -358,5 +360,6 @@ Send an error notification to merchant\'s keeper:
     '!done' => url('webmoney/done', array('absolute' => TRUE)),
     '!fail' => url('payment/fail/webmoney', array('absolute' => TRUE)),
   ));
+
   return ($output);
 }

@@ -2,7 +2,6 @@
 /**
  * Implements hook_schema().
  */
-
 function pg_webmoney_schema() {
   $schema['pg_webmoney_rates'] = array(
     'description' => t('Stores webmoney rates information.'),
@@ -11,26 +10,26 @@ function pg_webmoney_schema() {
         'type' => 'varchar',
         'length' => 3,
         'not null' => TRUE,
-        'default' => 'WMZ'
+        'default' => 'WMZ',
       ),
       'purse' => array(
         'type' => 'varchar',
         'length' => 13,
         'not null' => TRUE,
-        'default' => ''
+        'default' => '',
       ),
       'secret_key' => array(
         'type' => 'varchar',
         'length' => 64,
         'not null' => TRUE,
-        'default' => ''
+        'default' => '',
       ),
       'rate' => array(
         'type' => 'numeric',
         'size' => 'normal',
         'precision' => 6,
         'scale' => 4,
-        'default' => 0
+        'default' => 0,
       ),
     ),
     'primary key' => array('type'),
