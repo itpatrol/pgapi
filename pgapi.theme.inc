@@ -1,21 +1,19 @@
 <?php
-
 /**
  * @file
- *   Provides theme functions
+ *   Provides theme functions.
  */
 
 /**
- * Theme function for formating price with html
+ * Theme function for formating price with html.
  *
- * @param  $price
- *   Price to format
- * @param  $symbol
- *   Symbol of currency
- * @param bool $position
- *   Position of price and it symbol
+ * @param array $values
+ *   - format Price to format.
+ *   - symbol Symbol of currency.
+ *   - position Position of price and it symbol.
+ *
  * @return string
- *   Formated price
+ *   Formatted price.
  */
 function theme_pgapi_format_price($values) {
   if ($values['position']) {
@@ -24,20 +22,20 @@ function theme_pgapi_format_price($values) {
   else {
     $output = '<div class="price">' . $values['price'] . '<span class="symbol">' . $values['symbol'] . '</span></div>';
   }
+
   return $output;
 }
 
 /**
  * Theme function for formating price without html
  *
- * @param  $price
- *   Price to format
- * @param  $symbol
- *   Symbol of currency
- * @param bool $position
- *   Position of price and it symbol
+ * @param array $values
+ *   - price Price to format.
+ *   - symbol Symbol of currency.
+ *   - position Position of price and it symbol.
+ *
  * @return string
- *   Formated price
+ *   Formatted price.
  */
 function theme_pgapi_format_price_plain($values) {
   if ($values['position']) {
@@ -49,6 +47,9 @@ function theme_pgapi_format_price_plain($values) {
   return $output;
 }
 
+/**
+ * Implements template_preprocess_THEMENAME().
+ */
 function template_preprocess_payment(&$values) {
   $transaction = $values['transaction'];
   $values['image'] = drupal_get_path('module', 'pgapi') . '/payment.png';

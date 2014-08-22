@@ -11,12 +11,14 @@
 function pgapi_admin_menu_block_page() {
   $item = menu_get_item();
   module_load_include('inc', 'system', 'system.admin');
+
   if ($content = system_admin_menu_block($item)) {
     $output = theme('admin_block_content', array('content' => $content));
   }
   else {
     $output = t('You do not have any administrative items.');
   }
+
   return $output;
 }
 
@@ -25,8 +27,8 @@ function pgapi_admin_menu_block_page() {
  */
 
 function pgapi_admin_currency_settings($form, &$form_state) {
-
   $pgapi_currency = variable_get('pgapi_currency', array());
+
   $form['currency'] = array(
     '#tree' => TRUE,
   );
@@ -38,7 +40,6 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#description' => t("Please enter symbol of the Account Balance currency."),
     '#required' => TRUE,
   );
-
 
   $form['currency']['decimal_places'] = array(
     '#type' => 'textfield',
@@ -72,6 +73,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#description' => t("Please select symbol position."),
     '#required' => TRUE,
   );
+
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type' => 'submit',
@@ -97,7 +99,6 @@ function pgapi_admin_currency_settings_submit($form, &$form_state) {
  * Form-builder for PGAPI gateway settings.
  */
 function pgapi_admin_gateway_settings($form, &$form_state) {
-
   $pgapi_gw = pgapi_get_enabled_payment_systems();
   $gateways = pgapi_get_gateway_options();
 
@@ -133,4 +134,3 @@ function pgapi_admin_gateway_settings_submit($form, &$form_state) {
 
   drupal_set_message(t('Status of payment gateway has been updated.'));
 }
-
