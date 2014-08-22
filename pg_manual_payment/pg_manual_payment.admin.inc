@@ -23,7 +23,7 @@ function pg_manual_payment_list() {
 
   $form['check'] = array(
     '#type' => 'checkboxes',
-    '#options' => $purses
+    '#options' => $purses,
   );
 
   $form['submit'] = array(
@@ -55,7 +55,7 @@ function pg_manual_payment_edit(&$form_state, $paid) {
 
   $form['paid'] = array(
     '#type' => 'value',
-    '#value' => $paid
+    '#value' => $paid,
   );
 
   $form['name'] = array(
