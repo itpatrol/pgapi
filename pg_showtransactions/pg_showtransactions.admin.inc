@@ -163,7 +163,7 @@ function pg_showtransactions_history() {
 
   $form = formfilterapi_get_form('pg_showtransactions_history');
   $output = drupal_render($form);
-  $output .= '<br>';
+  $output .= '<br />';
   $output .= $pager_count_show;
   $output .= '<div width=99% style="overflow-x: auto; ">';
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
