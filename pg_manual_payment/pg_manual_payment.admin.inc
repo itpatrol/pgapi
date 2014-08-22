@@ -158,6 +158,9 @@ function pg_manual_payment_add_submit($form, &$form_state) {
   drupal_set_message(t('Your Account %name has been added.', array('%name' => $form_state['values']['name'])));
 }
 
+/**
+ * Page settings module.
+ */
 function pg_manual_payment_settings() {
   $form['pg_manual_payment_email'] = array(
     '#type' => 'textfield',
