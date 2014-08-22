@@ -143,7 +143,7 @@ function pg_showtransactions_history() {
       array(
         'data' => t('No data available.'),
         'colspan' => '10',
-      )
+      ),
     );
   }
 
