@@ -1,7 +1,6 @@
 <?php
 
 function pg_showtransactions_edit($form, &$form_state, $t) {
-
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
@@ -45,6 +44,7 @@ function pg_showtransactions_edit($form, &$form_state, $t) {
     '#type' => 'value',
     '#value' => $t->txnid,
   );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -62,14 +62,13 @@ function pg_showtransactions_edit_submit($form, &$form_state) {
   $t->email = $form_state['values']['email'];
   $t->title = $form_state['values']['title'];
   $t->description = $form_state['values']['description'];
+
   pgapi_transaction_save($t);
 }
 
 
 function pg_showtransactions_history() {
-
   drupal_add_css(drupal_get_path('module', 'pg_showtransactions') . '/pg_showtransactions.css');
-
 
   $header = array(
     'txnid' => array(
@@ -99,9 +98,7 @@ function pg_showtransactions_history() {
 
   $transactions = $query->execute()->fetchAll();
 
-
   foreach ($transactions as $txn) {
-
     $action = array(
       array(
         'href' => "admin/reports/showtransactions/edit/" . $txn->txnid,
@@ -109,11 +106,12 @@ function pg_showtransactions_history() {
         'query' => drupal_get_destination()
       ),
     );
-    $account = user_load($txn->uid);
+
     $operation = 'sub';
     if ($txn->amount > 0) {
       $operation = 'add';
     }
+
     $class = array(
       $operation,
       'status-' . $txn->status,
@@ -139,7 +137,7 @@ function pg_showtransactions_history() {
       'class' => $class,
     );
   }
-  //while
+
   if (empty($rows)) {
     $rows[] = array(
       array(
@@ -148,6 +146,7 @@ function pg_showtransactions_history() {
       )
     );
   }
+
   $pagerCountShow = theme('altpager');
 
   $form = formfilterapi_get_form('pg_showtransactions_history');
@@ -159,9 +158,7 @@ function pg_showtransactions_history() {
   $output .= "</div>";
   $output .= $pagerCountShow;
 
-
   return $output;
-
 }
 
 
@@ -200,11 +197,11 @@ function pg_showtransactions_operator_history() {
       $action
     );
   }
-  //while
+
   $filter_form = drupal_get_form('pg_showtransactions_filter_form', 'history_filter');
   $output = theme('pg_showtransactions_operator_history', $rows, $filter_form);
-  return $output;
 
+  return $output;
 }
 
 function pg_showtransactions_personal_history() {
@@ -224,12 +221,14 @@ function pg_showtransactions_personal_history() {
     array('data' => t('changed'), 'field' => 't.changed'),
     t('Operations')
   );
+
   if (empty($filters['where'])) {
     $filters['where'] = "WHERE t.uid='" . $user->uid . "'";
   }
   else {
     $filters['where'] .= " AND t.uid='" . $user->uid . "'";
   }
+
   $sql = 'SELECT t.* FROM {pgapi_transaction} t ' . $filters['join'] . ' ' . $filters['where'] . tablesort_sql($header);
   $result = pager_query($sql, variable_get('pg_showtransactions_' . $user->uid . '_num', 10), 0, NULL, $filters['args']);
 
@@ -242,7 +241,7 @@ function pg_showtransactions_personal_history() {
     }
 
     $rows[] = array(
-      //'<input type="checkbox" name="items['.$txn->txnid.']">',
+      // '<input type="checkbox" name="items['.$txn->txnid.']">',
       $txn->txnid,
       $txn->title,
       $txn->amount,
@@ -252,11 +251,9 @@ function pg_showtransactions_personal_history() {
       $action
     );
   }
-  //while
-  $filter_form = drupal_get_form('pg_showtransactions_filter_form', 'personal_history_filter');
-  $output .= theme('pg_showtransactions_personal_history', $rows, $filter_form);
-  return $output;
 
+  $filter_form = drupal_get_form('pg_showtransactions_filter_form', 'personal_history_filter');
+  return theme('pg_showtransactions_personal_history', $rows, $filter_form);
 }
 
 function pg_showtransactions_filter_form($form_state, $sess) {
@@ -292,12 +289,14 @@ function pg_showtransactions_filter_form($form_state, $sess) {
         '%value' => $options[$value]
       );
     }
+
     if ($i++ > 0) {
       $form['filters']['current'][] = array('#value' => t('<em>and</em> where <strong>%property</strong> - <strong>%value</strong>', $params));
     }
     else {
       $form['filters']['current'][] = array('#value' => t('<strong>%property</strong> - <strong>%value</strong>', $params));
     }
+
     unset($filters[$type]);
   }
 
@@ -313,7 +312,7 @@ function pg_showtransactions_filter_form($form_state, $sess) {
       $form['filters']['status'][$key] = array(
         '#type' => 'select',
         '#options' => $filter['options'],
-//        '#attributes' => array()
+        // '#attributes' => array()
       );
     }
   }
@@ -322,10 +321,12 @@ function pg_showtransactions_filter_form($form_state, $sess) {
     '#type' => 'radios',
     '#options' => $names,
   );
+
   $form['filters']['buttons']['submit'] = array(
     '#type' => 'submit',
     '#value' => (count($session) ? t('Refine') : t('Filter'))
   );
+
   if (count($session)) {
     $form['filters']['buttons']['undo'] = array(
       '#type' => 'submit',
@@ -363,28 +364,26 @@ function pg_showtransactions_filter_form_submit($form, &$form_state) {
         }
       }
       break;
+
     case t('Undo'):
       array_pop($_SESSION[$sess]);
       break;
+
     case t('Reset'):
       $_SESSION[$sess] = array();
       break;
+
     case t('Update'):
       return;
   }
 }
-
-
-/********************************************************************
- * Other Functions
- ********************************************************************/
 
 function pg_showtransactions_build_filter_query($sess) {
   $sess = 'pg_showtransactions_' . $sess;
   $filterfunction = $sess . 's';
   $filters = $filterfunction();
 
-  // Build query
+  // Build query.
   $where = $args = $join = array();
   if (isset($_SESSION[$sess])) {
     foreach ($_SESSION[$sess] as $filter) {
@@ -394,6 +393,7 @@ function pg_showtransactions_build_filter_query($sess) {
       $join[] = $filters[$key]['join'];
     }
   }
+
   $where = count($where) ? 'WHERE ' . implode(' AND ', $where) : '';
   $join = count($join) ? ' ' . implode(' ', array_unique($join)) : '';
 
@@ -411,6 +411,7 @@ function pg_showtransactions_history_filters() {
     'title' => t('ID'),
     'where' => "t.txnid='%s'",
   );
+
   $filters['name'] = array(
     'type' => 'textfield',
     'title' => t('User'),
@@ -475,7 +476,6 @@ function pg_showtransactions_personal_history_filters() {
     'where' => "t.amount<='%f'",
   );
 
-
   $filters['product'] = array(
     'type' => 'textfield',
     'title' => t('Title'),
@@ -493,8 +493,5 @@ function pg_showtransactions_personal_history_filters() {
     'options' => pgapi_build_status(),
   );
 
-
   return $filters;
 }
-
-

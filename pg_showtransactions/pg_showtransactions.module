@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Implementation of hook_perm()
+ * Implements hook_perm().
  */
-
 function pg_showtransactions_permission() {
   return array(
     'administer pg_showtransaction' => array(
@@ -21,12 +20,9 @@ function pg_showtransactions_permission() {
 
 
 /**
- * Implementation of hook_menu()
+ * Implements hook_menu().
  */
-
 function pg_showtransactions_menu() {
-
-
   $items['admin/reports/pg_showtransaction'] = array(
     'title' => 'PGAPI Transactions',
     'page callback' => 'pg_showtransactions_history',
@@ -35,7 +31,6 @@ function pg_showtransactions_menu() {
     'weight' => 1,
     'file' => 'pg_showtransactions.admin.inc',
     'description' => 'Transaction information.',
-
   );
 
   $items['admin/reports/showtransactions/edit/%pgapi_transaction'] = array(
@@ -66,7 +61,6 @@ function pg_showtransactions_menu() {
 /**
  * Implements hook_formfilterapi().
  */
-
 function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
   if ($op == 'filters') {
     $filters = array();
@@ -77,11 +71,13 @@ function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
           '#title' => t('Ttansaction id'),
           '#where' => "pgt.txnid",
         );
+
         $filters['name'] = array(
           '#type' => 'textfield',
           '#title' => t('Username'),
           '#where' => array('like' => "u.name"),
         );
+
         $filters['mail'] = array(
           '#type' => 'textfield',
           '#title' => t('Email'),
@@ -113,10 +109,9 @@ function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
           '#where' => 'pgt.status',
           '#options' => pgapi_build_status(),
         );
-
         break;
-      case 'pg_account_operator_history';
 
+      case 'pg_account_operator_history';
         $filters['name'] = array(
           '#type' => 'textfield',
           '#title' => t('User'),
@@ -128,6 +123,7 @@ function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
           '#title' => t('Amount'),
           '#where' => "pgt.amount",
         );
+
         $filters['action'] = array(
           '#type' => 'select',
           '#title' => t('Payments'),
@@ -144,18 +140,13 @@ function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
           '#where' => 'pgt.status',
           '#options' => pgapi_build_status(),
         );
-
         break;
-
     }
+
     return $filters;
   }
 }
 
-
-/********************************************************************
- * Other Functions
- ********************************************************************/
 function pg_showtransactions_filters_by_type() {
   $filters = array();
   $filters['ID'] = array(
@@ -163,6 +154,7 @@ function pg_showtransactions_filters_by_type() {
     'title' => t('ID'),
     'where' => "t.txnid='%s'",
   );
+
   $filters['name'] = array(
     'type' => 'textfield',
     'title' => t('User'),
@@ -186,6 +178,7 @@ function pg_showtransactions_filters_by_type() {
     'title' => t('Title'),
     'where' => "t.title='%s'",
   );
+
   $filters['method'] = array(
     'title' => t('Method'),
     'where' => "t.method = '%s'",
@@ -197,5 +190,6 @@ function pg_showtransactions_filters_by_type() {
     'where' => 't.status = %d',
     'options' => pgapi_build_status(),
   );
+
   return $filters;
 }
