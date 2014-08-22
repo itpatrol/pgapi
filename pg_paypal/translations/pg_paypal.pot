@@ -1,0 +1,114 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  pg_paypal.admin.inc,v 1.1 2009/11/24 22:06:36 gor
+#  pg_paypal.module: n/a
+#  pg_paypal.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2014-08-19 15:31+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: pg_paypal.admin.inc:9
+msgid "Action url"
+msgstr ""
+
+#: pg_paypal.admin.inc:11
+msgid "Please enter action url.\nDefault: !url"
+msgstr ""
+
+#: pg_paypal.admin.inc:15
+msgid "PayPal IPN \"request back\" validation URL"
+msgstr ""
+
+#: pg_paypal.admin.inc:17
+msgid "URL where IPN 'request back' is posted to validate the transaction.\nDefault: !url"
+msgstr ""
+
+#: pg_paypal.admin.inc:21
+msgid "PayPal Receiver Email"
+msgstr ""
+
+#: pg_paypal.admin.inc:23
+msgid "Primary email address of the payment recipent. This is also your main paypal email address."
+msgstr ""
+
+#: pg_paypal.admin.inc:45
+msgid "Currency code"
+msgstr ""
+
+#: pg_paypal.admin.inc:48
+msgid "The currecy code that PayPal should process the payment in."
+msgstr ""
+
+#: pg_paypal.admin.inc:53
+msgid "Rate to site currency"
+msgstr ""
+
+#: pg_paypal.admin.inc:55
+msgid "Please enter Paypal rate according to site currency."
+msgstr ""
+
+#: pg_paypal.admin.inc:60
+msgid "Submit"
+msgstr ""
+
+#: pg_paypal.admin.inc:68
+msgid "%rate must be more 0."
+msgstr ""
+
+#: pg_paypal.admin.inc:109
+msgid "Payment has been received."
+msgstr ""
+
+#: pg_paypal.admin.inc:118
+msgid "Verification has been failed"
+msgstr ""
+
+#: pg_paypal.admin.inc:125
+msgid "This amount does not match with the original price"
+msgstr ""
+
+#: pg_paypal.admin.inc:132
+msgid "This currency does not match with the original currency"
+msgstr ""
+
+#: pg_paypal.admin.inc:139
+msgid "This receiver email does not match with the original email"
+msgstr ""
+
+#: pg_paypal.module:45;48;48;27 pg_paypal.info:0
+msgid "Paypal"
+msgstr ""
+
+#: pg_paypal.module:130
+msgid "Return back to !site"
+msgstr ""
+
+#: pg_paypal.module:20
+msgid "Internal Data"
+msgstr ""
+
+#: pg_paypal.module:28
+msgid "Paypal gateway payment settings."
+msgstr ""
+
+#: pg_paypal.info:0
+msgid "Paypal payment gateway."
+msgstr ""
+
+#: pg_paypal.info:0
+msgid "Payment Gateway API"
+msgstr ""
+

@@ -30,7 +30,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
   $form['currency']=array(
     '#tree' => TRUE,
   );
-  
+
   $form['currency']['symbol'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Symbol'),
@@ -38,8 +38,8 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#description'   => t("Please enter symbol of the Account Balance currency."),
     '#required'      => true,
   );
-  
-  
+
+
   $form['currency']['decimal_places'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Decimal places'),
@@ -47,7 +47,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#description'   => t("Please enter number of decimal places."),
     '#required'      => true,
   );
-  
+
   $form['currency']['decimal'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Decimal delimiter'),
@@ -55,7 +55,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#description'   => t("Please enter decimal delimiter."),
     '#required'      => true,
   );
-  
+
   $form['currency']['thousands'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Thousands places'),
@@ -63,10 +63,10 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#description'   => t("Please enter thousands delimeter."),
     '#required'      => true,
   );
-  
+
   $form['currency']['symbol_position'] = array(
     '#type'          => 'radios',
-    '#title'         => t('Simbol position'),
+    '#title'         => t('Symbol position'),
     '#options'       => array ( 1 => t('Left'), 0 => t('Right')),
     '#default_value' => isset($pgapi_currency['symbol_position']) ? $pgapi_currency['symbol_position'] : 0,
     '#description'   => t("Please select symbol position."),
@@ -77,7 +77,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#type' => 'submit',
     '#value' => t('Save currency settings'),
   );
-  
+
   return $form;
 }
 
