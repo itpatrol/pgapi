@@ -49,8 +49,8 @@ function theme_pgapi_format_price_plain($values) {
   return $output;
 }
 
-function template_preprocess_payment(&$values){
+function template_preprocess_payment(&$values) {
   $transaction = $values['transaction'];
-  $values['image'] = drupal_get_path('module', 'pgapi').'/payment.png';
+  $values['image'] = drupal_get_path('module', 'pgapi') . '/payment.png';
   $values['service_details'] = module_invoke($transaction->service, 'pgapi_payment_details', $transaction);
 }

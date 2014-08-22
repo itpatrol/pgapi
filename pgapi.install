@@ -110,7 +110,17 @@ function pgapi_update_last_removed() {
  * Changes fileds: type => service, method => gateway.
  */
 function pgapi_update_7000() {
-  db_change_field('pgapi_transaction', 'type', 'service', array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''));
-  db_change_field('pgapi_transaction', 'method', 'gateway', array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''));
+  db_change_field('pgapi_transaction', 'type', 'service', array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => ''
+  ));
+  db_change_field('pgapi_transaction', 'method', 'gateway', array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => ''
+  ));
 }
 
