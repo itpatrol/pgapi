@@ -431,7 +431,7 @@ function pg_showtransactions_build_filter_query($sess) {
  * @return array
  *   Filters.
  *
- * @see pg_showtransactions_history().
+ * @see pg_showtransactions_history()
  */
 function pg_showtransactions_history_filters() {
   $filters = array();
@@ -491,7 +491,7 @@ function pg_showtransactions_history_filters() {
  * @return array
  *   Filters.
  *
- * @see pg_showtransactions_personal_history().
+ * @see pg_showtransactions_personal_history()
  */
 function pg_showtransactions_personal_history_filters() {
   $filters = array();
