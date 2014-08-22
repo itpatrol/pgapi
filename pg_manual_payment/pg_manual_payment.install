@@ -25,11 +25,36 @@ function pg_manual_payment_schema() {
   $schema['pg_manual_payment_accounts'] = array(
     'description' => t('Stores webmoney rates information.'),
     'fields' => array(
-      'paid'       => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
-      'name'       => array('type' => 'varchar', 'length' =>  255, 'not null' => TRUE, 'default' => ''),
-      'purse'      => array('type' => 'varchar',  'length' => 255, 'not null' => TRUE, 'default' => ''),
-      'symbol'     => array('type' => 'varchar',  'length' => 255, 'not null' => TRUE, 'default' => ''),
-      'rate'       => array('type' => 'numeric', 'size' => 'normal', 'precision' => 12, 'scale' => 4, 'default' => 0),
+      'paid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'purse' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'symbol' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'rate' => array(
+        'type' => 'numeric',
+        'size' => 'normal',
+        'precision' => 12,
+        'scale' => 4,
+        'default' => 0
+      ),
     ),
     'primary key' => array('paid'),
   );
