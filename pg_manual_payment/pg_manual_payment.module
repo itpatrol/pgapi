@@ -1,16 +1,7 @@
 <?php
-// $Id: pg_manual_payment.module,v 1.2 2010/10/31 05:12:07 gor Exp $
-
-/********************************************************************
- * Constants
- ********************************************************************/
-
-/********************************************************************
- * Drupal Hooks
- ********************************************************************/
 
 /**
- * Implementation of hook_theme()
+ * Implements hook_theme().
  */
 function pg_manual_payment_theme() {
   return array(
@@ -20,9 +11,8 @@ function pg_manual_payment_theme() {
   );
 }
 
-
 /**
- * Implementation of hook_mail().
+ * Implements hook_mail().
  */
 function pg_manual_payment_mail($key, &$message, $params) {
   $language = $message['language'];
@@ -51,6 +41,7 @@ Best regards,
 !site
 ", $variables, $language->language);
       break;
+
     case 'notice_admin':
       $message['subject'] = t('Payment Notification from !site', $variables, $language->language);
       $message['body'][] = t("Dear Admin
@@ -65,18 +56,14 @@ Best regards,
 !site
 ", $variables, $language->language);
       break;
-
   }
 }
 
 
 /**
- * Implementation of hook_menu()
+ * Implements hook_menu().
  */
-
 function pg_manual_payment_menu() {
-
-
   $items['payment/manual_payment/%txnid'] = array(
     'title' => 'Manual Payment',
     'page callback' => 'drupal_get_form',
@@ -95,6 +82,7 @@ function pg_manual_payment_menu() {
     'file' => 'pg_manual_payment.admin.inc',
     'type' => MENU_LOCAL_TASK,
   );
+
   $items['admin/pgdata/pgsettings/manual_payment/list'] = array(
     'title' => 'Accounts',
     'page callback' => 'drupal_get_form',
@@ -104,6 +92,7 @@ function pg_manual_payment_menu() {
     'file' => 'pg_manual_payment.admin.inc',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
+
   $items['admin/pgdata/pgsettings/manual_payment/add'] = array(
     'title' => 'Add Account',
     'page callback' => 'drupal_get_form',
@@ -134,41 +123,44 @@ function pg_manual_payment_menu() {
     'file' => 'pg_manual_payment.admin.inc',
   );
 
-
   return $items;
 }
 
-/********************************************************************
- * Pgapi Gateway Hooks
- ********************************************************************/
+
 function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
   switch ($op) {
     case 'display name':
       $ret = t('Manual Payment Payment Gateway');
       break;
+
     case 'payment page':
       $ret = url('payment/manual_payment/' . $a3, array('absolute' => TRUE));
       break;
+
     case 'payment gateway info':
       $ret['name'] = t('Manual Payment');
       $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
+
       while ($rr = db_fetch_object($result)) {
         $prices[$rr->name] = $a3 * $rr->rate . ' ' . $rr->symbol;
       }
+
       $ret['price'] = $prices;
       break;
+
     case 'process form':
       $form_result = $a4;
       $t = $a3;
       $ret = pg_manual_payment_process_form($form_result, $t);
       break;
+
     case 'get form':
       $t = $a3;
       $form_result = $a4;
       $ret = pg_manual_payment_extraform($form_result, $t);
       break;
-
   }
+
   return $ret;
 }
 
@@ -184,9 +176,6 @@ function pg_manual_payment_pgapi_transaction($status, &$t) {
   }
 }
 
-/********************************************************************
- * Other Functions
- ********************************************************************/
 function pg_manual_payment_extraform($form_state, $t) {
   $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
   $first = TRUE;
@@ -197,7 +186,6 @@ function pg_manual_payment_extraform($form_state, $t) {
     }
     $purses[$template->paid] = $t->amount * $template->rate . " <span class='symbol'>" . $template->symbol . "</span>";
   }
-  //while
 
   $form['wallet'] = array(
     '#type' => 'radios',
@@ -206,9 +194,9 @@ function pg_manual_payment_extraform($form_state, $t) {
     '#default_value' => $def_purse,
     '#description' => t("What type of currency will be used."),
   );
+
   return $form;
 }
-
 
 function pg_manual_payment_process_form(&$form_result, $t) {
   $t->method = 'pg_manual_payment';
@@ -218,9 +206,9 @@ function pg_manual_payment_process_form(&$form_result, $t) {
   drupal_goto('payment/manual_payment/' . $t->txnid);
 }
 
-
 function pg_manual_payment_payform($form_state, $t) {
   global $user;
+
   if ($user->uid != 1 and $user->uid != $t->uid) {
     drupal_access_denied();
   }
@@ -237,6 +225,7 @@ function pg_manual_payment_payform($form_state, $t) {
     '#title' => t('Manual Payment'),
     '#description' => t('Please make a payment and click submit'),
   );
+
   $form['payment']['account'] = array(
     '#type' => 'textfield',
     '#title' => $account->name,
@@ -251,13 +240,11 @@ function pg_manual_payment_payform($form_state, $t) {
     '#description' => t('Please send your payment on this wallet'),
   );
 
-
   $sitename = variable_get('site_name', 'Drupal');
   $desc = t('Purchase for site !sitename. Transaction !txnid', array(
     '!sitename' => $sitename,
-    '!txnid' => $t->txnid
+    '!txnid' => $t->txnid,
   ));
-
 
   $form['payment']['description'] = array(
     '#type' => 'textarea',
@@ -265,10 +252,12 @@ function pg_manual_payment_payform($form_state, $t) {
     '#value' => $desc,
     '#description' => t('Please put this description'),
   );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
+
   return $form;
 }
 
@@ -280,17 +269,16 @@ function pg_manual_payment_payform_submit($form, &$form_state) {
   $params['t'] = $t;
   $params['user'] = $user;
   $params['payment_method'] = $account;
+
   drupal_mail('pg_manual_payment', 'notice', $t->email, user_preferred_language($user), $params);
   $admin_mail = variable_get('pg_manual_payment_email', '');
+
   if (!empty($admin_mail)) {
     drupal_mail('pg_manual_payment', 'notice_admin', $admin_mail, user_preferred_language($user), $params);
   }
+
   drupal_set_message('Your payment will be checked soon. You will receive email notification.');
 }
-
-/********************************************************************
- * Functions theme
- ********************************************************************/
 
 function theme_pg_manual_payment_list(&$form) {
   $header = array(
@@ -312,8 +300,9 @@ function theme_pg_manual_payment_list(&$form) {
       $rows[] = $row;
     }
   }
+
   $output = theme('table', $header, $rows);
   $output .= drupal_render($form);
+
   return $output;
 }
-

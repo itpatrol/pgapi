@@ -1,22 +1,21 @@
 <?php
-/********************************************************************
- * Functions callback
- ********************************************************************/
 
 function pg_manual_payment_list() {
   $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
   $form['#tree'] = TRUE;
+
   while ($template = db_fetch_object($result)) {
     $form[$template->paid]['purse'] = array('#value' => $template->purse);
     $form[$template->paid]['rate'] = array('#value' => $template->rate);
     $form[$template->paid]['edit'] = array('#value' => l($template->name, 'admin/pgdata/pgsettings/manual_payment/edit/' . $template->paid, array('query' => drupal_get_destination())));
     $purses[$template->paid] = '';
   }
-  //while
+
   $form['check'] = array(
     '#type' => 'checkboxes',
     '#options' => $purses
   );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Delete checked Accounts'),
@@ -38,6 +37,7 @@ function pg_manual_payment_list_submit($form, &$form_state) {
 
 function pg_manual_payment_edit(&$form_state, $paid) {
   $pursed = db_fetch_object(db_query('SELECT * FROM {pg_manual_payment_accounts} WHERE paid = %d ', $paid));
+
   $form['paid'] = array(
     '#type' => 'value',
     '#value' => $paid
@@ -50,6 +50,7 @@ function pg_manual_payment_edit(&$form_state, $paid) {
     '#description' => t("Please, enter Payment system name."),
     '#required' => TRUE,
   );
+
   $form['purse'] = array(
     '#type' => 'textfield',
     '#title' => t('Account Number'),
@@ -57,6 +58,7 @@ function pg_manual_payment_edit(&$form_state, $paid) {
     '#description' => t("Please, enter Payment system account number."),
     '#required' => TRUE,
   );
+
   $form['symbol'] = array(
     '#type' => 'textfield',
     '#title' => t('Currency Symbol'),
@@ -95,6 +97,7 @@ function pg_manual_payment_add() {
     '#description' => t("Please, enter Payment system name."),
     '#required' => TRUE,
   );
+
   $form['purse'] = array(
     '#type' => 'textfield',
     '#title' => t('Account Number'),
@@ -102,6 +105,7 @@ function pg_manual_payment_add() {
     '#description' => t("Please, enter Payment system account number."),
     '#required' => TRUE,
   );
+
   $form['symbol'] = array(
     '#type' => 'textfield',
     '#title' => t('Currency Symbol'),
@@ -133,7 +137,6 @@ function pg_manual_payment_add_submit($form, &$form_state) {
 
 
 function pg_manual_payment_settings() {
-
   $form['pg_manual_payment_email'] = array(
     '#type' => 'textfield',
     '#title' => t("Admin email with notification emails"),
@@ -141,7 +144,6 @@ function pg_manual_payment_settings() {
     '#description' => t("Please enter email address for receive a notify and warning messages."),
     '#required' => TRUE,
   );
-
 
   return system_settings_form($form);
 }
