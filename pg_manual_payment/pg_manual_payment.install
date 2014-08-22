@@ -8,8 +8,11 @@
  * Implements hook_schema().
  */
 function pg_manual_payment_schema() {
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
   $schema['pg_manual_payment_accounts'] = array(
-    'description' => t('Stores webmoney rates information.'),
+    'description' => $t('Stores webmoney rates information.'),
     'fields' => array(
       'paid' => array(
         'type' => 'serial',
