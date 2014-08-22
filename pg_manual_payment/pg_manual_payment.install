@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Installation file for Manual Payment.
+ */
 
 /**
  * Implements hook_schema().

@@ -1,5 +1,12 @@
 <?php
+/**
+ * @file
+ * Administer pages for pg_manual_payment.module.
+ */
 
+/**
+ * Implements hook_FORMID().
+ */
 function pg_manual_payment_list() {
   $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
   $form['#tree'] = TRUE;
@@ -24,6 +31,9 @@ function pg_manual_payment_list() {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_manual_payment_list_submit($form, &$form_state) {
   foreach ($form_state['values']['check'] as $key => $val) {
     if ($key === $val) {
@@ -34,7 +44,9 @@ function pg_manual_payment_list_submit($form, &$form_state) {
   }
 }
 
-
+/**
+ * Implements hook_FORMID().
+ */
 function pg_manual_payment_edit(&$form_state, $paid) {
   $pursed = db_fetch_object(db_query('SELECT * FROM {pg_manual_payment_accounts} WHERE paid = %d ', $paid));
 
@@ -83,12 +95,17 @@ function pg_manual_payment_edit(&$form_state, $paid) {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_manual_payment_edit_submit($form, &$form_state) {
   drupal_write_record('pg_manual_payment_accounts', $form_state['values'], 'paid');
   drupal_set_message(t('Your Account %name has been modified.', array('%name' => $form_state['values']['name'])));
 }
 
-
+/**
+ * Implements hook_FORMID().
+ */
 function pg_manual_payment_add() {
   $form['name'] = array(
     '#type' => 'textfield',
@@ -130,11 +147,13 @@ function pg_manual_payment_add() {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_manual_payment_add_submit($form, &$form_state) {
   drupal_write_record('pg_manual_payment_accounts', $form_state['values']);
   drupal_set_message(t('Your Account %name has been added.', array('%name' => $form_state['values']['name'])));
 }
-
 
 function pg_manual_payment_settings() {
   $form['pg_manual_payment_email'] = array(
