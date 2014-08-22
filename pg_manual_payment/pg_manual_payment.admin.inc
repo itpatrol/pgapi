@@ -12,9 +12,12 @@ function pg_manual_payment_list() {
   $form['#tree'] = TRUE;
 
   while ($template = db_fetch_object($result)) {
+    $edit_url = 'admin/pgdata/pgsettings/manual_payment/edit/' . $template->paid;
+    $edit_link = l($template->name, $edit_url, array('query' => drupal_get_destination()));
+
     $form[$template->paid]['purse'] = array('#value' => $template->purse);
     $form[$template->paid]['rate'] = array('#value' => $template->rate);
-    $form[$template->paid]['edit'] = array('#value' => l($template->name, 'admin/pgdata/pgsettings/manual_payment/edit/' . $template->paid, array('query' => drupal_get_destination())));
+    $form[$template->paid]['edit'] = $edit_link;
     $purses[$template->paid] = '';
   }
 
