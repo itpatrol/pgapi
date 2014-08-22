@@ -298,7 +298,7 @@ function pg_manual_payment_payform_submit($form, &$form_state) {
     drupal_mail('pg_manual_payment', 'notice_admin', $admin_mail, user_preferred_language($user), $params);
   }
 
-  drupal_set_message('Your payment will be checked soon. You will receive email notification.');
+  drupal_set_message(t('Your payment will be checked soon. You will receive email notification.'));
 }
 
 /**
