@@ -74,7 +74,7 @@ function pg_showtransactions_history() {
     'txnid' => array(
       'data' => t('ID'),
       'field' => 'pgt.txnid',
-      'sort' => 'desc'
+      'sort' => 'desc',
     ),
     'name' => array('data' => t('User'), 'field' => 'u.name'),
     'email' => array('data' => t('Email'), 'field' => 'pgt.email'),
@@ -84,7 +84,7 @@ function pg_showtransactions_history() {
     'status' => array('data' => t('payment status'), 'field' => 'pgt.status'),
     'created' => array('data' => t('created'), 'field' => 'pgt.created'),
     'changed' => array('data' => t('changed'), 'field' => 'pgt.changed'),
-    'operations' => t('Operations')
+    'operations' => t('Operations'),
   );
 
   $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')
@@ -103,7 +103,7 @@ function pg_showtransactions_history() {
       array(
         'href' => "admin/reports/showtransactions/edit/" . $txn->txnid,
         'title' => t('Edit'),
-        'query' => drupal_get_destination()
+        'query' => drupal_get_destination(),
       ),
     );
 
@@ -115,7 +115,7 @@ function pg_showtransactions_history() {
     $class = array(
       $operation,
       'status-' . $txn->status,
-      'workflow-' . $txn->workflow
+      'workflow-' . $txn->workflow,
     );
 
     $rows[] = array(
@@ -126,13 +126,13 @@ function pg_showtransactions_history() {
         $txn->title,
         array(
           'data' => pgapi_format_price($txn->amount),
-          'class' => array('amount')
+          'class' => array('amount'),
         ),
         pgapi_get_gateway_name($txn->gateway),
         pgapi_get_status($txn->status),
         format_date($txn->created, 'small'),
         format_date($txn->changed, 'small'),
-        theme('links', array('links' => $action))
+        theme('links', array('links' => $action)),
       ),
       'class' => $class,
     );
@@ -142,7 +142,7 @@ function pg_showtransactions_history() {
     $rows[] = array(
       array(
         'data' => t('No data available.'),
-        'colspan' => '10'
+        'colspan' => '10',
       )
     );
   }
@@ -174,7 +174,7 @@ function pg_showtransactions_operator_history() {
     array('data' => t('payment status'), 'field' => 't.status'),
     array('data' => t('created'), 'field' => 't.created'),
     array('data' => t('changed'), 'field' => 't.changed'),
-    t('Operations')
+    t('Operations'),
   );
 
   $sql = 'SELECT t.*, u.name FROM {pgapi_transaction} t LEFT JOIN {users} u ON u.uid=t.uid ' . $filters['join'] . ' ' . $filters['where'] . tablesort_sql($header);
@@ -194,7 +194,7 @@ function pg_showtransactions_operator_history() {
       pgapi_get_status($txn->status),
       format_date($txn->created, 'small'),
       format_date($txn->changed, 'small'),
-      $action
+      $action,
     );
   }
 
@@ -219,7 +219,7 @@ function pg_showtransactions_personal_history() {
     array('data' => t('payment status'), 'field' => 't.status'),
     array('data' => t('created'), 'field' => 't.created'),
     array('data' => t('changed'), 'field' => 't.changed'),
-    t('Operations')
+    t('Operations'),
   );
 
   if (empty($filters['where'])) {
@@ -248,7 +248,7 @@ function pg_showtransactions_personal_history() {
       pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
       format_date($txn->created, 'small'),
-      $action
+      $action,
     );
   }
 
@@ -270,7 +270,7 @@ function pg_showtransactions_filter_form($form_state, $sess) {
     '#title' => t('Show payment where'),
     '#theme' => 'pg_showtransactions_filters',
     '#collapsible' => TRUE,
-    '#collapsed' => !count($session)
+    '#collapsed' => !count($session),
   );
 
   foreach ($session as $filter) {
@@ -279,14 +279,14 @@ function pg_showtransactions_filter_form($form_state, $sess) {
     if ($filters[$type]['type'] == 'textfield') {
       $params = array(
         '%property' => $filters[$type]['title'],
-        '%value' => $value
+        '%value' => $value,
       );
     }
     else {
       $options = $type == 'permission' ? call_user_func_array('array_merge', $filters[$type]['options']) : $filters[$type]['options'];
       $params = array(
         '%property' => $filters[$type]['title'],
-        '%value' => $options[$value]
+        '%value' => $options[$value],
       );
     }
 
@@ -305,7 +305,7 @@ function pg_showtransactions_filter_form($form_state, $sess) {
     if ($filter['type'] == "textfield") {
       $form['filters']['status'][$key] = array(
         '#type' => 'textfield',
-        '#size' => 23
+        '#size' => 23,
       );
     }
     else {
@@ -324,17 +324,17 @@ function pg_showtransactions_filter_form($form_state, $sess) {
 
   $form['filters']['buttons']['submit'] = array(
     '#type' => 'submit',
-    '#value' => (count($session) ? t('Refine') : t('Filter'))
+    '#value' => (count($session) ? t('Refine') : t('Filter')),
   );
 
   if (count($session)) {
     $form['filters']['buttons']['undo'] = array(
       '#type' => 'submit',
-      '#value' => t('Undo')
+      '#value' => t('Undo'),
     );
     $form['filters']['buttons']['reset'] = array(
       '#type' => 'submit',
-      '#value' => t('Reset')
+      '#value' => t('Reset'),
     );
   }
 
