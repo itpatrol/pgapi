@@ -1,0 +1,183 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  pg_manual_payment.admin.inc: n/a
+#  pg_manual_payment.module,v 1.2 2010/10/31 05:12:07 gor
+#  pg_manual_payment.info,v 1.2 2010/10/31 05:12:07 gor
+#  pg_manual_payment.install,v 1.2 2009/11/25 19:59:05 gor
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2014-08-19 17:24+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: pg_manual_payment.admin.inc:21
+msgid "Delete checked Accounts"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:32
+msgid "Your account %name has been deleted."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:47;92
+msgid "Name"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:49;94
+msgid "Please, enter Payment system name."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:54;99 pg_manual_payment.module:297
+msgid "Account Number"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:56;101
+msgid "Please, enter Payment system account number."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:61;106
+msgid "Currency Symbol"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:63;108
+msgid "Please, enter Payment system Currency symbol."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:69;114
+msgid "Currency rate"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:71;116
+msgid "Please, enter Payment system Currency rate."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:77
+msgid "Save"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:85
+msgid "Your Account %name has been modified."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:122 pg_manual_payment.module:109
+msgid "Add Account"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:130
+msgid "Your Account %name has been added."
+msgstr ""
+
+#: pg_manual_payment.admin.inc:139
+msgid "Admin email with notification emails"
+msgstr ""
+
+#: pg_manual_payment.admin.inc:141
+msgid "Please enter email address for receive a notify and warning messages."
+msgstr ""
+
+#: pg_manual_payment.module:43;55
+msgid "Payment Notification from !site"
+msgstr ""
+
+#: pg_manual_payment.module:44
+msgid "Dear !username\nYour Payment #!txnid will be checked today.\n\nAmount: !price\nPayment Account: !purse\n\nBest regards,\n!site\n"
+msgstr ""
+
+#: pg_manual_payment.module:56
+msgid "Dear Admin\nUser !username just sent a payment #!txnid\n\nAmount: !price\nPayment Account: !purse\n\nPlease check it out and process it.\n\nBest regards,\n!site\n"
+msgstr ""
+
+#: pg_manual_payment.module:148
+msgid "Manual Payment Payment Gateway"
+msgstr ""
+
+#: pg_manual_payment.module:154;238;82;90 pg_manual_payment.info:0
+msgid "Manual Payment"
+msgstr ""
+
+#: pg_manual_payment.module:204
+msgid "Type of account"
+msgstr ""
+
+#: pg_manual_payment.module:207
+msgid "What type of currency will be used."
+msgstr ""
+
+#: pg_manual_payment.module:239
+msgid "Please make a payment and click submit"
+msgstr ""
+
+#: pg_manual_payment.module:245;252
+msgid "Please send your payment on this wallet"
+msgstr ""
+
+#: pg_manual_payment.module:250
+msgid "Ammount"
+msgstr ""
+
+#: pg_manual_payment.module:257
+msgid "Purchase for site !sitename. Transaction !txnid"
+msgstr ""
+
+#: pg_manual_payment.module:262
+msgid "Payment description"
+msgstr ""
+
+#: pg_manual_payment.module:264
+msgid "Please put this description"
+msgstr ""
+
+#: pg_manual_payment.module:268
+msgid "Submit"
+msgstr ""
+
+#: pg_manual_payment.module:296
+msgid "Account Name"
+msgstr ""
+
+#: pg_manual_payment.module:298
+msgid "Rate"
+msgstr ""
+
+#: pg_manual_payment.module:91
+msgid "Manual Payment payment settings."
+msgstr ""
+
+#: pg_manual_payment.module:100
+msgid "Accounts"
+msgstr ""
+
+#: pg_manual_payment.module:119
+msgid "Edit Wallet"
+msgstr ""
+
+#: pg_manual_payment.module:129
+msgid "Settings"
+msgstr ""
+
+#: pg_manual_payment.module:130
+msgid "Manual Payment Settings"
+msgstr ""
+
+#: pg_manual_payment.install:26
+msgid "Stores webmoney rates information."
+msgstr ""
+
+#: pg_manual_payment.info:0
+msgid "Manual payment with human verification."
+msgstr ""
+
+#: pg_manual_payment.info:0
+msgid "Payment Gateway API"
+msgstr ""
+
