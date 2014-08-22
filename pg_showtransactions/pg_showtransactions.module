@@ -152,6 +152,12 @@ function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
   }
 }
 
+/**
+ * Form filters for some form.
+ *
+ * @return array
+ *   Filters.
+ */
 function pg_showtransactions_filters_by_type() {
   $filters = array();
   $filters['ID'] = array(
