@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Show transactions.
+ *
+ * Show transactions in PGAPI.
+ */
 
 /**
  * Implements hook_perm().
@@ -17,7 +23,6 @@ function pg_showtransactions_permission() {
     ),
   );
 }
-
 
 /**
  * Implements hook_menu().

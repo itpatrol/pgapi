@@ -1,5 +1,12 @@
 <?php
+/**
+ * @file
+ * Administer pages for pg_showtransactions.module.
+ */
 
+/**
+ * Implements hook_FORMID().
+ */
 function pg_showtransactions_edit($form, &$form_state, $t) {
   $form['title'] = array(
     '#type' => 'textfield',
@@ -53,6 +60,9 @@ function pg_showtransactions_edit($form, &$form_state, $t) {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_showtransactions_edit_submit($form, &$form_state) {
   $txnid = $form_state['values']['txnid'];
   $t = pgapi_transaction_load($txnid);
@@ -66,7 +76,9 @@ function pg_showtransactions_edit_submit($form, &$form_state) {
   pgapi_transaction_save($t);
 }
 
-
+/**
+ * Page with history all transactions.
+ */
 function pg_showtransactions_history() {
   drupal_add_css(drupal_get_path('module', 'pg_showtransactions') . '/pg_showtransactions.css');
 
@@ -204,6 +216,9 @@ function pg_showtransactions_operator_history() {
   return $output;
 }
 
+/**
+ * Personal history transactions for user.
+ */
 function pg_showtransactions_personal_history() {
   global $user;
 
@@ -256,6 +271,9 @@ function pg_showtransactions_personal_history() {
   return theme('pg_showtransactions_personal_history', $rows, $filter_form);
 }
 
+/**
+ * Implements hook_FORMID().
+ */
 function pg_showtransactions_filter_form($form_state, $sess) {
   $sess = 'pg_showtransactions_' . $sess;
   $session = & $_SESSION[$sess];
@@ -341,6 +359,9 @@ function pg_showtransactions_filter_form($form_state, $sess) {
   return $form;
 }
 
+/**
+ * Implements hook_FORMID_submit().
+ */
 function pg_showtransactions_filter_form_submit($form, &$form_state) {
   $op = $form_state['values']['op'];
   $sess = $form_state['values']['session_name'];
@@ -404,6 +425,14 @@ function pg_showtransactions_build_filter_query($sess) {
   );
 }
 
+/**
+ * Filters for history form.
+ *
+ * @return array
+ *   Filters.
+ *
+ * @see pg_showtransactions_history().
+ */
 function pg_showtransactions_history_filters() {
   $filters = array();
   $filters['ID'] = array(
@@ -456,6 +485,14 @@ function pg_showtransactions_history_filters() {
   return $filters;
 }
 
+/**
+ * Form filters for personal history form.
+ *
+ * @return array
+ *   Filters.
+ *
+ * @see pg_showtransactions_personal_history().
+ */
 function pg_showtransactions_personal_history_filters() {
   $filters = array();
   $filters['ID'] = array(
