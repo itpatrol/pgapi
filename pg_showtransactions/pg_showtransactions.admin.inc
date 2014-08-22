@@ -1,52 +1,52 @@
 <?php
 
-function pg_showtransactions_edit($form, &$form_state,$t) {
+function pg_showtransactions_edit($form, &$form_state, $t) {
 
   $form['title'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Title'),
+    '#type' => 'textfield',
+    '#title' => t('Title'),
     '#default_value' => $t->title,
   );
 
   $form['description'] = array(
-    '#type'          => 'textarea',
-    '#title'         => t('Description'),
+    '#type' => 'textarea',
+    '#title' => t('Description'),
     '#default_value' => $t->description,
   );
 
   $form['email'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Email'),
+    '#type' => 'textfield',
+    '#title' => t('Email'),
     '#default_value' => $t->email,
   );
 
-  $form['workflow']=array(
-    '#title'         => t('Payment workflow'),
-    '#type'          => 'select',
-    '#options'       => pgapi_build_workflow(),
+  $form['workflow'] = array(
+    '#title' => t('Payment workflow'),
+    '#type' => 'select',
+    '#options' => pgapi_build_workflow(),
     '#default_value' => $t->workflow,
   );
 
-  $form['status']=array(
-    '#title'         => t('Payment status'),
-    '#type'          => 'select',
-    '#options'       => pgapi_build_status(),
+  $form['status'] = array(
+    '#title' => t('Payment status'),
+    '#type' => 'select',
+    '#options' => pgapi_build_status(),
     '#default_value' => $t->status,
   );
 
-  $form['gateway']=array(
-    '#title'         => t('Payment method'),
-    '#type'          => 'select',
-    '#options'       => pgapi_get_gateway_options(),
+  $form['gateway'] = array(
+    '#title' => t('Payment method'),
+    '#type' => 'select',
+    '#options' => pgapi_get_gateway_options(),
     '#default_value' => $t->gateway,
   );
 
-  $form['txnid']=array(
-    '#type'  => 'value',
+  $form['txnid'] = array(
+    '#type' => 'value',
     '#value' => $t->txnid,
   );
   $form['submit'] = array(
-    '#type'  => 'submit',
+    '#type' => 'submit',
     '#value' => t('Save'),
   );
 
@@ -68,11 +68,15 @@ function pg_showtransactions_edit_submit($form, &$form_state) {
 
 function pg_showtransactions_history() {
 
-  drupal_add_css(drupal_get_path('module', 'pg_showtransactions') .'/pg_showtransactions.css');
+  drupal_add_css(drupal_get_path('module', 'pg_showtransactions') . '/pg_showtransactions.css');
 
 
   $header = array(
-    'txnid' => array('data' => t('ID'), 'field' => 'pgt.txnid', 'sort' => 'desc'),
+    'txnid' => array(
+      'data' => t('ID'),
+      'field' => 'pgt.txnid',
+      'sort' => 'desc'
+    ),
     'name' => array('data' => t('User'), 'field' => 'u.name'),
     'email' => array('data' => t('Email'), 'field' => 'pgt.email'),
     'title' => array('data' => t('Title'), 'field' => 'pgt.title'),
@@ -84,63 +88,78 @@ function pg_showtransactions_history() {
     'operations' => t('Operations')
   );
 
-$query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('TableSort')->extend('FormFilterAPI');
-  $query->fields('pgt');    
+  $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')
+    ->extend('TableSort')->extend('FormFilterAPI');
+  $query->fields('pgt');
   $query->leftjoin('users', 'u', 'pgt.uid = %alias.uid');
-  $query->fields('u',array('name'));
-  $query->processFilters('pg_showtransactions_history');  
+  $query->fields('u', array('name'));
+  $query->processFilters('pg_showtransactions_history');
   $query->extend('TableSort');
   $query->orderByHeader($header);
-  
-  $transactions= $query->execute()->fetchAll();
+
+  $transactions = $query->execute()->fetchAll();
 
 
   foreach ($transactions as $txn) {
 
     $action = array(
-      array( 'href' => "admin/reports/showtransactions/edit/".$txn->txnid,
-             'title' => t('Edit'),
-             'query' => drupal_get_destination()
-           ),
-    );           
+      array(
+        'href' => "admin/reports/showtransactions/edit/" . $txn->txnid,
+        'title' => t('Edit'),
+        'query' => drupal_get_destination()
+      ),
+    );
     $account = user_load($txn->uid);
     $operation = 'sub';
-    if($txn->amount > 0){
+    if ($txn->amount > 0) {
       $operation = 'add';
     }
-    $class = array($operation, 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
-    
+    $class = array(
+      $operation,
+      'status-' . $txn->status,
+      'workflow-' . $txn->workflow
+    );
+
     $rows[] = array(
-      'data'=>array(
+      'data' => array(
         $txn->txnid,
-        $txn->name ? l($txn->name, "user/".$txn->uid) : variable_get('anonymous',t('anonymous')),
+        $txn->name ? l($txn->name, "user/" . $txn->uid) : variable_get('anonymous', t('anonymous')),
         $txn->email,
         $txn->title,
-        array( 'data' => pgapi_format_price($txn->amount), 'class' => array('amount')),
+        array(
+          'data' => pgapi_format_price($txn->amount),
+          'class' => array('amount')
+        ),
         pgapi_get_gateway_name($txn->gateway),
         pgapi_get_status($txn->status),
-        format_date($txn->created,'small'),
-        format_date($txn->changed,'small'),
-        theme('links',array('links' => $action))
+        format_date($txn->created, 'small'),
+        format_date($txn->changed, 'small'),
+        theme('links', array('links' => $action))
       ),
-      'class' => $class,  
+      'class' => $class,
     );
-  }//while
-  if(empty($rows)){
-    $rows[] = array(array('data' => t('No data available.'), 'colspan' => '10'));
-  }  
+  }
+  //while
+  if (empty($rows)) {
+    $rows[] = array(
+      array(
+        'data' => t('No data available.'),
+        'colspan' => '10'
+      )
+    );
+  }
   $pagerCountShow = theme('altpager');
 
   $form = formfilterapi_get_form('pg_showtransactions_history');
   $output = drupal_render($form);
-  $output .= '<br>'; 
+  $output .= '<br>';
   $output .= $pagerCountShow;
   $output .= '<div width=99% style="overflow-x: auto; ">';
-  $output .=  theme('table', array( 'header' => $header, 'rows' => $rows));
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
   $output .= "</div>";
   $output .= $pagerCountShow;
-  
-  
+
+
   return $output;
 
 }
@@ -161,28 +180,29 @@ function pg_showtransactions_operator_history() {
     t('Operations')
   );
 
-  $sql='SELECT t.*, u.name FROM {pgapi_transaction} t LEFT JOIN {users} u ON u.uid=t.uid '.$filters['join'].' '.$filters['where'].tablesort_sql($header);
+  $sql = 'SELECT t.*, u.name FROM {pgapi_transaction} t LEFT JOIN {users} u ON u.uid=t.uid ' . $filters['join'] . ' ' . $filters['where'] . tablesort_sql($header);
 
-  $result = pager_query($sql, variable_get('pg_showtransactions_default_num',10), 0, NULL, $filters['args']);
+  $result = pager_query($sql, variable_get('pg_showtransactions_default_num', 10), 0, NULL, $filters['args']);
 
   while ($txn = db_fetch_object($result)) {
-    $action=l(t('Edit'), "operator/showtransactions/edit/".$txn->txnid);
+    $action = l(t('Edit'), "operator/showtransactions/edit/" . $txn->txnid);
     $rows[] = array(
-      '<input type="checkbox" name="items['.$txn->txnid.']">',
+      '<input type="checkbox" name="items[' . $txn->txnid . ']">',
       $txn->txnid,
-      $txn->name ? l($txn->name, "user/".$txn->uid) : variable_get('anonymous',t('anonymous')),
-      $txn->email.'&nbsp;',
+      $txn->name ? l($txn->name, "user/" . $txn->uid) : variable_get('anonymous', t('anonymous')),
+      $txn->email . '&nbsp;',
       $txn->title,
       $txn->amount,
       pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
-      format_date($txn->created,'small'),
-      format_date($txn->changed,'small'),
+      format_date($txn->created, 'small'),
+      format_date($txn->changed, 'small'),
       $action
     );
-  }//while
-  $filter_form = drupal_get_form('pg_showtransactions_filter_form','history_filter');
-  $output = theme('pg_showtransactions_operator_history',$rows,$filter_form);
+  }
+  //while
+  $filter_form = drupal_get_form('pg_showtransactions_filter_form', 'history_filter');
+  $output = theme('pg_showtransactions_operator_history', $rows, $filter_form);
   return $output;
 
 }
@@ -190,7 +210,7 @@ function pg_showtransactions_operator_history() {
 function pg_showtransactions_personal_history() {
   global $user;
 
-  drupal_add_js(drupal_get_path('module', 'pg_showtransactions') .'/pg_showtransactions.js');
+  drupal_add_js(drupal_get_path('module', 'pg_showtransactions') . '/pg_showtransactions.js');
 
   $filters = pg_showtransactions_build_filter_query('personal_history_filter');
 
@@ -204,19 +224,21 @@ function pg_showtransactions_personal_history() {
     array('data' => t('changed'), 'field' => 't.changed'),
     t('Operations')
   );
-  if(empty($filters['where'])){
-    $filters['where'] = "WHERE t.uid='".$user->uid."'";
-  } else {
-    $filters['where'] .= " AND t.uid='".$user->uid."'";
+  if (empty($filters['where'])) {
+    $filters['where'] = "WHERE t.uid='" . $user->uid . "'";
   }
-  $sql='SELECT t.* FROM {pgapi_transaction} t '.$filters['join'].' '.$filters['where'].tablesort_sql($header);
-  $result = pager_query($sql, variable_get('pg_showtransactions_'.$user->uid.'_num',10), 0, NULL, $filters['args']);
+  else {
+    $filters['where'] .= " AND t.uid='" . $user->uid . "'";
+  }
+  $sql = 'SELECT t.* FROM {pgapi_transaction} t ' . $filters['join'] . ' ' . $filters['where'] . tablesort_sql($header);
+  $result = pager_query($sql, variable_get('pg_showtransactions_' . $user->uid . '_num', 10), 0, NULL, $filters['args']);
 
   while ($txn = db_fetch_object($result)) {
-    if($txn->status == PG_PENDING ){
-      $action=l(t('Pay'), "payment/".$txn->txnid);
-    }else{
-      $action='';
+    if ($txn->status == PG_PENDING) {
+      $action = l(t('Pay'), "payment/" . $txn->txnid);
+    }
+    else {
+      $action = '';
     }
 
     $rows[] = array(
@@ -226,40 +248,49 @@ function pg_showtransactions_personal_history() {
       $txn->amount,
       pgapi_get_gateway_name($txn->method),
       pgapi_get_status($txn->status),
-      format_date($txn->created,'small'),
+      format_date($txn->created, 'small'),
       $action
     );
-  }//while
+  }
+  //while
   $filter_form = drupal_get_form('pg_showtransactions_filter_form', 'personal_history_filter');
-  $output.= theme('pg_showtransactions_personal_history', $rows, $filter_form);
+  $output .= theme('pg_showtransactions_personal_history', $rows, $filter_form);
   return $output;
 
 }
 
-function pg_showtransactions_filter_form($form_state,$sess){
-  $sess='pg_showtransactions_'.$sess;
-  $session = &$_SESSION[$sess];
+function pg_showtransactions_filter_form($form_state, $sess) {
+  $sess = 'pg_showtransactions_' . $sess;
+  $session = & $_SESSION[$sess];
   $session = is_array($session) ? $session : array();
-  $filtersfunction=$sess.'s';
+  $filtersfunction = $sess . 's';
   $filters = $filtersfunction();
 
   $i = 0;
-  $form['session_name']= array ('#type' => 'hidden', '#value' => $sess);
-  $form['filters'] = array('#type' => 'fieldset',
-                       '#title' => t('Show payment where'),
-                       '#theme' => 'pg_showtransactions_filters',
-  					   '#collapsible'=>true,
-  					   '#collapsed'=>!count($session)
-                     );
+  $form['session_name'] = array('#type' => 'hidden', '#value' => $sess);
+  $form['filters'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Show payment where'),
+    '#theme' => 'pg_showtransactions_filters',
+    '#collapsible' => TRUE,
+    '#collapsed' => !count($session)
+  );
 
   foreach ($session as $filter) {
     list($type, $value) = $filter;
     // Merge an array of arrays into one if necessary.
-    if($filters[$type]['type']=='textfield'){
-      $params = array('%property' => $filters[$type]['title'] , '%value' => $value);
-    }else{
+    if ($filters[$type]['type'] == 'textfield') {
+      $params = array(
+        '%property' => $filters[$type]['title'],
+        '%value' => $value
+      );
+    }
+    else {
       $options = $type == 'permission' ? call_user_func_array('array_merge', $filters[$type]['options']) : $filters[$type]['options'];
-      $params = array('%property' => $filters[$type]['title'] , '%value' => $options[$value]);
+      $params = array(
+        '%property' => $filters[$type]['title'],
+        '%value' => $options[$value]
+      );
     }
     if ($i++ > 0) {
       $form['filters']['current'][] = array('#value' => t('<em>and</em> where <strong>%property</strong> - <strong>%value</strong>', $params));
@@ -272,30 +303,38 @@ function pg_showtransactions_filter_form($form_state,$sess){
 
   foreach ($filters as $key => $filter) {
     $names[$key] = $filter['title'];
-    if($filter['type'] == "textfield"){
-     $form['filters']['status'][$key] = array('#type' => 'textfield', '#size' => 23);
-    } else {
+    if ($filter['type'] == "textfield") {
       $form['filters']['status'][$key] = array(
-      	'#type' => 'select',
+        '#type' => 'textfield',
+        '#size' => 23
+      );
+    }
+    else {
+      $form['filters']['status'][$key] = array(
+        '#type' => 'select',
         '#options' => $filter['options'],
 //        '#attributes' => array()
       );
     }
   }
 
-  $form['filters']['filter'] = array('#type' => 'radios',
-                                 '#options' => $names,
-                               );
-  $form['filters']['buttons']['submit'] = array('#type' => 'submit',
-                                            '#value' => (count($session) ? t('Refine') : t('Filter'))
-                                          );
+  $form['filters']['filter'] = array(
+    '#type' => 'radios',
+    '#options' => $names,
+  );
+  $form['filters']['buttons']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => (count($session) ? t('Refine') : t('Filter'))
+  );
   if (count($session)) {
-    $form['filters']['buttons']['undo'] = array('#type' => 'submit',
-                                            '#value' => t('Undo')
-                                          );
-    $form['filters']['buttons']['reset'] = array('#type' => 'submit',
-                                             '#value' => t('Reset')
-                                           );
+    $form['filters']['buttons']['undo'] = array(
+      '#type' => 'submit',
+      '#value' => t('Undo')
+    );
+    $form['filters']['buttons']['reset'] = array(
+      '#type' => 'submit',
+      '#value' => t('Reset')
+    );
   }
 
   return $form;
@@ -303,8 +342,8 @@ function pg_showtransactions_filter_form($form_state,$sess){
 
 function pg_showtransactions_filter_form_submit($form, &$form_state) {
   $op = $form_state['values']['op'];
-  $sess=$form_state['values']['session_name'];
-  $filterfunction = $sess.'s';
+  $sess = $form_state['values']['session_name'];
+  $filterfunction = $sess . 's';
   $filters = $filterfunction();
 
   switch ($op) {
@@ -313,9 +352,10 @@ function pg_showtransactions_filter_form_submit($form, &$form_state) {
       if (isset($form_state['values']['filter'])) {
         $filter = $form_state['values']['filter'];
         // Merge an array of arrays into one if necessary.
-        if($filters[$filter]['type'] == 'textfield'){
+        if ($filters[$filter]['type'] == 'textfield') {
           $_SESSION[$sess][] = array($filter, $form_state['values'][$filter]);
-        }else{
+        }
+        else {
           $options = $filter == 'permission' ? call_user_func_array('array_merge', $filters[$filter]['options']) : $filters[$filter]['options'];
           if (isset($options[$form_state['values'][$filter]])) {
             $_SESSION[$sess][] = array($filter, $form_state['values'][$filter]);
@@ -335,19 +375,18 @@ function pg_showtransactions_filter_form_submit($form, &$form_state) {
 }
 
 
-
 /********************************************************************
  * Other Functions
  ********************************************************************/
 
 function pg_showtransactions_build_filter_query($sess) {
-  $sess='pg_showtransactions_'.$sess;
-  $filterfunction = $sess.'s';
+  $sess = 'pg_showtransactions_' . $sess;
+  $filterfunction = $sess . 's';
   $filters = $filterfunction();
 
   // Build query
   $where = $args = $join = array();
-  if(isset($_SESSION[$sess])){
+  if (isset($_SESSION[$sess])) {
     foreach ($_SESSION[$sess] as $filter) {
       list($key, $value) = $filter;
       $where[] = $filters[$key]['where'];
@@ -355,90 +394,104 @@ function pg_showtransactions_build_filter_query($sess) {
       $join[] = $filters[$key]['join'];
     }
   }
-  $where = count($where) ? 'WHERE '. implode(' AND ', $where) : '';
-  $join = count($join) ? ' '. implode(' ', array_unique($join)) : '';
+  $where = count($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+  $join = count($join) ? ' ' . implode(' ', array_unique($join)) : '';
 
-  return array('where' => $where,
-           'join' => $join,
-           'args' => $args,
-         );
+  return array(
+    'where' => $where,
+    'join' => $join,
+    'args' => $args,
+  );
 }
 
-function pg_showtransactions_history_filters(){
+function pg_showtransactions_history_filters() {
   $filters = array();
-  $filters['ID']= array('type'  => 'textfield',
-                          'title' => t('ID'),
-                          'where' => "t.txnid='%s'",
-                       );
-  $filters['name']= array('type'  => 'textfield',
-                          'title' => t('User'),
-                          'where' => "u.name='%s'",
-                       );
+  $filters['ID'] = array(
+    'type' => 'textfield',
+    'title' => t('ID'),
+    'where' => "t.txnid='%s'",
+  );
+  $filters['name'] = array(
+    'type' => 'textfield',
+    'title' => t('User'),
+    'where' => "u.name='%s'",
+  );
 
-  $filters['email']= array('type'  => 'textfield',
-                          'title' => t('Email'),
-                          'where' => "t.email='%s'",
-                       );
+  $filters['email'] = array(
+    'type' => 'textfield',
+    'title' => t('Email'),
+    'where' => "t.email='%s'",
+  );
 
-  $filters['price_from']= array('type'  => 'textfield',
-                          'title' => t('Pay amount more than'),
-                          'where' => "t.amount>='%f'",
-                       );
+  $filters['price_from'] = array(
+    'type' => 'textfield',
+    'title' => t('Pay amount more than'),
+    'where' => "t.amount>='%f'",
+  );
 
-  $filters['price_to']= array('type'  => 'textfield',
-                          'title' => t('Pay amount less than'),
-                          'where' => "t.amount<='%f'",
-                       );
+  $filters['price_to'] = array(
+    'type' => 'textfield',
+    'title' => t('Pay amount less than'),
+    'where' => "t.amount<='%f'",
+  );
 
-  $filters['product']= array('type'  => 'textfield',
-                          'title' => t('Title'),
-                          'where' => "t.title LIKE '%%%s%'",
-                       );
-  $filters['method']= array('title' => t('Method'),
-                          'where' => "t.method = '%s'",
-                          'options' => pgapi_build_gateway(),
-                       );
+  $filters['product'] = array(
+    'type' => 'textfield',
+    'title' => t('Title'),
+    'where' => "t.title LIKE '%%%s%'",
+  );
+  $filters['method'] = array(
+    'title' => t('Method'),
+    'where' => "t.method = '%s'",
+    'options' => pgapi_build_gateway(),
+  );
 
-  $filters['status'] = array('title' => t('payment status'),
-                         'where' => 't.status = %d',
-                         'options' => pgapi_build_status(),
-                       );
+  $filters['status'] = array(
+    'title' => t('payment status'),
+    'where' => 't.status = %d',
+    'options' => pgapi_build_status(),
+  );
 
   return $filters;
 }
 
-function pg_showtransactions_personal_history_filters(){
+function pg_showtransactions_personal_history_filters() {
   $filters = array();
-  $filters['ID']= array('type'  => 'textfield',
-                          'title' => t('ID'),
-                          'where' => "t.txnid='%s'",
-                       );
+  $filters['ID'] = array(
+    'type' => 'textfield',
+    'title' => t('ID'),
+    'where' => "t.txnid='%s'",
+  );
 
-  $filters['price_from']= array('type'  => 'textfield',
-                          'title' => t('Pay amount more than'),
-                          'where' => "t.amount>='%f'",
-                       );
+  $filters['price_from'] = array(
+    'type' => 'textfield',
+    'title' => t('Pay amount more than'),
+    'where' => "t.amount>='%f'",
+  );
 
-  $filters['price_to']= array('type'  => 'textfield',
-                          'title' => t('Pay amount less than'),
-                          'where' => "t.amount<='%f'",
-                       );
+  $filters['price_to'] = array(
+    'type' => 'textfield',
+    'title' => t('Pay amount less than'),
+    'where' => "t.amount<='%f'",
+  );
 
 
-  $filters['product']= array('type'  => 'textfield',
-                          'title' => t('Title'),
-                          'where' => "t.title LIKE '%%%s%'",
-                       );
-  $filters['method']= array('title' => t('Method'),
-                         'where' => "t.method = '%s'",
-                         'options' => pgapi_build_gateway(),
-                       );
+  $filters['product'] = array(
+    'type' => 'textfield',
+    'title' => t('Title'),
+    'where' => "t.title LIKE '%%%s%'",
+  );
+  $filters['method'] = array(
+    'title' => t('Method'),
+    'where' => "t.method = '%s'",
+    'options' => pgapi_build_gateway(),
+  );
 
-  $filters['status'] = array('title' => t('payment status'),
-                         'where' => 't.status = %d',
-                         'options' => pgapi_build_status(),
-                       );
-
+  $filters['status'] = array(
+    'title' => t('payment status'),
+    'where' => 't.status = %d',
+    'options' => pgapi_build_status(),
+  );
 
 
   return $filters;
