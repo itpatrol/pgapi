@@ -660,7 +660,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
     }
 
     $form['description'] = array(
-      '#markup' => t('Please select service that you like to pay with.')
+      '#markup' => t('Please select service that you like to pay with.'),
     );
 
     $form['gateway'] = array(
@@ -668,7 +668,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
       '#multiple' => FALSE,
       '#header' => array(
         'name' => t('Payment system'),
-        'price' => t('Amount to pay')
+        'price' => t('Amount to pay'),
       ),
       '#options' => $options,
       '#default_value' => $default,
@@ -692,7 +692,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
 
   $form['txnid'] = array(
     '#type' => 'value',
-    '#value' => $transaction->txnid
+    '#value' => $transaction->txnid,
   );
 
   $form['submit'] = array(
