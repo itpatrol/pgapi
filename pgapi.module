@@ -243,7 +243,7 @@ function pgapi_format_price_plain($price) {
     $formated = theme('pgapi_format_price_plain', array(
       'price' => $formated_price,
       'symbol' => $format['symbol'],
-      'position' => $format['symbol_position']
+      'position' => $format['symbol_position'],
     ));
   }
   else {
@@ -251,7 +251,7 @@ function pgapi_format_price_plain($price) {
     $formated = theme('pgapi_format_price_plain', array(
       'price' => $formated_price,
       'symbol' => '$',
-      'position' => TRUE
+      'position' => TRUE,
     ));
   }
   return $formated;
