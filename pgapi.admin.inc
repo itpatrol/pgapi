@@ -25,7 +25,6 @@ function pgapi_admin_menu_block_page() {
 /**
  * Form-builder for PGAPI currency settings.
  */
-
 function pgapi_admin_currency_settings($form, &$form_state) {
   $pgapi_currency = variable_get('pgapi_currency', array());
 
