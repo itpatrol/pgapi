@@ -27,7 +27,7 @@ function theme_pgapi_format_price($values) {
 }
 
 /**
- * Theme function for formating price without html
+ * Theme function for formating price without html.
  *
  * @param array $values
  *   - price Price to format.
