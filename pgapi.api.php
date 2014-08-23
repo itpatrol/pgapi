@@ -7,7 +7,8 @@
 /**
  * Returns gateway info.
  *
- * @return Array keyed by module name.
+ * @return array
+ *   Keyed by module name.
  */
 function hook_pgapi_gw_info() {
 }
@@ -25,9 +26,9 @@ function hook_pgapi_transaction_all($status, $transaction) {
 }
 
 /**
- * Executes pgapi hook
+ * Executes pgapi hook.
  *
- * @param $op
+ * @param string $op
  *   The operation to be performed. Possible values:
  *   - "payment gateway info"
  *   - "display name"
@@ -35,8 +36,11 @@ function hook_pgapi_transaction_all($status, $transaction) {
  *   - "get form"
  *   - "process form"
  *   - "edit"
- * @param unknown_type $a3
- * @param unknown_type $a4
+ * @param numeric $a3
+ *   Price.
+ *
+ * @param array $a4
+ *   Form result.
  */
 function hook_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
 }
