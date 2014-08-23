@@ -1,5 +1,4 @@
 <?php
-// $Id: pg_paypal.admin.inc,v 1.1 2009/11/24 22:06:36 gor Exp $
 /********************************************************************
  * Functions callback
  ********************************************************************/
@@ -20,7 +19,7 @@ function pg_paypal_settings($form, $form_state) {
     '#type'          => 'textfield',
     '#title'         => t('PayPal Receiver Email'),
     '#default_value' => variable_get('pg_paypal_email',''),
-    '#description'   => t("Primary email address of the payment recipent. This is also your main paypal email address."),
+    '#description'   => t("Primary email address of the payment recipient. This is also your main paypal email address."),
   );
   $currency_codes = array(
     'USD' => 'USD - U.S. Dollars',
@@ -45,7 +44,7 @@ function pg_paypal_settings($form, $form_state) {
     '#title'         => t('Currency code'),
     '#options'       => $currency_codes,
     '#default_value' => variable_get('pg_paypal_currency_code','USD'),
-    '#description'   => t("The currecy code that PayPal should process the payment in."),
+    '#description'   => t("The currency code that PayPal should process the payment in."),
   );
 
   $form['pg_paypal_rate'] = array(
@@ -105,10 +104,10 @@ function pg_paypal_done_payment (){
   $post+= $ipn;
 
   $request = drupal_http_request(variable_get('pg_paypal_validation_url', cPaypalValidationUrl), $headers, 'POST', _query_string_encode($post, array('q')));
-  
+
   $description = t('Payment has been received.');
   $status="completed";
-  
+
   if ($request->data != 'VERIFIED') {
       $handle = fopen('/tmp/paypal.txt', 'a');
       $C = "Answer";
@@ -125,9 +124,9 @@ function pg_paypal_done_payment (){
       $description = t('This amount does not match with the original price');
       $status = 'denied';
     }
-    
+
   $currency=variable_get('pg_paypal_currency_code','USD');
-   
+
   if($currency != $payment_currency  ){
       $description = t('This currency does not match with the original currency');
       $status = 'denied';
@@ -139,7 +138,7 @@ function pg_paypal_done_payment (){
       $description = t('This receiver email does not match with the original email');
       $status = 'denied';
     }
-    
+
   $t->description=$description;
   $t->status = pgapi_get_status_id($status);
   pgapi_transaction_save($t);
