@@ -545,7 +545,7 @@ function pgapi_get_workflow($id) {
 /**
  * Return workflow ID by human-readable workflow name.
  *
- * @param  $name
+ * @param string $name
  *   String with workflow name.
  *
  * @return int
