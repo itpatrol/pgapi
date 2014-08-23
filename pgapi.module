@@ -141,7 +141,7 @@ function pgapi_theme() {
         'position' => NULL,
       ),
       'file' => 'pgapi.theme.inc',
-    )
+    ),
   );
 }
 
