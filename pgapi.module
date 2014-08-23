@@ -722,8 +722,8 @@ function pgapi_ajax_form_callback($form, &$form_state) {
 }
 
 /**
- * Submit function for payment form.
- * Process transaction and redirect to payment system page.
+ * Submit function for payment form. Process transaction and redirect
+ * to payment system page.
  */
 function pgapi_payment_submit($form, &$form_state) {
   $values = $form_state['values'];
