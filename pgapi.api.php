@@ -30,12 +30,13 @@ function hook_pgapi_transaction_all($status, $transaction) {
  *
  * @param string $op
  *   The operation to be performed. Possible values:
- *   - "payment gateway info"
- *   - "display name"
- *   - "payment page"
- *   - "get form"
- *   - "process form"
- *   - "edit"
+ *   - "payment gateway info".
+ *   - "display name".
+ *   - "payment page".
+ *   - "get form".
+ *   - "process form".
+ *   - "edit".
+ *
  * @param numeric $a3
  *   Price.
  *
