@@ -16,15 +16,15 @@
 
  <?php if (!empty($transaction->gateway)) : ?>
  <dt><?php print t('Paid with')?></dt>
- <dd><?php 
+ <dd><?php
    print module_invoke($transaction->gateway, 'pgapi_gw', 'display name') ?></dd>
- <?php endif ?> 
-<?php 
+ <?php endif ?>
+<?php
   if(is_array($service_details)){
     foreach($service_details as $title => $value){
-      echo  '<dt>' . $title . '</dt>'."\n";  
+      echo  '<dt>' . $title . '</dt>'."\n";
       echo  '<dd>' . $value . '</dd>'."\n";
-    } 
+    }
   }
 ?>
 
