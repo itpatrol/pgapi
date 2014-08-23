@@ -501,6 +501,7 @@ function pgapi_get_status_id($name) {
  * Add hook_pgapi_transaction_workflow()
  *
  * @return array
+ *   Return array with all workflows.
  */
 function pgapi_build_workflow() {
   $workflow = array(
