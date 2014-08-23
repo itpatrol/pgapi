@@ -366,7 +366,7 @@ function pgapi_transaction_save(&$transaction) {
  *   Transaction ID.
  *
  * @return object
- *  Loaded transaction.
+ *   Loaded transaction.
  */
 function pgapi_transaction_load($txnid) {
   if (ctype_digit($txnid)) {
