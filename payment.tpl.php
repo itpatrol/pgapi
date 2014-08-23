@@ -9,7 +9,7 @@
  <?php endif ?>
 
  <dt><?php print t('Date')?></dt>
- <dd><?php print format_date($transaction->changed,'custom',' d M Y H:i:s') ?></dd>
+ <dd><?php print format_date($transaction->changed, 'custom', ' d M Y H:i:s') ?></dd>
 
  <dt><?php print t('Status')?></dt>
  <dd class="status-<?php print $transaction->status ?>"><?php print pgapi_get_status($transaction->status) ?></dd>
