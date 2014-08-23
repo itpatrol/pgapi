@@ -1,103 +1,111 @@
 <?php
-
-/*
- * Constants
+/**
+ * @file
+ * Paypal.
+ *
+ * Paypal payment gateway.
  */
 
-define("cPaypalActionUrl" ,"https://www.paypal.com/xclick/");
-define("cPaypalValidationUrl" ,"https://www.paypal.com/cgi-bin/webscr");
-
-/********************************************************************
- * Drupal Hooks
- ********************************************************************/
-
+/**
+ * Constants.
+ */
+define("PG_PAYPAL_ACTION_URL", 'https://www.paypal.com/xclick/');
+define("PG_PAYPAL_VALIDATION_URL", 'https://www.paypal.com/cgi-bin/webscr');
 
 /**
- * Implemens hook_menu()
+ * Implements hook_menu().
  */
 function pg_paypal_menu() {
   $items['paypal/done'] = array(
-      'title'           => 'Internal Data',
-      'page callback'   => 'pg_paypal_done_payment',
-      'access callback' => TRUE,
-      'file'            => 'pg_paypal.admin.inc',
-      'type'            => MENU_CALLBACK
+    'title' => 'Internal Data',
+    'page callback' => 'pg_paypal_done_payment',
+    'access callback' => TRUE,
+    'file' => 'pg_paypal.admin.inc',
+    'type' => MENU_CALLBACK,
   );
+
   $items['admin/config/pgapi/gateway_settings/paypal'] = array(
-      'title'           => 'Paypal',
-      'description'     => 'Paypal gateway payment settings.',
-      'page callback'   => 'drupal_get_form',
-      'page arguments'  => array('pg_paypal_settings'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'file'            => 'pg_paypal.admin.inc',
-      'type'            => MENU_LOCAL_TASK,
+    'title' => 'Paypal',
+    'description' => 'Paypal gateway payment settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_paypal_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_paypal.admin.inc',
+    'type' => MENU_LOCAL_TASK,
   );
+
   return $items;
 }
 
-/*
- * Implements hook_pgapi_gw
+/**
+ * Implements hook_pgapi_gw().
  */
-function pg_paypal_pgapi_gw($op,$a3=NULL,$a4=NULL){
-  switch($op){
+function pg_paypal_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
     case 'display name':
-        $ret = t('Paypal');
+      $ret = t('Paypal');
       break;
+
     case 'payment gateway info':
-        $ret['name']=theme('image', array( 'path' => drupal_get_path('module','pg_paypal').'/paypal.png', 'alt' => t('Paypal'), 'title' => t('Paypal')));
-        $prices[variable_get('pg_paypal_currency_code','USD')] = round(($a3*variable_get('pg_paypal_rate','1.00')),2);
-        $ret['price']= $prices;
-      break;   
-    case 'ajax_form':
-        $t=$a3;
-        return array(
-          'element' => pg_webmoney_get_markup($t),
-          'submit' => 'pg_paypal_submit',
-        );
+      $ret['name'] = theme('image', array(
+        'path' => drupal_get_path('module', 'pg_paypal') . '/paypal.png',
+        'alt' => t('Paypal'),
+        'title' => t('Paypal'),
+      ));
+      $prices[variable_get('pg_paypal_currency_code', 'USD')] = round(($a3 * variable_get('pg_paypal_rate', '1.00')), 2);
+      $ret['price'] = $prices;
       break;
-      
+
+    case 'ajax_form':
+      $t = $a3;
+      return array(
+        'element' => pg_webmoney_get_markup($t),
+        'submit' => 'pg_paypal_submit',
+      );
   }
+
   return $ret;
 }
 
-function pg_paypal_pgapi_transaction($status,$t){
-  switch($status){
+/**
+ * Implements hook_pgapi_transaction().
+ */
+function pg_paypal_pgapi_transaction($status, $t) {
+  switch ($status) {
     case PG_PENDING:
-        $t->extra['amount'] =  round(($t->amount * variable_get('pg_paypal_rate','1.00')),2);
-      break;
+      $t->extra['amount'] = round(($t->amount * variable_get('pg_paypal_rate', '1.00')), 2);
   }
 }
-function pg_webmoney_get_markup($t){
+
+function pg_webmoney_get_markup($t) {
   $form['message'] = array(
     '#type' => 'markup',
     '#value' => '<!-- -->',
   );
+
   return $form;
 }
 
-function pg_paypal_submit($form,$form_state){
-
-  $form = drupal_build_form('pg_paypal_payform',$form_state);
+function pg_paypal_submit($form, $form_state) {
+  $form = drupal_build_form('pg_paypal_payform', $form_state);
   $output = drupal_render($form);
-  
-  echo '<html><body>'.$output.'<script>pgpayform.submit();</script></body>';
-  exit();
+
+  echo '<html><body>' . $output . '<script>pgpayform.submit();</script></body>';
+  drupal_exit();
 }
 
 function pg_paypal_payform($form, $form_state) {
-  global $user;
   global $language;
-  
+
   $values = $form_state['values'];
   $t = pgapi_transaction_load($values['txnid']);
 
-  
   $form['lc'] = array(
     '#type' => 'hidden',
     '#value' => $language->language,
   );
-  
+
   $form['item_name'] = array(
     '#type' => 'hidden',
     '#value' => $t->title,
@@ -108,23 +116,23 @@ function pg_paypal_payform($form, $form_state) {
     '#value' => 'UTF-8',
   );
 
-  
   $form['amount'] = array(
     '#type' => 'hidden',
-    '#value' => round(($t->amount * variable_get('pg_paypal_rate','1.00')),2),
+    '#value' => round(($t->amount * variable_get('pg_paypal_rate', '1.00')), 2),
   );
 
   $form['business'] = array(
     '#type' => 'hidden',
-    '#value' => variable_get('pg_paypal_email',''),
+    '#value' => variable_get('pg_paypal_email', ''),
   );
-  
+
   $form['item_number'] = array(
     '#type' => 'hidden',
     '#value' => $t->txnid,
   );
-  
-  $sitename=variable_get('site_name', 'Drupal');
+
+  $sitename = variable_get('site_name', 'Drupal');
+
   $form['cbt'] = array(
     '#type' => 'hidden',
     '#value' => t('Return back to !site', array('!site' => $sitename)),
@@ -132,25 +140,26 @@ function pg_paypal_payform($form, $form_state) {
 
   $form['currency_code'] = array(
     '#type' => 'hidden',
-    '#value' => variable_get('pg_paypal_currency_code',''),
+    '#value' => variable_get('pg_paypal_currency_code', ''),
   );
 
   $form['notify_url'] = array(
     '#type' => 'hidden',
-    '#value' => url('paypal/done',array('absolute' => TRUE)),
+    '#value' => url('paypal/done', array('absolute' => TRUE)),
   );
 
   $form['return'] = array(
     '#type' => 'hidden',
-    '#value' => url(pgapi_get_redirect_url($t),array('absolute' => TRUE)),
+    '#value' => url(pgapi_get_redirect_url($t), array('absolute' => TRUE)),
   );
 
   $form['cancel_return'] = array(
     '#type' => 'hidden',
-    '#value' => url(pgapi_get_redirect_url($t),array('absolute' => TRUE)),
+    '#value' => url(pgapi_get_redirect_url($t), array('absolute' => TRUE)),
   );
-  
+
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = variable_get('pg_paypal_action_url',cPaypalActionUrl);
+  $form['#action'] = variable_get('pg_paypal_action_url', PG_PAYPAL_ACTION_URL);
+
   return $form;
 }
