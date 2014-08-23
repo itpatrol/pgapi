@@ -158,7 +158,7 @@ function pgapi_mail($key, &$message, $params) {
 
   $transaction = $params['transaction'];
 
-  //$account = user_load($transaction->uid);
+  // $account = user_load($transaction->uid);
   $variables = array();
   $variables['!txnid'] = $transaction->txnid;
   $variables['!pg_amount'] = $transaction->amount;
