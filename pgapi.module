@@ -385,8 +385,6 @@ function pgapi_transaction_load($txnid) {
  *
  * @param int $txnid
  *   Transaction ID.
- *
- * @return void
  */
 function pgapi_transaction_delete($txnid) {
   db_delete('pgapi_transaction')
