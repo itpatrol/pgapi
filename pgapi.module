@@ -584,7 +584,7 @@ function pgapi_payment_title($transaction) {
  * Return form with payment methods.
  *
  * @param object $transaction
- *   Current transaction
+ *   Current transaction.
  *
  * @return string
  *   Form.
