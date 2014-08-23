@@ -20,12 +20,12 @@
    print module_invoke($transaction->gateway, 'pgapi_gw', 'display name') ?></dd>
  <?php endif ?>
 <?php
-  if(is_array($service_details)){
-    foreach($service_details as $title => $value){
+  if (is_array($service_details)):
+    foreach ($service_details as $title => $value):
       echo  '<dt>' . $title . '</dt>'."\n";
       echo  '<dd>' . $value . '</dd>'."\n";
-    }
-  }
+    endforeach;
+  endif;
 ?>
 
 </dl>
