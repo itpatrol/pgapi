@@ -347,7 +347,7 @@ function pgapi_transaction_save(&$transaction) {
     $admin_mail = variable_get('site_mail', '');
   }
 
-  $params['transaction'] = $transaction;
+  // $params['transaction'] = $transaction;
   // drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
 
   // Unserialize extra data.
