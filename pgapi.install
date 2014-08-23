@@ -1,9 +1,8 @@
 <?php
 /**
  * @file
- *   Install and unistall functions for PGAPI module.
+ * Install and unistall functions for PGAPI module.
  */
-
 
 /**
  * Implements hook_uninstall().
