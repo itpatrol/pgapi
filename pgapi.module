@@ -230,7 +230,7 @@ function pgapi_format_price($price, $format = NULL) {
  *
  * Add hook_pgapi_format_price().
  *
- * @param  $price
+ * @param numeric $price
  *   String with price to format.
  *
  * @return string
