@@ -496,7 +496,7 @@ function pgapi_get_status_id($name) {
 }
 
 /**
- * Get all availible transaction workflows
+ * Get all availible transaction workflows.
  *
  * Add hook_pgapi_transaction_workflow()
  *
