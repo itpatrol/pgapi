@@ -1,18 +1,15 @@
 <?php
-
 /**
  * @file
- *   Install and unistall functions for PGAPI module
+ * Install and unistall functions for PGAPI module.
  */
 
-
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function pgapi_uninstall() {
   variable_del('pgapi_gw');
 }
-
 
 /**
  * Implements hook_schema().
@@ -94,6 +91,7 @@ function pgapi_schema() {
     'indexes' => array('uid' => array('uid')),
     'primary key' => array('txnid'),
   );
+
   return $schema;
 }
 
@@ -110,7 +108,17 @@ function pgapi_update_last_removed() {
  * Changes fileds: type => service, method => gateway.
  */
 function pgapi_update_7000() {
-  db_change_field('pgapi_transaction', 'type', 'service', array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''));
-  db_change_field('pgapi_transaction', 'method', 'gateway', array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''));
-}
+  db_change_field('pgapi_transaction', 'type', 'service', array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => '',
+  ));
 
+  db_change_field('pgapi_transaction', 'method', 'gateway', array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+}
