@@ -173,7 +173,7 @@ function pgapi_mail($key, &$message, $params) {
 
   $variables['!site'] = variable_get('site_name', '');
 
-  // TODO: get mail subject and body from settings form
+  // @todo: get mail subject and body from settings form.
   switch ($key) {
     case PG_PENDING:
       $message['subject'] = t('New Payment Notification from !site', $variables, array('langcode' => $language->language));
