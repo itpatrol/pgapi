@@ -2,4 +2,3 @@ name = Payment Gateway API
 description = Payment Gateway API.
 package = "Payment Gateway API"
 core = 7.x
-
