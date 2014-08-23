@@ -1,24 +1,64 @@
 
 /* table part */
 
-tr.sub td.amount {
-  color: red;
-}
-
-tr.add td.amount {
+tr td.amount {
   color: green;
 }
 
-tr.status-1 td{
-  color: blue;
+tr.status-1 td.status{
+  color: #FF8D16;
+  background: none;
+  font-style: normal;
+  font-weight: bold;
 }
-
-tr.status-3 td, tr.status-4 td,tr.status-5 td,tr.status-6 td {
+tr.status-4 td,tr.invoice-status-5 td,tr.invoice-status-6 td {
   background-color: #FF8E8E;
   color: white;
 }
 
+tr.status-2 td.status{
+  color: green;
+  background: none;
+  font-style: normal;
+  font-weight: bold;
+}
+
+tr.status-1 {
+  color: blue;
+}
+
 td.date {
   min-width:70px;
+}
+
+
+div.pg_showtransaction_history {
+  min-height: 100px;
+}
+
+div.pg_showtransaction_history table tr th, div.pg_showtransaction_history table tr th a, div.pg_showtransaction_history table tr th a:hover{
+  background-color: white;
+  color: black;
+}
+div.pg_showtransaction_history tr td, div.pg_showtransaction_history tr th{
+  text-align: right;
+}
+
+div.pg_showtransaction_history tr.odd {
+  background-color: #f9f9f9;
+}
+
+div.pg_showtransaction_history tr.even{
+  background-color: white;
+}
+
+div.pg_showtransaction_history tr td.date {
+  min-width: 100px;
+}
+
+.price .symbol {
+  padding: 0px;
+  margin: 0px;
+  font-weight: bold;
 }
 

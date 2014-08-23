@@ -6,6 +6,5 @@ dependencies[] = altpager
 dependencies[] = formfilterapi
 
 package = "Payment Gateway API Tools"
-version = VERSION
 core = 7.x
 
