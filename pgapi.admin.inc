@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Administative functions for PGAPI module
+ * Administative functions for PGAPI module.
  */
 
 /**
