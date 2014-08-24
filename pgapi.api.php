@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Provides hook documentation for PGAPI module.
@@ -8,49 +7,47 @@
 /**
  * Returns gateway info.
  *
- * @return Array keyed by module name.
+ * @return array
+ *   Keyed by module name.
  */
 function hook_pgapi_gw_info() {
 }
 
 function hook_pgapi_callback($transaction) {
-  
 }
 
 function hook_pgapi_format_price($type, $price, $symbol) {
-
 }
 
 function hook_pgapi_transaction($status, $transaction) {
-
 }
 
 function hook_pgapi_transaction_all($status, $transaction) {
-
 }
 
 /**
- * Executes pgapi hook
+ * Executes pgapi hook.
  *
- * @param $op
+ * @param string $op
  *   The operation to be performed. Possible values:
- *   - "payment gateway info"
- *   - "display name"
- *   - "payment page"
- *   - "get form"
- *   - "process form"
- *   - "edit"
- * @param unknown_type $a3
- * @param unknown_type $a4
+ *   - "payment gateway info".
+ *   - "display name".
+ *   - "payment page".
+ *   - "get form".
+ *   - "process form".
+ *   - "edit".
+ *
+ * @param numeric $a3
+ *   Price.
+ *
+ * @param array $a4
+ *   Form result.
  */
 function hook_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
-  
 }
 
 function hook_pgapi_transaction_status(&$status) {
-  
 }
 
 function hook_pgapi_transaction_workflow(&$workflow) {
-
 }

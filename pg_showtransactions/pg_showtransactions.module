@@ -17,8 +17,8 @@ function pg_showtransactions_permission() {
       'restrict access' => TRUE,
     ),
     'show personal transaction' => array(
-      'title' => t('Send money'),
-      'description' => t('User can send money to another user'),
+      'title' => t('Show personal transactions'),
+      'description' => t('User can see personal transactions'),
       'restrict access' => TRUE,
     ),
   );
@@ -69,47 +69,82 @@ function pg_showtransactions_menu() {
 function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
   if ($op == 'filters') {
     $filters = array();
+
     switch ($session_name) {
-      case 'pg_showtransactions_history';
+      case 'pg_showtransactions_history':
         $filters['id'] = array(
-          '#type' => 'textfield',
+          '#type'  => 'textfield',
+            '#title' => t('Transaction id'),
+            '#where' => "pgt.txnid",
+          );
+
+          $filters['name'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Username'),
+            '#where' => array('like' => "u.name"),
+          );
+
+          $filters['mail'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Email'),
+            '#where' => array('like' => "pgt.email"),
+          );
+
+          $filters['price'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Amount'),
+            '#where' => "pgt.amount",
+          );
+
+          $filters['title'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Title'),
+            '#where' => array('like' => "pgt.title"),
+          );
+
+          $filters['gateway'] = array(
+            '#type'  => 'select',
+            '#title' => t('Gateway'),
+            '#where' => 'pgt.gateway',
+            '#options' => pgapi_get_gateway_options(),
+          );
+
+          $filters['status'] = array(
+            '#type'  => 'select',
+            '#title' => t('Payment status'),
+            '#where' => 'pgt.status',
+            '#options' => pgapi_build_status(),
+          );
+        break;
+
+      case 'pg_showtransactions_personal_history':
+        $filters['id'] = array(
+          '#type'  => 'textfield',
           '#title' => t('Ttansaction id'),
           '#where' => "pgt.txnid",
         );
 
-        $filters['name'] = array(
-          '#type' => 'textfield',
-          '#title' => t('Username'),
-          '#where' => array('like' => "u.name"),
-        );
-
-        $filters['mail'] = array(
-          '#type' => 'textfield',
-          '#title' => t('Email'),
-          '#where' => array('like' => "pgt.email"),
-        );
-
         $filters['price'] = array(
-          '#type' => 'textfield',
+          '#type'  => 'textfield',
           '#title' => t('Amount'),
           '#where' => "pgt.amount",
         );
 
         $filters['title'] = array(
-          '#type' => 'textfield',
+          '#type'  => 'textfield',
           '#title' => t('Title'),
           '#where' => array('like' => "pgt.title"),
         );
 
         $filters['gateway'] = array(
-          '#type' => 'select',
+          '#type'  => 'select',
           '#title' => t('Gateway'),
           '#where' => 'pgt.gateway',
           '#options' => pgapi_get_gateway_options(),
-        );
+        );          
 
         $filters['status'] = array(
-          '#type' => 'select',
+          '#type'  => 'select',
           '#title' => t('Payment status'),
           '#where' => 'pgt.status',
           '#options' => pgapi_build_status(),
@@ -150,57 +185,4 @@ function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
 
     return $filters;
   }
-}
-
-/**
- * Form filters for some form.
- *
- * @return array
- *   Filters.
- */
-function pg_showtransactions_filters_by_type() {
-  $filters = array();
-  $filters['ID'] = array(
-    'type' => 'textfield',
-    'title' => t('ID'),
-    'where' => "t.txnid='%s'",
-  );
-
-  $filters['name'] = array(
-    'type' => 'textfield',
-    'title' => t('User'),
-    'where' => "u.name='%s'",
-  );
-
-  $filters['email'] = array(
-    'type' => 'textfield',
-    'title' => t('Email'),
-    'where' => "t.email='%s'",
-  );
-
-  $filters['price'] = array(
-    'type' => 'textfield',
-    'title' => t('Amount'),
-    'where' => "t.amount='%f'",
-  );
-
-  $filters['product'] = array(
-    'type' => 'textfield',
-    'title' => t('Title'),
-    'where' => "t.title='%s'",
-  );
-
-  $filters['method'] = array(
-    'title' => t('Method'),
-    'where' => "t.method = '%s'",
-    'options' => pgapi_build_gateway(),
-  );
-
-  $filters['status'] = array(
-    'title' => t('payment status'),
-    'where' => 't.status = %d',
-    'options' => pgapi_build_status(),
-  );
-
-  return $filters;
 }

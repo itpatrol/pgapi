@@ -1,0 +1,163 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  pg_webmoney.admin.inc: n/a
+#  pg_webmoney.module: n/a
+#  pg_webmoney.info: n/a
+#  pg_webmoney.install: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2014-08-19 13:45+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: pg_webmoney.admin.inc:41
+msgid "Security check failed"
+msgstr ""
+
+#: pg_webmoney.admin.inc:48
+msgid "Payment from WM %WM and Wallet %purse"
+msgstr ""
+
+#: pg_webmoney.admin.inc:68 pg_webmoney.module:206
+msgid "Purse"
+msgstr ""
+
+#: pg_webmoney.admin.inc:69
+msgid "Secret Key"
+msgstr ""
+
+#: pg_webmoney.admin.inc:70;141;182 pg_webmoney.module:208
+msgid "Rate"
+msgstr ""
+
+#: pg_webmoney.admin.inc:71
+msgid "Operations"
+msgstr ""
+
+#: pg_webmoney.admin.inc:89
+msgid "Edit"
+msgstr ""
+
+#: pg_webmoney.admin.inc:93
+msgid "example"
+msgstr ""
+
+#: pg_webmoney.admin.inc:103
+msgid "No wallet available."
+msgstr ""
+
+#: pg_webmoney.admin.inc:108
+msgid "Delete checked Wallet"
+msgstr ""
+
+#: pg_webmoney.admin.inc:122
+msgid "Your wallet types %wmtype has been deleted."
+msgstr ""
+
+#: pg_webmoney.admin.inc:135;174
+msgid "Wallet"
+msgstr ""
+
+#: pg_webmoney.admin.inc:148;190 pg_webmoney.module:207
+msgid "Secret key"
+msgstr ""
+
+#: pg_webmoney.admin.inc:151;193
+msgid "Please enter secret key. If your leave it blank, secret key will not apply."
+msgstr ""
+
+#: pg_webmoney.admin.inc:155
+msgid "Update Wallet"
+msgstr ""
+
+#: pg_webmoney.admin.inc:164
+msgid "Your wallet type %type has been modified."
+msgstr ""
+
+#: pg_webmoney.admin.inc:177
+msgid "Please, enter Wallet number."
+msgstr ""
+
+#: pg_webmoney.admin.inc:185
+msgid "Please, enter rate to website rate."
+msgstr ""
+
+#: pg_webmoney.admin.inc:197
+msgid "Add Wallet"
+msgstr ""
+
+#: pg_webmoney.admin.inc:209
+msgid "!type already exists.Please enter another wallet number."
+msgstr ""
+
+#: pg_webmoney.admin.inc:226
+msgid "Your wallet %wallet has been added."
+msgstr ""
+
+#: pg_webmoney.admin.inc:236
+msgid "<h1>Merchant purse settings</h1>\n<table>\n<tbody><tr>\n<td nowrap=\"nowrap\">Purse:</td>\n\n<td class=\"header3\" align=\"left\"><b>!purse</b></td>\n<td>&nbsp;</td>\n<td align=\"left\">&nbsp;</td>\n</tr>\n<tr>\n<td nowrap=\"nowrap\">Trade Name:</td>\n<td align=\"left\"><input style=\"display: inline;\" value=\"!tradename\" size=\"50\" id=\"m_name\" name=\"m_name\" type=\"text\"></td>\n<td align=\"center\">&nbsp;-&nbsp;</td>\n<td align=\"left\"> is displayed on the web page during the payment </td>\n</tr>\n<tr>\n<td nowrap=\"nowrap\">Secret Key:</td>\n\n<td align=\"left\"><input style=\"display: inline;\" value=\"!secret_key\" id=\"secret_key\" name=\"secret_key\" size=\"50\" type=\"text\"></td>\n<td align=\"center\">\n<input checked=\"checked\" id=\"send_secret_key\" name=\"send_secret_key\" type=\"checkbox\"></td>\n<td align=\"left\">Send the Secret Key to the Result URL if the Result URL is secured</td>\n</tr>\n<tr>\n<td nowrap=\"nowrap\">Result URL:</td>\n<td align=\"left\"><input style=\"display: inline;\" value=\"!done\" id=\"result_url\" name=\"result_url\" size=\"50\" maxlength=\"255\" type=\"text\"></td>\n<td align=\"center\">\n<input checked=\"checked\" id=\"send_param_prerequest\" name=\"send_param_prerequest\" value=\"1\" type=\"checkbox\">\n</td>\n<td align=\"left\">\nSend parameters in the pre-request\n</td>\n</tr>\n\n<tr>\n<td nowrap=\"nowrap\">Success URL:</td>\n<td align=\"left\"><input style=\"display: inline;\" value=\"!success\" id=\"success_url\" name=\"success_url\" size=\"50\" maxlength=\"255\" type=\"text\"></td>\n<td align=\"center\">\n<select name=\"success_method\" id=\"success_method\">\n<option value=\"0\">GET</option>\n<option value=\"1\" selected=\"selected\" >POST</option>\n<option value=\"2\">LINK</option>\n</select>\n</td>\n<td>\nmethod of requesting Success URL\n</td>\n\n</tr>\n<tr>\n<td nowrap=\"nowrap\">Fail URL:</td>\n<td align=\"left\"><input style=\"display: inline;\" value=\"!fail\" id=\"fail_url\" name=\"fail_url\" size=\"50\" maxlength=\"255\" type=\"text\"></td>\n<td align=\"center\">\n<select name=\"fail_method\" id=\"fail_method\">\n<option value=\"0\">GET</option>\n<option value=\"1\" selected=\"selected\">POST</option>\n<option value=\"2\">LINK</option>\n</select>\n</td>\n<td>\nmethod of requesting Fail URL\n\n</td>\n</tr>\n</tbody></table>\n<table>\n<tbody><tr>\n<td nowrap=\"nowrap\">\nAllow overriding URL from Payment Request Form:\n</td>\n<td align=\"left\">\n<input id=\"allow_url_from_form\" name=\"allow_url_from_form\" value=\"1\" type=\"checkbox\">\n</td>\n<td></td>\n<td></td>\n</tr>\n<tr>\n<td nowrap=\"nowrap\">\nSend an error notification to merchant's keeper:\n\n</td>\n<td align=\"left\">\n<input checked=\"checked\" id=\"send_error\" name=\"send_error\" value=\"1\" type=\"checkbox\">\n</td>\n<td></td>\n<td></td>\n</tr>\n<tr>\n<td nowrap=\"nowrap\">Signature algorithm:</td>\n<td align=\"left\">\n<select name=\"auth_type\" id=\"auth_type\">\n<option value=\"0\">SIGN</option>\n<option value=\"1\" selected=\"selected\">MD5</option>\n</select>\n\n</td>\n<td></td>\n<td></td>\n</tr>\n\n\n\n\n\n</tbody></table>\n</form>"
+msgstr ""
+
+#: pg_webmoney.module:93
+msgid "Webmoney Payment Gateway"
+msgstr ""
+
+#: pg_webmoney.module:99;99;35 pg_webmoney.info:0
+msgid "Webmoney"
+msgstr ""
+
+#: pg_webmoney.module:149
+msgid "Wallet type"
+msgstr ""
+
+#: pg_webmoney.module:205
+msgid "WMType"
+msgstr ""
+
+#: pg_webmoney.module:28
+msgid "Internal Data"
+msgstr ""
+
+#: pg_webmoney.module:36
+msgid "Webmoney payment settings."
+msgstr ""
+
+#: pg_webmoney.module:45
+msgid "Purses"
+msgstr ""
+
+#: pg_webmoney.module:55
+msgid "Add Purse"
+msgstr ""
+
+#: pg_webmoney.module:65
+msgid "Example"
+msgstr ""
+
+#: pg_webmoney.module:75
+msgid "Edit Purse"
+msgstr ""
+
+#: pg_webmoney.install:8
+msgid "Stores webmoney rates information."
+msgstr ""
+
+#: pg_webmoney.info:0
+msgid "Webmoney payment gateway."
+msgstr ""
+
+#: pg_webmoney.info:0
+msgid "Payment Gateway API"
+msgstr ""
+

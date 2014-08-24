@@ -1,10 +1,6 @@
 /* table part */
 
-tr.sub td.amount {
-  color: red;
-}
-
-tr.add td.amount {
+tr td.amount {
   color: green;
 }
 
@@ -20,6 +16,51 @@ tr.status-6 td {
   color: white;
 }
 
+tr.status-2 td.status {
+  color: green;
+  background: none;
+  font-style: normal;
+  font-weight: bold;
+}
+
+tr.status-1 {
+  color: blue;
+}
+
 td.date {
   min-width: 70px;
+}
+
+div.pg_showtransaction_history {
+  min-height: 100px;
+}
+
+div.pg_showtransaction_history table tr th,
+div.pg_showtransaction_history table tr th a,
+div.pg_showtransaction_history table tr th a:hover {
+  background-color: white;
+  color: black;
+}
+
+div.pg_showtransaction_history tr td,
+div.pg_showtransaction_history tr th {
+  text-align: right;
+}
+
+div.pg_showtransaction_history tr.odd {
+  background-color: #f9f9f9;
+}
+
+div.pg_showtransaction_history tr.even {
+  background-color: white;
+}
+
+div.pg_showtransaction_history tr td.date {
+  min-width: 100px;
+}
+
+.price .symbol {
+  padding: 0;
+  margin: 0;
+  font-weight: bold;
 }

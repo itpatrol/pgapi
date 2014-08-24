@@ -1,180 +1,182 @@
 <?php
-/*
- * Constants
- */
- 
-define("cWebMoneyPayActionUrl" ,"https://merchant.webmoney.ru/lmi/payment.asp");
-define("cWebMoneyRateUrl"      ,"https://wm.exchanger.ru/asp/XMLbestRates.asp");
-
 /**
- * Implemens hook_theme()
-
-function pg_webmoney_theme() {
-   return array(
-    'pg_webmoney_list' => array(
-      'arguments' => array('form' => NULL),
-    ),
-  );
-}
+ * @file
+ * Webmoney.
+ *
+ * Webmoney payment gateway.
  */
 
 /**
- * Implemens hook_menu()
+ * Constants.
  */
+define("PG_WEBMONEY_PAY_ACTION_URL", 'https://merchant.webmoney.ru/lmi/payment.asp');
+define("PG_WEBMONEY_RATE_URL", 'https://wm.exchanger.ru/asp/XMLbestRates.asp');
 
+/**
+ * Implements hook_menu().
+ */
 function pg_webmoney_menu() {
-
   $items['webmoney/done'] = array(
-      'title'           => 'Internal Data',
-      'page callback'   => 'pg_webmoney_done_payment',
-      'access callback' => TRUE,
-      'file'            => 'pg_webmoney.admin.inc',
-      'type'            => MENU_CALLBACK
+    'title' => 'Internal Data',
+    'page callback' => 'pg_webmoney_done_payment',
+    'access callback' => TRUE,
+    'file' => 'pg_webmoney.admin.inc',
+    'type' => MENU_CALLBACK,
   );
+
   $items['admin/config/pgapi/gateway_settings/webmoney'] = array(
-      'title'           => 'Webmoney',
-      'description'     => 'Webmoney payment settings.',
-      'page callback'   => 'drupal_get_form',
-      'page arguments'  => array('pg_webmoney_list'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'file'            => 'pg_webmoney.admin.inc',
-      'type'            => MENU_LOCAL_TASK,
+    'title' => 'Webmoney',
+    'description' => 'Webmoney payment settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_webmoney_list'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_webmoney.admin.inc',
+    'type' => MENU_LOCAL_TASK,
   );
+
   $items['admin/config/pgapi/gateway_settings/webmoney/list'] = array(
-      'title'           => 'Purses',
-      'page callback'   => 'drupal_get_form',
-      'page arguments'  => array('pg_webmoney_list'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'weight'          => 1,
-      'file'            => 'pg_webmoney.admin.inc',
-      'type'            => MENU_DEFAULT_LOCAL_TASK,
+    'title' => 'Purses',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_webmoney_list'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'weight' => 1,
+    'file' => 'pg_webmoney.admin.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   );
+
   $items['admin/config/pgapi/gateway_settings/webmoney/add'] = array(
-      'title'           => 'Add Purse',
-      'page callback'   => 'drupal_get_form',
-      'page arguments'  => array('pg_webmoney_add'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'weight'          => 2,
-      'file'            => 'pg_webmoney.admin.inc',
-      'type'            => MENU_LOCAL_TASK,
+    'title' => 'Add Purse',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_webmoney_add'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'weight' => 2,
+    'file' => 'pg_webmoney.admin.inc',
+    'type' => MENU_LOCAL_TASK,
   );
+
   $items['admin/config/pgapi/gateway_settings/webmoney/example/%'] = array(
-      'title'           => 'Example',
-      'page callback'   => 'pg_webmoney_example',
-      'page arguments'  => array(6),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'file'            => 'pg_webmoney.admin.inc',
-      'type'            => MENU_CALLBACK,
+    'title' => 'Example',
+    'page callback' => 'pg_webmoney_example',
+    'page arguments' => array(6),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_webmoney.admin.inc',
+    'type' => MENU_CALLBACK,
   );
 
   $items['admin/config/pgapi/gateway_settings/webmoney/edit/%'] = array(
-      'title'           => 'Edit Purse',
-      'page callback'   => 'drupal_get_form',
-      'page arguments'  => array('pg_webmoney_edit',6),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'file'            => 'pg_webmoney.admin.inc',
-      'type'            => MENU_CALLBACK,
+    'title' => 'Edit Purse',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_webmoney_edit', 6),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_webmoney.admin.inc',
+    'type' => MENU_CALLBACK,
   );
+
   return $items;
 }
 
-/*
- * Implements hook_pgapi_gw
+/**
+ * Implements hook_pgapi_gw().
  */
- 
-function pg_webmoney_pgapi_gw($op,$a3=NULL,$a4=NULL){
-  switch($op){
+function pg_webmoney_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
     case 'display name':
-        $ret = t('Webmoney Payment Gateway');
-      break;
-    case 'payment page':
-        $ret = url('payment/webmoney/'.$a3 ,array('absolute' => TRUE));
-      break;
-    case 'payment gateway info':
-        $ret['name'] = theme('image', array('path' => drupal_get_path('module','pg_webmoney').'/webmoney.png', 'alt' => t('Webmoney'), 'title' => t('Webmoney')));
-        $result = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
-        foreach($result as $rr){
-        	$prices[$rr->type] = round(($a3*$rr->rate),2);
-        }
-        $ret['price']= $prices;
-      break;
-    case 'ajax_form':
-        $t=$a3;
-        return array(
-          'element' => pg_webmoney_get_wallets($t),
-          'submit' => 'pg_webmoney_submit',
-        );
+      $ret = t('Webmoney Payment Gateway');
       break;
 
-    case 'get txnid':
-        return $_POST['LMI_PAYMENT_NO'];
+    case 'payment page':
+      $ret = url('payment/webmoney/' . $a3, array('absolute' => TRUE));
       break;
+
+    case 'payment gateway info':
+      $ret['name'] = theme('image', array(
+        'path' => drupal_get_path('module', 'pg_webmoney') . '/webmoney.png',
+        'alt' => t('Webmoney'),
+        'title' => t('Webmoney'),
+      ));
+      $result = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
+      foreach ($result as $rr) {
+        $prices[$rr->type] = round(($a3 * $rr->rate), 2);
+      }
+      $ret['price'] = $prices;
+      break;
+
+    case 'ajax_form':
+      $t = $a3;
+      return array(
+        'element' => pg_webmoney_get_wallets($t),
+        'submit' => 'pg_webmoney_submit',
+      );
+
+    case 'get txnid':
+      return $_POST['LMI_PAYMENT_NO'];
   }
+
   return $ret;
 }
 
-function pg_webmoney_pgapi_transaction($status,$t){
-  switch($status){
+function pg_webmoney_pgapi_transaction($status, $t) {
+  switch ($status) {
     case PG_PENDING:
-        $rates = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
-        foreach($rates as $rr){
-          $prices[$rr->type] = round(($t->amount*$rr->rate), 2);
-        }
-        $t->extra['prices'] =  $prices;
+      $rates = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
+
+      foreach ($rates as $rr) {
+        $prices[$rr->type] = round(($t->amount * $rr->rate), 2);
+      }
+      $t->extra['prices'] = $prices;
       break;
   }
 }
 
-/********************************************************************
- * Other Functions
- ********************************************************************/
 function pg_webmoney_get_wallets($t) {
   $rates = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
-  $first=true;
-  foreach($rates as $template){
-     if($first){
-       $first=false;
-       $def_purse=$template->type;
-     }
-     $purses[$template->type]=round(($t->amount * $template->rate),2)." ".$template->type;
-  }//while
+  $first = TRUE;
+  foreach ($rates as $template) {
+    if ($first) {
+      $first = FALSE;
+      $def_purse = $template->type;
+    }
+
+    $purses[$template->type] = round(($t->amount * $template->rate), 2) . " " . $template->type;
+  }
 
   $form['wallet'] = array(
-        '#type' => 'select',
-        '#title' => t("Wallet type"),
-        '#options' => $purses,
-        '#default_value' => $def_purse,
-      );  
-  return $form;    
-}
+    '#type' => 'select',
+    '#title' => t("Wallet type"),
+    '#options' => $purses,
+    '#default_value' => $def_purse,
+  );
 
+  return $form;
+}
 
 
 function pg_webmoney_submit($form, $form_state) {
-  
-  $form = drupal_build_form('pg_webmoney_payform',$form_state);
+  $form = drupal_build_form('pg_webmoney_payform', $form_state);
   $output = drupal_render($form);
-  $output = str_ireplace('accept-charset="UTF-8"','accept-charset="cp1251"',$output);
+  $output = str_ireplace('accept-charset="UTF-8"', 'accept-charset="cp1251"', $output);
 
-  echo '<html><body>'.$output.'<script>pgpayform.submit();</script></body>';
-  exit();
+  echo '<html><body>' . $output . '<script>pgpayform.submit();</script></body>';
+  drupal_exit();
 }
 
- 
+
 function pg_webmoney_payform($form, $form_state) {
   $values = $form_state['values'];
   $t = pgapi_transaction_load($values['txnid']);
-  
-  $wallet = db_query('SELECT * FROM {pg_webmoney_rates} where type = :type',array(':type' => $values['pgapi_wrapper']['wallet']))->fetchObject();
+
+  $wallet = db_query('SELECT * FROM {pg_webmoney_rates} where type = :type', array(':type' => $values['pgapi_wrapper']['wallet']))->fetchObject();
+
   $form['LMI_PAYEE_PURSE'] = array(
-        '#type' => 'hidden',
-        '#value' => $wallet->purse,
-      );
+    '#type' => 'hidden',
+    '#value' => $wallet->purse,
+  );
+
   $form['LMI_PAYMENT_NO'] = array(
     '#type' => 'hidden',
     '#value' => $t->txnid,
@@ -187,26 +189,27 @@ function pg_webmoney_payform($form, $form_state) {
 
   $form['LMI_PAYMENT_AMOUNT'] = array(
     '#type' => 'hidden',
-    '#default_value' => round(($t->amount * $wallet->rate),2),
+    '#default_value' => round(($t->amount * $wallet->rate), 2),
   );
+
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = cWebMoneyPayActionUrl;
+  $form['#action'] = PG_WEBMONEY_PAY_ACTION_URL;
+
   return $form;
 }
 
 
-/*
- * Functions theme
+/**
+ * Functions theme.
  */
-
-function theme_pg_webmoney_list(&$form){
+function theme_pg_webmoney_list(&$form) {
   $header = array(
     theme('table_select_header_cell'),
     t('WMType'),
     t('Purse'),
     t('Secret key'),
     t('Rate'),
-    ''
+    '',
   );
 
   foreach (element_children($form) as $key) {
@@ -223,8 +226,9 @@ function theme_pg_webmoney_list(&$form){
       $rows[] = $row;
     }
   }
+
   $output = theme('table', $header, $rows);
   $output .= drupal_render($form);
+
   return $output;
 }
-
