@@ -85,6 +85,8 @@ function pg_webmoney_list() {
 
   $form['#tree'] = TRUE;
 
+  $options = array();
+
   foreach ($rates as $template) {
     $options[$template->type]['purse'] = $template->purse;
     $options[$template->type]['secret_key'] = $template->secret_key;
