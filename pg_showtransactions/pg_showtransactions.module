@@ -1,9 +1,14 @@
 <?php
-
 /**
- * Implementation of hook_perm()
+ * @file
+ * Show transactions.
+ *
+ * Show transactions in PGAPI.
  */
 
+/**
+ * Implements hook_perm().
+ */
 function pg_showtransactions_permission() {
   return array(
     'administer pg_showtransaction' => array(
@@ -19,46 +24,40 @@ function pg_showtransactions_permission() {
   );
 }
 
-
 /**
- * Implementation of hook_menu()
+ * Implements hook_menu().
  */
-
 function pg_showtransactions_menu() {
-
-
   $items['admin/reports/pg_showtransaction'] = array(
-      'title'            => 'PGAPI Transactions',
-      'page callback'    => 'pg_showtransactions_history',
-      'access callback'  => 'user_access',
-      'access arguments' => array('administer pg_showtransaction'),
-      'weight'           => 1,
-      'file'             => 'pg_showtransactions.admin.inc',
-      'description'      => 'Transaction information.',
-
+    'title' => 'PGAPI Transactions',
+    'page callback' => 'pg_showtransactions_history',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pg_showtransaction'),
+    'weight' => 1,
+    'file' => 'pg_showtransactions.admin.inc',
+    'description' => 'Transaction information.',
   );
 
   $items['admin/reports/showtransactions/edit/%pgapi_transaction'] = array(
-      'title'            => 'Edit transaction',
-      'description'      => 'All pgapi data is here.',
-      'page callback'    => 'drupal_get_form',
-      'page arguments'   => array('pg_showtransactions_edit',4),
-      'access callback'  => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'file'             => 'pg_showtransactions.admin.inc',
-      'type'             => MENU_CALLBACK,
+    'title' => 'Edit transaction',
+    'description' => 'All pgapi data is here.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_showtransactions_edit', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_showtransactions.admin.inc',
+    'type' => MENU_CALLBACK,
   );
 
   $items['user/%user/showtransactions'] = array(
-      'title'            => 'Show Transactions',
-      'description'      => 'There is transaction history.',
-      'page callback'    => 'pg_showtransactions_personal_history',
-      'page arguments'   => array(1),      
-      'access callback'  => 'user_access',
-      'access arguments' => array('show personal transaction'),
-      'file'             => 'pg_showtransactions.user.inc',
-      'type'             => MENU_LOCAL_TASK,
-	  'weight'           => 30,
+    'title' => 'Show Transactions',
+    'description' => 'There is transaction history.',
+    'page callback' => 'pg_showtransactions_personal_history',
+    'access callback' => 'user_access',
+    'access arguments' => array('show personal transaction'),
+    'file' => 'pg_showtransactions.user.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 30,
   );
 
   return $items;
@@ -67,91 +66,123 @@ function pg_showtransactions_menu() {
 /**
  * Implements hook_formfilterapi().
  */
-
-function pg_showtransactions_formfilterapi($op,$session_name,&$a1 = NULL){
-  if($op == 'filters'){
+function pg_showtransactions_formfilterapi($op, $session_name, &$a1 = NULL) {
+  if ($op == 'filters') {
     $filters = array();
-    switch($session_name){
-      case 'pg_showtransactions_history';
-            $filters['id']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Transaction id'),
-              '#where' => "pgt.txnid",
-            );
-            $filters['name']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Username'),
-              '#where' => array('like' => "u.name"),
-            );
-            $filters['mail']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Email'),
-              '#where' => array('like' => "pgt.email"),
-            );
 
-            $filters['price']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Amount'),
-              '#where' => "pgt.amount",
-            );
+    switch ($session_name) {
+      case 'pg_showtransactions_history':
+        $filters['id'] = array(
+          '#type'  => 'textfield',
+            '#title' => t('Transaction id'),
+            '#where' => "pgt.txnid",
+          );
 
-            $filters['title']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Title'),
-              '#where' => array('like' => "pgt.title"),
-            );
+          $filters['name'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Username'),
+            '#where' => array('like' => "u.name"),
+          );
 
-            $filters['gateway'] = array(
-              '#type'  => 'select',
-              '#title' => t('Gateway'),
-              '#where' => 'pgt.gateway',
-              '#options' => pgapi_get_gateway_options(),
-            );
+          $filters['mail'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Email'),
+            '#where' => array('like' => "pgt.email"),
+          );
 
-            $filters['status'] = array(
-              '#type'  => 'select',
-              '#title' => t('Payment status'),
-              '#where' => 'pgt.status',
-              '#options' => pgapi_build_status(),
-            );
+          $filters['price'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Amount'),
+            '#where' => "pgt.amount",
+          );
 
-        break;
-      case 'pg_showtransactions_personal_history';
-            $filters['id']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Ttansaction id'),
-              '#where' => "pgt.txnid",
-            );
+          $filters['title'] = array(
+            '#type'  => 'textfield',
+            '#title' => t('Title'),
+            '#where' => array('like' => "pgt.title"),
+          );
 
-            $filters['price']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Amount'),
-              '#where' => "pgt.amount",
-            );
+          $filters['gateway'] = array(
+            '#type'  => 'select',
+            '#title' => t('Gateway'),
+            '#where' => 'pgt.gateway',
+            '#options' => pgapi_get_gateway_options(),
+          );
 
-            $filters['title']= array(
-              '#type'  => 'textfield',
-              '#title' => t('Title'),
-              '#where' => array('like' => "pgt.title"),
-            );
-
-            $filters['gateway'] = array(
-              '#type'  => 'select',
-              '#title' => t('Gateway'),
-              '#where' => 'pgt.gateway',
-              '#options' => pgapi_get_gateway_options(),
-            );          
-
-            $filters['status'] = array(
-              '#type'  => 'select',
-              '#title' => t('Payment status'),
-              '#where' => 'pgt.status',
-              '#options' => pgapi_build_status(),
-            );
-
+          $filters['status'] = array(
+            '#type'  => 'select',
+            '#title' => t('Payment status'),
+            '#where' => 'pgt.status',
+            '#options' => pgapi_build_status(),
+          );
         break;
 
+      case 'pg_showtransactions_personal_history':
+        $filters['id'] = array(
+          '#type'  => 'textfield',
+          '#title' => t('Ttansaction id'),
+          '#where' => "pgt.txnid",
+        );
+
+        $filters['price'] = array(
+          '#type'  => 'textfield',
+          '#title' => t('Amount'),
+          '#where' => "pgt.amount",
+        );
+
+        $filters['title'] = array(
+          '#type'  => 'textfield',
+          '#title' => t('Title'),
+          '#where' => array('like' => "pgt.title"),
+        );
+
+        $filters['gateway'] = array(
+          '#type'  => 'select',
+          '#title' => t('Gateway'),
+          '#where' => 'pgt.gateway',
+          '#options' => pgapi_get_gateway_options(),
+        );          
+
+        $filters['status'] = array(
+          '#type'  => 'select',
+          '#title' => t('Payment status'),
+          '#where' => 'pgt.status',
+          '#options' => pgapi_build_status(),
+        );
+        break;
+
+      case 'pg_account_operator_history';
+        $filters['name'] = array(
+          '#type' => 'textfield',
+          '#title' => t('User'),
+          '#where' => "u.name",
+        );
+
+        $filters['price'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Amount'),
+          '#where' => "pgt.amount",
+        );
+
+        $filters['action'] = array(
+          '#type' => 'select',
+          '#title' => t('Payments'),
+          '#where' => array('operation' => "pgt.amount"),
+          '#options' => array(
+            '> 0' => t('received'),
+            '< 0' => t('sent'),
+          ),
+        );
+
+        $filters['status'] = array(
+          '#type' => 'select',
+          '#title' => t('Payment status'),
+          '#where' => 'pgt.status',
+          '#options' => pgapi_build_status(),
+        );
+        break;
     }
+
     return $filters;
   }
 }
