@@ -108,7 +108,7 @@ function pg_paypal_payform($form, $form_state) {
 
   $form['item_name'] = array(
     '#type' => 'hidden',
-    '#value' => check_plain($t->title),
+    '#value' => strip_tags($t->title),
   );
 
   $form['charset'] = array(
