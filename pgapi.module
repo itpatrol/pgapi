@@ -710,8 +710,10 @@ function pgapi_payment($form, &$form_state, $transaction) {
   }
 
   $data = module_invoke($default, 'pgapi_gw', 'ajax_form', $transaction);
-  $form['pgapi_wrapper'] += $data['element'];
-  $form['submit']['#submit'][] = $data['submit'];
+  if(is_array($data){
+    $form['pgapi_wrapper'] += $data['element'];
+    $form['submit']['#submit'][] = $data['submit'];
+  }
 
   return $form;
 }
