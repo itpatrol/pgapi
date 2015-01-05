@@ -103,6 +103,7 @@ function pg_paypal_settings_submit($form, &$form_state) {
   if (isset($form_state['values']['pg_paypal_rate'])) {
     variable_set('pg_paypal_rate', $form_state['values']['pg_paypal_rate']);
   }
+  drupal_set_message(t('PayPal settings saved.'));
 }
 
 /**

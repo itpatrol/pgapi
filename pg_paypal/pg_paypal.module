@@ -108,7 +108,7 @@ function pg_paypal_payform($form, $form_state) {
 
   $form['item_name'] = array(
     '#type' => 'hidden',
-    '#value' => $t->title,
+    '#value' => strip_tags($t->title),
   );
 
   $form['charset'] = array(
@@ -150,12 +150,12 @@ function pg_paypal_payform($form, $form_state) {
 
   $form['return'] = array(
     '#type' => 'hidden',
-    '#value' => url(pgapi_get_redirect_url($t), array('absolute' => TRUE)),
+    '#value' => url('payment/'.$t->txnid, array('absolute' => TRUE)),
   );
 
   $form['cancel_return'] = array(
     '#type' => 'hidden',
-    '#value' => url(pgapi_get_redirect_url($t), array('absolute' => TRUE)),
+    '#value' => url('payment/'.$t->txnid, array('absolute' => TRUE)),
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');
