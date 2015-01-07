@@ -192,6 +192,16 @@ function pg_webmoney_payform($form, $form_state) {
     '#default_value' => round(($t->amount * $wallet->rate), 2),
   );
 
+  $form['LMI_SUCCESS_URL'] = array(
+    '#type' => 'hidden',
+    '#default_value' => url('payment/' . $t->txnid, array('absolute' => TRUE))
+  );
+
+  $form['LMI_FAIL_URL'] = array(
+    '#type' => 'hidden',
+    '#default_value' => url('payment/' . $t->txnid, array('absolute' => TRUE))
+  );
+
   $form['#attributes'] = array('name' => 'pgpayform');
   $form['#action'] = PG_WEBMONEY_PAY_ACTION_URL;
 
