@@ -1,9 +1,7 @@
 <?php
 
-
 function pg_showtransactions_personal_history($account) {
-
-  drupal_add_css(drupal_get_path('module', 'pg_showtransactions') .'/pg_showtransactions.css');
+  drupal_add_css(drupal_get_path('module', 'pg_showtransactions') . '/pg_showtransactions.css');
 
   $header = array(
     'txnid' => array('data' => t('ID'), 'field' => 'pgt.txnid', 'sort' => 'desc'),
@@ -17,20 +15,19 @@ function pg_showtransactions_personal_history($account) {
   );
   
   $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')->extend('TableSort')->extend('FormFilterAPI');
-  $query->fields('pgt');    ;
+  $query->fields('pgt');
   $query->condition('pgt.uid', $account->uid);
   $query->processFilters('pg_showtransactions_personal_history');  
   $query->extend('TableSort');
   $query->orderByHeader($header);
 
-  
   $transactions= $query->execute()->fetchAll();
   foreach ($transactions as $txn) {
-    $class = array( 'status-'.$txn->status, 'workflow-'.$txn->workflow );    
+    $class = array('status-' . $txn->status, 'workflow-' . $txn->workflow);
 
     $action = '';
-    if( $txn->status == PG_PENDING ){
-      $action = t('Unpaid ').' '.l(t('Pay now'), 'payment/'.$txn->txnid, array('query' => drupal_get_destination(), 'fragment' => 'pgapi-payment'));
+    if ($txn->status == PG_PENDING) {
+      $action = t('Unpaid ') . ' ' . l(t('Pay now'), 'payment/' . $txn->txnid, array('query' => drupal_get_destination(), 'fragment' => 'pgapi-payment'));
     }
     
     $rows[] = array(
