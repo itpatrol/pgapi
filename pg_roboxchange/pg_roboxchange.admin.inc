@@ -238,6 +238,5 @@ function pg_roboxchange_done_payment() {
 function pg_roboxchange_payment_end() {
   $txnid = (int) $_POST['inv_id'];
   $t = pgapi_transaction_load($txnid);
-  $goto = pgapi_get_redirect_url($t);
-  drupal_goto($goto);
+  drupal_goto('payment/' . $t->txnid, array('absolute' => TRUE));
 }
