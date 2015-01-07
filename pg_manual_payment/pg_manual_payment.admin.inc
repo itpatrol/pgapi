@@ -8,17 +8,21 @@
  * Implements hook_FORMID().
  */
 function pg_manual_payment_list() {
-  $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
+  $accounts = db_select('pg_manual_payment_accounts', 'a')
+    ->fields('a')
+    ->orderBy('name')
+    ->execute()
+    ->fetchAll();
   $form['#tree'] = TRUE;
 
-  while ($template = db_fetch_object($result)) {
-    $edit_url = 'admin/pgdata/pgsettings/manual_payment/edit/' . $template->paid;
-    $edit_link = l($template->name, $edit_url, array('query' => drupal_get_destination()));
+  foreach ($accounts as $account) {
+    $edit_url = 'admin/pgdata/pgsettings/manual_payment/edit/' . $account->paid;
+    $edit_link = l($account->name, $edit_url, array('query' => drupal_get_destination()));
 
-    $form[$template->paid]['purse'] = array('#value' => $template->purse);
-    $form[$template->paid]['rate'] = array('#value' => $template->rate);
-    $form[$template->paid]['edit'] = $edit_link;
-    $purses[$template->paid] = '';
+    $form[$account->paid]['purse'] = array('#value' => $account->purse);
+    $form[$account->paid]['rate'] = array('#value' => $account->rate);
+    $form[$account->paid]['edit'] = $edit_link;
+    $purses[$account->paid] = '';
   }
 
   $form['check'] = array(
@@ -40,8 +44,16 @@ function pg_manual_payment_list() {
 function pg_manual_payment_list_submit($form, &$form_state) {
   foreach ($form_state['values']['check'] as $key => $val) {
     if ($key === $val) {
-      $pursed = db_fetch_object(db_query('SELECT * FROM {pg_manual_payment_accounts} WHERE paid = %d ', $key));
-      db_query("DELETE FROM {pg_manual_payment_accounts} WHERE paid = %d", $val);
+      $pursed = db_select('pg_manual_payment_accounts', 'a')
+        ->fields('a')
+        ->condition('paid', $key)
+        ->execute()
+        ->fetchObject();
+
+      db_delete('pg_manual_payment_accounts')
+        ->condition('paid', $val)
+        ->execute();
+
       drupal_set_message(t('Your account %name has been deleted.', array('%name' => $pursed->name)));
     }
   }
@@ -51,7 +63,11 @@ function pg_manual_payment_list_submit($form, &$form_state) {
  * Implements hook_FORMID().
  */
 function pg_manual_payment_edit(&$form_state, $paid) {
-  $pursed = db_fetch_object(db_query('SELECT * FROM {pg_manual_payment_accounts} WHERE paid = %d ', $paid));
+  $pursed = db_select('pg_manual_payment_accounts', 'a')
+    ->fields('a')
+    ->condition('paid', $paid)
+    ->execute()
+    ->fetchObject();
 
   $form['paid'] = array(
     '#type' => 'value',

@@ -53,6 +53,7 @@ function pg_paypal_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
         'alt' => t('Paypal'),
         'title' => t('Paypal'),
       ));
+
       $prices[variable_get('pg_paypal_currency_code', 'USD')] = round(($a3 * variable_get('pg_paypal_rate', '1.00')), 2);
       $ret['price'] = $prices;
       break;
@@ -78,7 +79,7 @@ function pg_paypal_pgapi_transaction($status, $t) {
   }
 }
 
-function pg_webmoney_get_markup($t) {
+function pg_webmoney_get_markup() {
   $form['message'] = array(
     '#type' => 'markup',
     '#value' => '<!-- -->',
@@ -131,11 +132,11 @@ function pg_paypal_payform($form, $form_state) {
     '#value' => $t->txnid,
   );
 
-  $sitename = variable_get('site_name', 'Drupal');
+  $site_name = variable_get('site_name', 'Drupal');
 
   $form['cbt'] = array(
     '#type' => 'hidden',
-    '#value' => t('Return back to !site', array('!site' => $sitename)),
+    '#value' => t('Return back to !site', array('!site' => $site_name)),
   );
 
   $form['currency_code'] = array(
@@ -150,12 +151,12 @@ function pg_paypal_payform($form, $form_state) {
 
   $form['return'] = array(
     '#type' => 'hidden',
-    '#value' => url('payment/'.$t->txnid, array('absolute' => TRUE)),
+    '#value' => url('payment/' . $t->txnid, array('absolute' => TRUE)),
   );
 
   $form['cancel_return'] = array(
     '#type' => 'hidden',
-    '#value' => url('payment/'.$t->txnid, array('absolute' => TRUE)),
+    '#value' => url('payment/' . $t->txnid, array('absolute' => TRUE)),
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');

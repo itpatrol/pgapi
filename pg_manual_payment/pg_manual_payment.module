@@ -148,9 +148,15 @@ function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
 
     case 'payment gateway info':
       $ret['name'] = t('Manual Payment');
-      $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
 
-      while ($rr = db_fetch_object($result)) {
+      $result = db_select('pg_manual_payment_accounts', 'a')
+        ->fields('a', array('name', 'rate', 'symbol'))
+        ->orderBy('name')
+        ->execute()
+        ->fetchAll();
+
+      $prices = array();
+      foreach ($result as $rr) {
         $prices[$rr->name] = $a3 * $rr->rate . ' ' . $rr->symbol;
       }
 
@@ -179,10 +185,17 @@ function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
 function pg_manual_payment_pgapi_transaction($status, &$t) {
   switch ($status) {
     case PG_PENDING:
-      $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
-      while ($rr = db_fetch_object($result)) {
+      $result = db_select('pg_manual_payment_accounts', 'a')
+        ->fields('a', array('paid', 'rate', 'amount'))
+        ->orderBy('name')
+        ->execute()
+        ->fetchAll();
+
+      $prices = array();
+      foreach ($result as $rr) {
         $prices[$rr->paid] = round(($t->amount * $rr->rate), 2);
       }
+
       $t->extra['prices'] = $prices;
       break;
   }
@@ -192,19 +205,25 @@ function pg_manual_payment_pgapi_transaction($status, &$t) {
  * Implements hook_FORMID().
  */
 function pg_manual_payment_extraform($form_state, $t) {
-  $result = db_query('SELECT * FROM {pg_manual_payment_accounts} ORDER BY name');
+  $templates = db_select('pg_manual_payment_accounts', 'a')
+    ->fields('a')
+    ->orderBy('name')
+    ->execute()
+    ->fetchAll();
+
   $first = TRUE;
-  while ($template = db_fetch_object($result)) {
+  foreach ($templates as $template) {
     if ($first) {
       $first = FALSE;
       $def_purse = $template->paid;
     }
-    $purses[$template->paid] = $t->amount * $template->rate . " <span class='symbol'>" . $template->symbol . "</span>";
+
+    $purses[$template->paid] = ($t->amount * $template->rate) . " <span class='symbol'>" . $template->symbol . "</span>";
   }
 
   $form['wallet'] = array(
     '#type' => 'radios',
-    '#title' => t("Type of account"),
+    '#title' => t('Type of account'),
     '#options' => $purses,
     '#default_value' => $def_purse,
     '#description' => t("What type of currency will be used."),
@@ -231,7 +250,11 @@ function pg_manual_payment_payform($form_state, $t) {
     drupal_access_denied();
   }
 
-  $account = db_fetch_object(db_query('SELECT * FROM {pg_manual_payment_accounts} where paid=%d', $t->extra['wallet']));
+  $account = db_select('pg_manual_payment_accounts', 'a')
+    ->fields('a')
+    ->condition('paid', $t->extra['wallet'])
+    ->execute()
+    ->fetchObject();
 
   $form['txnid'] = array(
     '#type' => 'value',
@@ -285,7 +308,12 @@ function pg_manual_payment_payform($form_state, $t) {
 function pg_manual_payment_payform_submit($form, &$form_state) {
   $t = txnid_load($form_state['values']['txnid']);
   $user = user_load($t->uid);
-  $account = db_fetch_object(db_query('SELECT * FROM {pg_manual_payment_accounts} where paid=%d', $t->extra['wallet']));
+
+  $account = db_select('pg_manual_payment_accounts', 'a')
+    ->fields('a')
+    ->condition('paid', $t->extra['wallet'])
+    ->execute()
+    ->fetchObject();
 
   $params['t'] = $t;
   $params['user'] = $user;
@@ -312,6 +340,7 @@ function theme_pg_manual_payment_list(&$form) {
     t('Rate'),
   );
 
+  $rows = array();
   foreach (element_children($form) as $key) {
     $row = array();
 

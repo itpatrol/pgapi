@@ -32,7 +32,12 @@ function pg_linkpoint_settings() {
   $fid = variable_get('pg_linkpoint_transaction_key_fid', '');
 
   if (!empty($fid)) {
-    $file = db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = '%d'", $fid));
+    $file = db_select('files', 'f')
+      ->fields('f')
+      ->condition('fid', $fid)
+      ->execute()
+      ->fetchObject();
+
     $form['pg_linkpoint_transaction_key'] = array(
       '#type' => 'markup',
       '#value' => t('<b>Current file is:</b> !file', array('!file' => $file->filepath)),
@@ -100,18 +105,22 @@ function pg_linkpoint_settings_submit($form, &$form_state) {
     variable_set('pg_linkpoint_rate', $form_state['values']['pg_linkpoint_rate']);
   }
 
-  $tmp_path = file_directory_path() . '/' . variable_get('pg_linkpoint_path', 'pg_linkpoint');
-  file_check_directory($tmp_path, FILE_CREATE_DIRECTORY);
+  $tmp_path = file_default_scheme() . '://' . variable_get('pg_linkpoint_path', 'pg_linkpoint');
+  file_prepare_directory($tmp_path, FILE_CREATE_DIRECTORY);
 
   if ($file = file_save_upload('pg_linkpoint_transaction_key_file', '', $tmp_path)) {
     $fid = variable_get('pg_linkpoint_transaction_key_fid', '');
 
     if (!empty($fid)) {
-      db_fetch_object(db_query("DELETE FROM {files} WHERE fid = '%d'", $fid));
+      db_delete('files')
+        ->condition('fid', $fid)
+        ->execute();
       file_delete($file->filepath);
     }
 
-    file_set_status($file, FILE_STATUS_PERMANENT);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+
     variable_set('pg_linkpoint_transaction_key_fid', $file->fid);
   }
 }

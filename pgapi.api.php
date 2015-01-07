@@ -37,7 +37,7 @@ function hook_pgapi_transaction_all($status, $transaction) {
  *   - "process form".
  *   - "edit".
  *
- * @param numeric $a3
+ * @param number $a3
  *   Price.
  *
  * @param array $a4

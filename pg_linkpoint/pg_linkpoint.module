@@ -38,7 +38,7 @@ function pg_linkpoint_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
 
     case 'payment gateway info':
       $ret['name'] = t('Linkpoint');
-      $prices['USD'] = $a3 * variable_get('pg_linkpoint_rate', '1.00');;
+      $prices['USD'] = $a3 * variable_get('pg_linkpoint_rate', '1.00');
       $ret['price'] = $prices;
       break;
 
@@ -195,7 +195,11 @@ function pg_linkpoint_process_form($form_result, $t) {
   $xml .= "</order>\n";
 
   $fid = variable_get('pg_linkpoint_transaction_key_fid', '');
-  $file = db_fetch_object(db_query("SELECT * FROM {files} WHERE fid = '%d'", $fid));
+  $file = db_select('files', 'f')
+    ->fields('f')
+    ->condition('fid', $fid)
+    ->execute()
+    ->fetchObject();
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, variable_get('pg_linkpoint_action_url', PG_LINKPOINT_GAPI_URL));
   curl_setopt($ch, CURLOPT_VERBOSE, 0);

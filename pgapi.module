@@ -191,7 +191,7 @@ function pgapi_mail($key, &$message, $params) {
  *
  * @see hook_pgapi_format_price()
  *
- * @param numeric $price
+ * @param number $price
  *   String with price to format.
  *
  * @param string $format
@@ -230,7 +230,7 @@ function pgapi_format_price($price, $format = NULL) {
  *
  * Add hook_pgapi_format_price().
  *
- * @param numeric $price
+ * @param number $price
  *   String with price to format.
  *
  * @return string
@@ -238,6 +238,7 @@ function pgapi_format_price($price, $format = NULL) {
  */
 function pgapi_format_price_plain($price) {
   $format = variable_get('pgapi_currency', array());
+
   if ($format) {
     $formated_price = number_format($price, $format['decimal_places'], $format['decimal'], $format['thousands']);
     $formated = theme('pgapi_format_price_plain', array(
@@ -254,6 +255,7 @@ function pgapi_format_price_plain($price) {
       'position' => TRUE,
     ));
   }
+
   return $formated;
 }
 
@@ -635,6 +637,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
         else {
           $default = $module;
         }
+
         $form[$module]['modulename'] = array(
           '#value' => $payment_data['name'],
         );
@@ -649,6 +652,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
             'symbol' => $cur,
           ));
         }
+
         $form[$module]['price'] = array(
           '#value' => $prices,
         );
@@ -710,7 +714,8 @@ function pgapi_payment($form, &$form_state, $transaction) {
   }
 
   $data = module_invoke($default, 'pgapi_gw', 'ajax_form', $transaction);
-  if(is_array($data)){
+
+  if (is_array($data)) {
     $form['pgapi_wrapper'] += $data['element'];
     $form['submit']['#submit'][] = $data['submit'];
   }
@@ -728,13 +733,14 @@ function pgapi_ajax_form_callback($form, &$form_state) {
  */
 function pgapi_payment_submit($form, &$form_state) {
   $values = $form_state['values'];
+
   if ($values['txnid']) {
     // Load transaction by ID.
     $transaction = pgapi_transaction_load($values['txnid']);
+
     if ($values['op'] == $values['submit']) {
       $transaction->gateway = $values['gateway'];
       pgapi_transaction_save($transaction);
-
     }
     elseif ($values['op'] == $values['cancel']) {
       // If user clicked "Cancel" button - cancel transaction.
@@ -742,6 +748,7 @@ function pgapi_payment_submit($form, &$form_state) {
       $transaction->workflow = PG_WORKFLOW_CANCELED;
       $transaction->description = t('User canceled payment');
       pgapi_transaction_save($transaction);
+
       drupal_goto('payment/' . $transaction->txnid);
     }
   }

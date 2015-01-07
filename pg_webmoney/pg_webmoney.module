@@ -83,7 +83,7 @@ function pg_webmoney_menu() {
 /**
  * Implements hook_pgapi_gw().
  */
-function pg_webmoney_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
+function pg_webmoney_pgapi_gw($op, $a3 = NULL) {
   switch ($op) {
     case 'display name':
       $ret = t('Webmoney Payment Gateway');
@@ -99,15 +99,22 @@ function pg_webmoney_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
         'alt' => t('Webmoney'),
         'title' => t('Webmoney'),
       ));
-      $result = db_query('SELECT * FROM {pg_webmoney_rates} ORDER BY type')->fetchAll();
+
+      $result = db_select('pg_webmoney_rates', 'r')
+        ->fields('r')
+        ->orderBy('type')
+        ->execute()
+        ->fetchAll();
       foreach ($result as $rr) {
         $prices[$rr->type] = round(($a3 * $rr->rate), 2);
       }
+
       $ret['price'] = $prices;
       break;
 
     case 'ajax_form':
       $t = $a3;
+
       return array(
         'element' => pg_webmoney_get_wallets($t),
         'submit' => 'pg_webmoney_submit',
@@ -128,6 +135,7 @@ function pg_webmoney_pgapi_transaction($status, $t) {
       foreach ($rates as $rr) {
         $prices[$rr->type] = round(($t->amount * $rr->rate), 2);
       }
+
       $t->extra['prices'] = $prices;
       break;
   }
@@ -142,19 +150,18 @@ function pg_webmoney_get_wallets($t) {
       $def_purse = $template->type;
     }
 
-    $purses[$template->type] = round(($t->amount * $template->rate), 2) . " " . $template->type;
+    $purses[$template->type] = round(($t->amount * $template->rate), 2) . ' ' . $template->type;
   }
 
   $form['wallet'] = array(
     '#type' => 'select',
-    '#title' => t("Wallet type"),
+    '#title' => t('Wallet type'),
     '#options' => $purses,
     '#default_value' => $def_purse,
   );
 
   return $form;
 }
-
 
 function pg_webmoney_submit($form, $form_state) {
   $form = drupal_build_form('pg_webmoney_payform', $form_state);
@@ -165,12 +172,15 @@ function pg_webmoney_submit($form, $form_state) {
   drupal_exit();
 }
 
-
 function pg_webmoney_payform($form, $form_state) {
   $values = $form_state['values'];
   $t = pgapi_transaction_load($values['txnid']);
 
-  $wallet = db_query('SELECT * FROM {pg_webmoney_rates} where type = :type', array(':type' => $values['pgapi_wrapper']['wallet']))->fetchObject();
+  $wallet = db_select('pg_webmoney_rates', 'r')
+    ->fields('r')
+    ->condition('type', $values['pgapi_wrapper']['wallet'])
+    ->execute()
+    ->fetchObject();
 
   $form['LMI_PAYEE_PURSE'] = array(
     '#type' => 'hidden',
