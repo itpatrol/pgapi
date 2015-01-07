@@ -149,6 +149,11 @@ function pg_webmoney_list_submit($form, &$form_state) {
 function pg_webmoney_edit($form, &$form_state, $wmtype) {
   $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = :type ', array(':type' => $wmtype))->fetchObject();
 
+  $form['type_origin'] = array(
+    '#type' => 'hidden',
+    '#value' => $wmtype,
+  );
+
   $form['type'] = array(
     '#type' => 'item',
     '#title' => t('Type'),
@@ -180,27 +185,52 @@ function pg_webmoney_edit($form, &$form_state, $wmtype) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update Wallet'),
-    '#validate' => array('pg_webmoney_add_validate'),
+    '#validate' => array('pg_webmoney_edit_validate'),
   );
 
   return $form;
 }
 
 function pg_webmoney_edit_submit($form, &$form_state) {
-  if (!empty($form_state['values']['purse'])) {
-    $type = substr($form_state['values']['purse'], 0, 1);
-    $wmtype = 'WM' . $type;
+  $values = $form_state['values'];
+  $type = substr($values['purse'], 0, 1);
+  // Real purse type.
+  $wm_type = 'WM' . $type;
 
-    $form_state['values']['type'] = $wmtype;
-  }
+  try {
+    db_update('pg_webmoney_rates')
+      ->fields(array(
+        'type' => $wm_type,
+        'purse' => $values['purse'],
+        'rate' => $values['rate'],
+        'secret_key' => $values['secret_key'],
+      ))
+      ->condition('type', $values['type_origin'])
+      ->execute();
 
-  if (drupal_write_record('pg_webmoney_rates', $form_state['values'], array('type'))) {
-    drupal_set_message(t('Your wallet type %type has been modified.', array('%type' => $form_state['values']['type'])));
+    drupal_set_message(t('Your wallet type %type has been modified.', array(
+      '%type' => $wm_type,
+    )));
+  } catch (\PDOException $e) {
+    drupal_set_message(t('Data purse were not updated.'));
   }
 
   $form_state['redirect'] = 'admin/config/pgapi/gateway_settings/webmoney/list';
 }
 
+function pg_webmoney_edit_validate($form, &$form_state) {
+  $values = $form_state['values'];
+
+  if (!empty($values['purse'])) {
+    $type = substr($values['purse'], 0, 1);
+    $wm_type = 'WM' . $type;
+    $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = :type ', array(':type' => $wm_type))->fetchObject();
+
+    if (isset($pursed->type) && $wm_type !== $values['type_origin']) {
+      form_set_error('purse', t('!type already exists.Please enter another wallet number.', array('!type' => $wm_type)));
+    }
+  }
+}
 
 function pg_webmoney_add() {
   $form['purse'] = array(
