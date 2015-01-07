@@ -698,6 +698,7 @@ function pgapi_payment($form, &$form_state, $transaction) {
     '#type' => 'submit',
     '#value' => t('Process purchase'),
     '#submit' => array('pgapi_payment_submit'),
+    '#validate' => array('pgapi_payment_validate'),
   );
 
   $form['cancel'] = array(
@@ -720,6 +721,14 @@ function pgapi_payment($form, &$form_state, $transaction) {
 
 function pgapi_ajax_form_callback($form, &$form_state) {
   return $form['pgapi_wrapper'];
+}
+
+function pgapi_payment_validate($form, &$form_state) {
+  $values = $form_state['values'];
+
+  if (!isset($values['gateway'])) {
+    form_set_error('gateway', t('For continuing to choose a payment system.'));
+  }
 }
 
 /**
