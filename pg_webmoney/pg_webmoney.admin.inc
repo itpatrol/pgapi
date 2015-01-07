@@ -31,7 +31,11 @@ function pg_webmoney_done_payment() {
     $status = 'failed';
   }
 
-  $wallet = db_fetch_object(db_query('SELECT * FROM {pg_webmoney_rates} WHERE type="%s" ', $wmtype));
+  $wallet = db_select('pg_webmoney_rates', 'r')
+    ->fields('r')
+    ->condition('type', $wmtype)
+    ->execute()
+    ->fetchObject();
 
   if ($wallet->purse != $purse) {
     $res = $purse . 'Your wallet number does not match the original' . $wallet->purse;
@@ -77,7 +81,8 @@ function pg_webmoney_list() {
     'operations' => array('data' => t('Operations')),
   );
 
-  $query = db_select('pg_webmoney_rates', 'wr')->extend('PagerDefault')
+  $query = db_select('pg_webmoney_rates', 'wr')
+    ->extend('PagerDefault')
     ->extend('TableSort');
   $query->fields('wr');
   $query->orderByHeader($header);
@@ -145,8 +150,9 @@ function pg_webmoney_edit($form, &$form_state, $wmtype) {
   $pursed = db_query('SELECT * FROM {pg_webmoney_rates} WHERE type = :type ', array(':type' => $wmtype))->fetchObject();
 
   $form['type'] = array(
-    '#type' => 'value',
-    '#value' => $wmtype,
+    '#type' => 'item',
+    '#title' => t('Type'),
+    '#markup' => $wmtype,
   );
 
   $form['purse'] = array(
@@ -174,12 +180,20 @@ function pg_webmoney_edit($form, &$form_state, $wmtype) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update Wallet'),
+    '#validate' => array('pg_webmoney_add_validate'),
   );
 
   return $form;
 }
 
 function pg_webmoney_edit_submit($form, &$form_state) {
+  if (!empty($form_state['values']['purse'])) {
+    $type = substr($form_state['values']['purse'], 0, 1);
+    $wmtype = 'WM' . $type;
+
+    $form_state['values']['type'] = $wmtype;
+  }
+
   if (drupal_write_record('pg_webmoney_rates', $form_state['values'], array('type'))) {
     drupal_set_message(t('Your wallet type %type has been modified.', array('%type' => $form_state['values']['type'])));
   }
