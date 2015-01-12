@@ -22,7 +22,7 @@ function pg_webmoney_done_payment() {
   $lmi_secret_key = $_POST['LMI_SECRET_KEY'];
   $lmi_payer_purse = $_POST['LMI_PAYER_PURSE'];
   $lmi_payer_wm = $_POST['LMI_PAYER_WM'];
-  $prerequest = $_POST['LMI_PREREQUEST'];
+  $prerequest = isset($_POST['LMI_PREREQUEST']) ? TRUE : FALSE;
   $hash = $_POST['LMI_HASH'];
   $tocheck = strtoupper(md5($purse . $price . $txnid . $lmi_mode . $lmi_sys_invs_no . $lmi_sys_trans_no . $lmi_sys_trans_date . $lmi_secret_key . $lmi_payer_purse . $lmi_payer_wm));
 
