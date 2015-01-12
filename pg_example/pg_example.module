@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * Example PGAPI module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function pg_example_menu() {
+  $items = array();
+  $items['pg/example/payment'] = array(
+    'title' => 'Example payment',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_example_payment'),
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
