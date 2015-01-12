@@ -6,6 +6,12 @@
 
 function pg_webmoney_done_payment() {
   drupal_set_header('Content-type: text/html; charset=iso-8859-1');
+
+  if (!isset($_POST['LMI_PAYEE_PURSE'])) {
+    echo 'ERROR';
+    drupal_exit();
+  }
+
   $txnid = $_POST['LMI_PAYMENT_NO'];
   $purse = $_POST['LMI_PAYEE_PURSE'];
   $price = $_POST['LMI_PAYMENT_AMOUNT'];
