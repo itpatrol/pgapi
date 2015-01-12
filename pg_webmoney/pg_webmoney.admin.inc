@@ -31,7 +31,11 @@ function pg_webmoney_done_payment() {
   $lmi_sys_invs_no = $_POST['LMI_SYS_INVS_NO'];
   $lmi_sys_trans_no = $_POST['LMI_SYS_TRANS_NO'];
   $lmi_sys_trans_date = $_POST['LMI_SYS_TRANS_DATE'];
-  $lmi_secret_key = $_POST['LMI_SECRET_KEY'];
+  /**
+   * Load secret key from database if in settings merchant not checked
+   * "send secret key to result page".
+   */
+  $lmi_secret_key = isset($_POST['LMI_SECRET_KEY']) ? $_POST['LMI_SECRET_KEY'] : $rate->secret_key;
   $lmi_payer_purse = $_POST['LMI_PAYER_PURSE'];
   $lmi_payer_wm = $_POST['LMI_PAYER_WM'];
   $prerequest = isset($_POST['LMI_PREREQUEST']) ? TRUE : FALSE;
