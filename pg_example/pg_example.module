@@ -19,3 +19,24 @@ function pg_example_menu() {
 
   return $items;
 }
+
+/**
+ * Implements hook_FORMID().
+ */
+function pg_example_payment($form, &$form_state) {
+  global $user;
+
+  // Create new transaction every page reload.
+  $transaction = new stdClass();
+  $transaction->amount = 1;
+  $transaction->type = t('billing');
+  $transaction->title = t('test');
+  $transaction->email = $user->mail;
+  pgapi_transaction_save($transaction);
+
+  // Form get transaction info.
+  $form += pgapi_payment($form, $form_state, $transaction);
+  $form['#submit'] = array('pgapi_payment_submit');
+
+  return $form;
+}
