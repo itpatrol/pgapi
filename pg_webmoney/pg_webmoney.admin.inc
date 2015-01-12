@@ -12,6 +12,18 @@ function pg_webmoney_done_payment() {
     drupal_exit();
   }
 
+  // Load info about webmoney purse.
+  $rate = db_select('pg_webmoney_rates', 'r')
+    ->fields('r', array('secret_key'))
+    ->condition('purse', $_POST['LMI_PAYEE_PURSE'])
+    ->execute()
+    ->fetchObject();
+
+  if (!$rate) {
+    echo 'ERROR';
+    drupal_exit();
+  }
+
   $txnid = $_POST['LMI_PAYMENT_NO'];
   $purse = $_POST['LMI_PAYEE_PURSE'];
   $price = $_POST['LMI_PAYMENT_AMOUNT'];
