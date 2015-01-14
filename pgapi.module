@@ -161,6 +161,28 @@ function pgapi_theme() {
  * @todo replace with settings page for email template with tokens.
  */
 function pgapi_mail($key, &$message, $params) {
+  $template = pgapi_mail_template($key, $message, $params);
+
+  $message['subject'] = $template->subject;
+  $message['body'] = $template->body;
+}
+
+/**
+ * Mail templates.
+ *
+ * @param $key
+ *   Mail key.
+ *
+ * @param $message
+ *   Array setting messages.
+ *
+ * @param $params
+ *   Params for mail.
+ *
+ * @return object
+ *   Subject and message text.
+ */
+function pgapi_mail_template($key, $message, $params) {
   $language = $message['language'];
   if (!$language) {
     global $language;
@@ -195,6 +217,8 @@ function pgapi_mail($key, &$message, $params) {
       $message['subject'] = t('Payment !txnid Change Notification from !site', $variables, array('langcode' => $language->language));
       $message['body'][] = t("Dear !username\nPayment #!txnid has been changed.\n\nAmount: !pg_amount\nType: !pg_type\nMethod: !pg_method\nStatus: !status\nWorkflow: !workflow\n\nBest regards,\n!site", $variables, array('langcode' => $language->language));
   }
+
+  return (object) $message;
 }
 
 /**
@@ -363,7 +387,25 @@ function pgapi_transaction_save(&$transaction) {
       }
 
       $params['transaction'] = $transaction;
-      drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
+
+      if (module_exists('notices')) {
+        $user_admin = user_load(1);
+
+        $template = pgapi_mail_template($transaction->status, array(
+          'language' => user_preferred_language($user_admin),
+        ), $params);
+
+        $notice = new stdClass();
+        $notice->uid = $user_admin->uid;
+        $notice->provider = 'notices_node';
+        $notice->subject = $template->subject;
+        $notice->message = $template->body[0];
+        $notice->format = filter_default_format($user_admin);
+        notices_save($notice);
+      }
+      else {
+        drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
+      }
     }
   }
 
