@@ -1,18 +1,84 @@
 .price .symbol {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   font-weight: bold;
 }
 
+#pgapi-payment {
+  padding-left: 140px;
+}
 
 #pgapi-payment .price {
   text-align: right;
-  width: 200px;
+  width: 100px;
 }
 
 #pgapi-payment .price .symbol {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   float: left;
   font-weight: bold;
+}
+
+dl.payment {
+  padding-bottom: 10px;
+  border: none;
+  padding-left: 100px;
+  background: url(payment.png) no-repeat left top;
+}
+
+dl.payment dt {
+  color: #666;
+  clear: left;
+  float: left;
+  font-weight: bold;
+  margin-top: 1px;
+  margin-right: 10px;
+  padding: 2px;
+  width: 140px;
+  text-align: right;
+}
+
+dl.payment dd {
+  margin: 3px 0 3px 40px;
+  padding: 1px 0 5px 160px;
+  border-bottom: 1px dotted #f1f1f1;
+  min-height: 20px;
+}
+
+dl.payment dd p {
+  padding: 0;
+}
+
+.status-1 {
+  color: blue;
+  font-weight: bold;
+}
+
+.status-2 {
+  color: #05bf05;
+  font-weight: bold;
+}
+
+.status-3 ,
+.status-4,
+.status-5,
+.status-6 {
+  color: red;
+  font-weight: bold;
+}
+
+#pgapi-payment table tr th,
+#pgapi-payment table tr th a,
+#pgapi-payment table tr th a:hover {
+  background-color: white;
+  color: black;
+}
+
+#pgapi-payment tr.even {
+  background-color: white;
+}
+
+#pgapi-payment tr.odd {
+  background-color: #f9f9f9;
 }

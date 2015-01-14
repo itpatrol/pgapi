@@ -24,7 +24,7 @@ define('PG_RECEIVED', 7);
 // The transaction has been received.
 define('PG_WORKFLOW_RECEIVED', 1);
 
-// Transaction has been invoiced.  This means an invoice has been printed or viewed.
+// Transaction has been invoiced. This means an invoice has been printed or viewed.
 define('PG_WORKFLOW_INVOICED', 2);
 
 // The transaction has been shipped.
@@ -42,263 +42,251 @@ define('PG_WORKFLOW_COMPLETED', 6);
 // A security violation has been detected and the transaction has been taken out of the general workflow and flagged.
 define('PG_WORKFLOW_SECURITY_VIOLATION', 7);
 
-/********************************************************************
- * HOOK implementations
- ********************************************************************/
 
 /**
- * Implementation of hook_menu()
+ * Implements hook_menu().
  */
 function pgapi_menu() {
   $items = array();
-  $items['payment/%txnid'] = array(
-    'title'            => 'Payment Gateway',
-    'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('pgapi_payment', 1),
-    'access callback'  => TRUE,
-    'file'             => 'pgapi.pages.inc',
-    'type'             => MENU_CALLBACK,
+
+  $items['payment/%pgapi_transaction'] = array(
+    'title callback' => 'pgapi_payment_title',
+    'title arguments' => array(1),
+    'page callback' => 'pgapi_payment_page',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
   );
-  $items['payment/form_load_js/%txnid'] = array(
-    'title'            => 'Payment Gateway Extra Form Load',
-    'page callback'    => 'pgapi_extra_form_load_js',
-    'page arguments'   => array(2),
-    'access callback'  => TRUE,
-    'file'             => 'pgapi.pages.inc',
-    'type'             => MENU_CALLBACK,
-  );
-  $items['admin/pgdata'] = array(
-    'title'            => 'Payment Gateway API Tools',
-    'description'      => "Manage Payment Gateway API's Tools.",
-    'page callback'    => 'pgapi_pgdata',
-    'access callback'  => 'user_access',
+
+  $items['admin/config/pgapi'] = array(
+    'title' => 'Payment Gateway API Tools',
+    'description' => "Manage Payment Gateway API's Tools.",
+    'position' => 'right',
+    'weight' => 7,
+    'page callback' => 'pgapi_admin_menu_block_page',
     'access arguments' => array('administer pgapi'),
-    'file'             => 'pgapi.admin.inc',
-    'type'             => MENU_NORMAL_ITEM,
-  );  
-  $items['admin/pgdata/pgsettings'] = array(
-    'title'            => 'Payment Gateway API Settings',
-    'description'      => 'Configure default settings for Payment Gateway API.',
-    'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('pgapi_common'),
-    'access callback'  => 'user_access',
+    'file' => 'pgapi.admin.inc',
+  );
+
+  $items['admin/config/pgapi/gateway_settings'] = array(
+    'title' => 'Payment Gateway API Settings',
+    'description' => 'Configure gateway settings for Payment Gateway API.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pgapi_admin_gateway_settings'),
     'access arguments' => array('administer pgapi'),
-    'file'             => 'pgapi.admin.inc',
-    'type'             => MENU_NORMAL_ITEM,
+    'file' => 'pgapi.admin.inc',
+    'weight' => -10,
   );
-  $items['admin/pgdata/pgsettings/common'] = array(
-    'title'            => 'Common',
-    'weight'           => -10,
-    'type'             => MENU_DEFAULT_LOCAL_TASK,
+
+  $items['admin/config/pgapi/gateway_settings/common'] = array(
+    'title' => 'Active gateways',
+    'description' => 'Configure gateway settings for Payment Gateway API.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pgapi_admin_gateway_settings'),
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pgapi.admin.inc',
+    'weight' => -10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   );
+
+  $items['admin/config/pgapi/currency_settings'] = array(
+    'title' => 'Payment Gateway Currency Settings',
+    'description' => 'Configure currency settings for Payment Gateway API.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pgapi_admin_currency_settings'),
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pgapi.admin.inc',
+    'weight' => -11,
+  );
+
   return $items;
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function pgapi_perm() {
-  // Add permission to admin pgapi
-  return array('administer pgapi');
+function pgapi_permission() {
+  // Add permission to admin pgapi.
+  return array(
+    'administer pgapi' => array(
+      'title' => t('Administer pgapi'),
+      'description' => t('Allows to choose payment gateways and change configurations'),
+      'restrict access' => TRUE,
+    ),
+  );
 }
 
 /**
- * Implementation of hook_init().
- */
-function pgapi_init() {
-  // Add styles for pgapi module
-  drupal_add_css(drupal_get_path('module', 'pgapi') . '/pgapi.css');
-}
-
-/**
- * Implementation of hook_theme()
+ * Implements hook_theme().
  */
 function pgapi_theme() {
   return array(
-    'pgapi_common' => array(
-      'arguments' => array('form' => NULL),
-      'file' => 'pgapi.theme.inc',
-    ),
-    'pgapi_payment' => array(
-      'arguments' => array('form' => NULL),
-      'file' => 'pgapi.theme.inc',
-    ),
-    'pgapi_gateway_price' => array(
-      'arguments' => array('prices' => array(), 'type' => NULL),
+    'payment' => array(
+      'render element' => 'elements',
+      'template' => 'payment',
       'file' => 'pgapi.theme.inc',
     ),
     'pgapi_format_price' => array(
-      'arguments' => array('price' => NULL, 'symbol' => NULL, 'position' => NULL),
+      'variables' => array(
+        'price' => NULL,
+        'symbol' => NULL,
+        'position' => NULL,
+      ),
       'file' => 'pgapi.theme.inc',
     ),
     'pgapi_format_price_plain' => array(
-      'arguments' => array('price' => NULL, 'symbol' => NULL, 'position' => NULL),
-      'file' => 'pgapi.theme.inc',
-    ),
-    'pgapi_gateway_select_form' => array(
-      'arguments' => array('form' => NULL),
+      'variables' => array(
+        'price' => NULL,
+        'symbol' => NULL,
+        'position' => NULL,
+      ),
       'file' => 'pgapi.theme.inc',
     ),
   );
 }
 
-
 /**
- * Implementation of hook_mail().
+ * Implemens hook_mail().
+ *
+ * @todo replace with settings page for email template with tokens.
  */
 function pgapi_mail($key, &$message, $params) {
-
-	$language = $message['language'];
+  $language = $message['language'];
   if (!$language) {
     global $language;
-  }	
-	$variables = user_mail_tokens($params['user'], $language);
-	
-	$transaction = $params['transaction'];
-  $variables                = user_mail_tokens($params['user'], $language);
-	$variables['!txnid']      = $transaction->txnid;
-	$variables['!pg_amount']  = $transaction->amount;
-	$variables['!pg_type']    = $transaction->type;
-	$variables['!pg_method']  = $transaction->method;
-  $variables['!status']     = pgapi_get_status($transaction->status);
-  $variables['!workflow']   = pgapi_get_workflow($transaction->workflow);	
+  }
 
-//TODO get subject and body from settings page	
-	switch($key) {
-		case PG_PENDING:
-				$message['subject'] = t('New Payment Notification from !site', $variables, $language->language);
-				$message['body'][] = t("Dear !username
-Payment #!txnid has been created.
+  $transaction = $params['transaction'];
 
-Amount: !pg_amount
-Type: !pg_type
-Method: !pg_method
+  // $account = user_load($transaction->uid);
+  $variables = array();
+  $variables['!txnid'] = $transaction->txnid;
+  $variables['!pg_amount'] = $transaction->amount;
+  // @todo Preserve old type and method tokens?
+  $variables['!pg_type'] = $transaction->service;
+  $variables['!pg_method'] = $transaction->gateway;
+  // @todo Emails are not using this values because upgraded can have the messages translated.
+  $variables['!pg_service'] = $transaction->service;
+  $variables['!pg_gateway'] = $transaction->gateway;
+  $variables['!status'] = pgapi_get_status($transaction->status);
+  $variables['!workflow'] = pgapi_get_workflow($transaction->workflow);
 
-Best regards,
-!site
-", $variables, $language->language);
-			break;
+  $variables['!site'] = variable_get('site_name', '');
+
+  // @todo: get mail subject and body from settings form.
+  switch ($key) {
+    case PG_PENDING:
+      $message['subject'] = t('New Payment Notification from !site', $variables, array('langcode' => $language->language));
+      $message['body'][] = t("Dear !username\nPayment #!txnid has been created.\n\nAmount: !pg_amount\nType: !pg_type\nMethod: !pg_method\n\nBest regards,\n!site", $variables, array('langcode' => $language->language));
+      break;
+
     default:
-    		$message['subject'] = t('Payment !txnid Change Notification from !site', $variables, $language->language);
-				$message['body'][] = t("Dear !username
-Payment #!txnid has been changed.
-
-Amount: !pg_amount
-Type: !pg_type
-Method: !pg_method
-Status: !status
-Workflow: !workflow
-
-Best regards,
-!site
-", $variables, $language->language);
-	}
+      $message['subject'] = t('Payment !txnid Change Notification from !site', $variables, array('langcode' => $language->language));
+      $message['body'][] = t("Dear !username\nPayment #!txnid has been changed.\n\nAmount: !pg_amount\nType: !pg_type\nMethod: !pg_method\nStatus: !status\nWorkflow: !workflow\n\nBest regards,\n!site", $variables, array('langcode' => $language->language));
+  }
 }
 
-/********************************************************************
- * API Functions
- ********************************************************************/
-
 /**
- * Return formated price with html
+ * Returns html formated price.
  *
- * Add hook_pgapi_format_price()
+ * @see hook_pgapi_format_price()
  *
- * @param  $hook
- *   Module name
- * @param  $price
- *   String with price to format
- * @param  $symbol
- *   String with price symbol (example: '$')
- * @return formatted price with price symbol
+ * @param numeric $price
+ *   String with price to format.
+ *
+ * @param string $format
+ *   String with format.
+ *
+ * @return string
+ *   Formatted price with price symbol.
  */
-function pgapi_format_price($hook, $price, $symbol) {
-  $format = module_invoke($hook, 'pgapi_format_price');
+function pgapi_format_price($price, $format = NULL) {
+  if (empty($format)) {
+    $format = variable_get('pgapi_currency', array());
+  }
+
   if ($format) {
-    $formated_price = number_format($price, $format['decimals'], $format['dec_point'], $format['thousands_sep']);
-    $formated = theme('pgapi_format_price',$formated_price,$symbol,$format['position']);
+    $formated_price = number_format((double) $price, $format['decimal_places'], $format['decimal'], $format['thousands']);
+    $formated = theme('pgapi_format_price', array(
+      'price' => $formated_price,
+      'symbol' => $format['symbol'],
+      'position' => $format['symbol_position'],
+    ));
   }
   else {
     $formated_price = number_format($price, 2, '.', ',');
-    $formated = theme('pgapi_format_price', $formated_price, $symbol, TRUE);
+    $formated = theme('pgapi_format_price', array(
+      'price' => $formated_price,
+      'symbol' => '$',
+      'position' => TRUE,
+    ));
   }
+
   return $formated;
-}  
+}
 
 /**
- * Return formated price without html
+ * Return formated price without html.
  *
- * Add hook_pgapi_format_price()
+ * Add hook_pgapi_format_price().
  *
- * @param  $hook
- *   Module name
- * @param  $price
- *   String with price to format
- * @param  $symbol
- *   String with price symbol (example: '$')
- * @return formatted price with price symbol
+ * @param numeric $price
+ *   String with price to format.
+ *
+ * @return string
+ *   Formatted price with price symbol.
  */
-function pgapi_format_price_plain($hook,$price,$symbol) {
-  $format = module_invoke($hook, 'pgapi_format_price');
+function pgapi_format_price_plain($price) {
+  $format = variable_get('pgapi_currency', array());
   if ($format) {
-    $formated_price = number_format($price,$format['decimals'], $format['dec_point'], $format['thousands_sep']);
-    $formated = theme('pgapi_format_price_plain', $formated_price,$symbol, $format['position']);
+    $formated_price = number_format($price, $format['decimal_places'], $format['decimal'], $format['thousands']);
+    $formated = theme('pgapi_format_price_plain', array(
+      'price' => $formated_price,
+      'symbol' => $format['symbol'],
+      'position' => $format['symbol_position'],
+    ));
   }
-  else{
+  else {
     $formated_price = number_format($price, 2, '.', ',');
-    $formated = theme('pgapi_format_price_plain', $formated_price, $symbol, TRUE);
+    $formated = theme('pgapi_format_price_plain', array(
+      'price' => $formated_price,
+      'symbol' => '$',
+      'position' => TRUE,
+    ));
   }
   return $formated;
 }
 
-
 /**
- * Return redirect url after transaction
- *
- * Add hook_pgapi_callback()
- *
- * @param  $transaction
- *   An object with transaction info
- */
-function pgapi_get_redirect_url($transaction) {
-  return module_invoke($transaction->type, 'pgapi_callback', $transaction);
-}
-
-/**
- * Return array with enabled payment systems
+ * Returns array with enabled payment systems.
  */
 function pgapi_get_enabled_payment_systems() {
-  // Enable domain module support.
-  if (module_exists('domain_conf')) {
-    $current_domain = domain_get_domain();
-    $pgapi_gw = domain_conf_variable_get($current_domain['domain_id'], 'pgapi_gw', array());
-  }
-  else {
-    $pgapi_gw = variable_get('pgapi_gw', array());
-  }
+  $pgapi_gw = variable_get('pgapi_gw', array());
   return $pgapi_gw;
 }
 
 /**
- * Save or update transaction
+ * Save or update transaction.
  *
- * Add hook_pgapi_transaction()
- * Add hook_pgapi_transaction_all()
+ * Add hook_pgapi_transaction().
+ * Add hook_pgapi_transaction_all().
  *
- * @param  $transaction
- * @return void
+ * @param object $transaction
+ *   Object transaction.
+ *
+ * @todo fix user_preferred_language to admin.
  */
 function pgapi_transaction_save(&$transaction) {
   global $user;
   $time = time();
   $transaction->is_new = FALSE;
 
-  // Set last changed time
+  // Set last changed time.
   if (!isset($transaction->changed)) {
     $transaction->changed = $time;
   }
 
-  // Set transaction author
+  // Set transaction author.
   if (!isset($transaction->uid)) {
     $transaction->uid = $user->uid;
   }
@@ -306,68 +294,85 @@ function pgapi_transaction_save(&$transaction) {
     $transaction->email = $user->mail;
   }
 
-  // If this is new transaction
+  // If this is new transaction.
   if (!isset($transaction->txnid)) {
-    // Set timestamp when transaction was created
+    // Set timestamp when transaction was created.
     if (!isset($transaction->created)) {
       $transaction->created = $time;
       $transaction->changed = $time;
     }
-    // Default transaction status is pending
+    // Default transaction status is pending.
     if (!isset($transaction->status)) {
       $transaction->status = pgapi_get_status_id('pending');
     }
-    // Default workflow status is pending
+    // Default workflow status is pending.
     if (!isset($transaction->workflow)) {
       $transaction->workflow = pgapi_get_workflow_id('received');
     }
-    // Set new flag
+    // Set new flag.
     $transaction->is_new = TRUE;
   }
 
+  if (empty($transaction->description)) {
+    // Blob text should have a value.
+    $transaction->description = '';
+  }
+
   if ($transaction->is_new) {
-    // Save transaction
+    // Save transaction.
+    if (!isset($transaction->extra)) {
+      $transaction->extra = array();
+    }
+
     $transaction->extra = serialize($transaction->extra);
+
     drupal_write_record('pgapi_transaction', $transaction);
   }
   else {
-    // Call hook_pgapi_transaction()
-    module_invoke($transaction->type, 'pgapi_transaction', $transaction->status, $transaction);
-    module_invoke($transaction->method, 'pgapi_transaction', $transaction->status, $transaction);
-    // Update transaction
-    $transaction->extra = serialize($transaction->extra);
+    // Allow involved service and gateway to update the transactions.
+    module_invoke($transaction->service, 'pgapi_transaction', $transaction->status, $transaction, 'service');
+    module_invoke($transaction->gateway, 'pgapi_transaction', $transaction->status, $transaction, 'gateway');
+    // Update main transaction.
+    if (isset($transaction->extra)) {
+      $transaction->extra = serialize($transaction->extra);
+    }
+
     drupal_write_record('pgapi_transaction', $transaction, 'txnid');
   }
 
-  // Send mail to admin
-  // TODO: add possibility to choose wether send mail or not
+  // Send mail to admin.
+  // TODO: add possibility to choose wether send mail or not.
   $admin_mail = variable_get('pgapi_email', '');
-  if(!$admin_mail){
+  if (!$admin_mail) {
     $admin_mail = variable_get('site_mail', '');
   }
-  $params['transaction'] = $transaction;
-  drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
 
-  // Unserialize extra data
+  // $params['transaction'] = $transaction;
+  // drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
+
+  // Unserialize extra data.
   $transaction->extra = unserialize($transaction->extra);
 
-  // Call hook_pgapi_transaction_all()
+  // Call hook_pgapi_transaction_all().
   module_invoke_all('pgapi_transaction_all', $transaction->status, $transaction);
 }
 
 /**
- * Load transaction by ID
+ * Loads transaction by ID.
  *
- * @param $txnid
- *   Transaction ID
+ * Used as menu autoload function.
+ *
+ * @param int $txnid
+ *   Transaction ID.
+ *
  * @return object
- *  Loaded transaction
+ *   Loaded transaction.
  */
 function pgapi_transaction_load($txnid) {
   if (ctype_digit($txnid)) {
-    $transaction = db_fetch_object(db_query("SELECT * FROM {pgapi_transaction} WHERE txnid = %d", $txnid));
+    $transaction = db_query("SELECT * FROM {pgapi_transaction} WHERE txnid = :txnid", array(':txnid' => $txnid))->fetchObject();
     if ($transaction) {
-      // Unserialize data
+      // Unserialize data.
       $transaction->extra = unserialize($transaction->extra);
       return $transaction;
     }
@@ -376,180 +381,368 @@ function pgapi_transaction_load($txnid) {
 }
 
 /**
- * Delete transaction
+ * Deletes transaction.
  *
- * @param  $txnid
- *   Transaction ID
- * @return void
+ * @param int $txnid
+ *   Transaction ID.
  */
 function pgapi_transaction_delete($txnid) {
-  db_query("DELETE FROM {pgapi_transaction} WHERE txnid = %d", $txnid);
+  db_delete('pgapi_transaction')
+    ->condition('txnid', $txnid)
+    ->execute();
 }
 
-
 /**
- * Get all payment gateways
- *
- * Add hook_pgapi_gw()
+ * Returns all payment gateways.
  *
  * @return array
- *   Array with payment gateways
+ *   Array with payment gateways.
  */
-function pgapi_build_gateway() {
+function pgapi_get_gateway_options() {
   $methods = array();
-  // Get all hook_pgapi_gw() implementations
+  // Get all hook_pgapi_gw() implementations.
   $implementations = module_implements('pgapi_gw');
   foreach ($implementations as $module) {
     if ($module_name = module_invoke($module, 'pgapi_gw', 'display name')) {
       $methods[$module] = $module_name;
     }
   }
+
   return $methods;
 }
 
 /**
- * Get payment gateway name
+ * Get payment gateway name from module.
  *
- * Add hook_pgapi_gw()
+ * @param string $module
+ *   Module name.
  *
- * @param  $module
- *   Module name
  * @return string
- *   Gateway name
+ *   Gateway name.
  */
 function pgapi_get_gateway_name($module) {
   return module_invoke($module, 'pgapi_gw', 'display name');
 }
 
 /**
- * Get all availible transaction statuses
+ * Get all availible transaction statuses.
  *
- * Add hook_pgapi_transaction_status()
+ * Add hook_pgapi_transaction_status().
  *
  * @return array
+ *   List statuses.
  */
 function pgapi_build_status() {
-  $status = array (
-    PG_PENDING   => t('pending'),
+  $status = array(
+    PG_PENDING => t('pending'),
     PG_COMPLETED => t('completed'),
-    PG_FAILED    => t('failed'),
-    PG_DENIED    => t('denied'),
-    PG_REFUNDED  => t('refunded'),
-    PG_CANCELED  => t('canceled'),
-    PG_RECEIVED  => t('received'),
+    PG_FAILED => t('failed'),
+    PG_DENIED => t('denied'),
+    PG_REFUNDED => t('refunded'),
+    PG_CANCELED => t('canceled'),
+    PG_RECEIVED => t('received'),
   );
-  // Get all hook_pgapi_transaction_status() implementations
+
+  // Get all hook_pgapi_transaction_status() implementations.
   $implementations = module_implements('pgapi_transaction_status');
-  foreach ($implementations as $hook) {
-    module_invoke($hook, 'pgapi_transaction_status', $status);
+  foreach ($implementations as $module) {
+    module_invoke($module, 'pgapi_transaction_status', $status);
   }
-  // Return array with all statuses
+
+  // Return array with all statuses.
   return $status;
 }
 
 /**
- * Return human-readable status name
+ * Return human-readable status name.
  *
- * @param  $id
- *   Status ID
+ * @param int $id
+ *   Status ID.
+ *
  * @return string
- *   Status name
+ *   Status name.
  */
 function pgapi_get_status($id) {
   $status = pgapi_build_status();
-  if($status[$id]) {
+
+  if ($status[$id]) {
     return $status[$id];
   }
+
   return t('undefined status');
 }
 
-
 /**
- * Return status ID by human-readable status name
+ * Return status ID by human-readable status name.
  *
- * @param  $name
- *   String with status name
+ * @param string $name
+ *   String with status name.
+ *
  * @return int
- *   Status ID
+ *   Status ID.
  */
 function pgapi_get_status_id($name) {
   $name = drupal_strtolower(t($name));
   $statuses = pgapi_build_status();
   $status_id = array_search($name, $statuses);
+
   if ($status_id) {
     return $status_id;
   }
+
   return 0;
 }
 
 /**
- * Get all availible transaction workflows
+ * Get all availible transaction workflows.
  *
  * Add hook_pgapi_transaction_workflow()
  *
  * @return array
+ *   Return array with all workflows.
  */
 function pgapi_build_workflow() {
-  $workflow = array (
-    PG_WORKFLOW_RECEIVED            => t('received'),
-    PG_WORKFLOW_INVOICED            => t('invoiced'),
-    PG_WORKFLOW_SHIPPED             => t('shipped'),
-    PG_WORKFLOW_AWAITING_RESPONSE   => t('awaiting customer response'),
-    PG_WORKFLOW_CANCELED            => t('canceled'),
-    PG_WORKFLOW_COMPLETED           => t('completed'),
-    PG_WORKFLOW_SECURITY_VIOLATION  => t('security violation'),
+  $workflow = array(
+    PG_WORKFLOW_RECEIVED => t('received'),
+    PG_WORKFLOW_INVOICED => t('invoiced'),
+    PG_WORKFLOW_SHIPPED => t('shipped'),
+    PG_WORKFLOW_AWAITING_RESPONSE => t('awaiting customer response'),
+    PG_WORKFLOW_CANCELED => t('canceled'),
+    PG_WORKFLOW_COMPLETED => t('completed'),
+    PG_WORKFLOW_SECURITY_VIOLATION => t('security violation'),
   );
-  // Get all hook_pgapi_transaction_workflow() implementations
+
+  // Get all hook_pgapi_transaction_workflow() implementations.
   $implementations = module_implements('pgapi_transaction_workflow');
-  foreach ($implementations as $hook) {
-    module_invoke($hook, 'pgapi_transaction_workflow', $workflow);
+  foreach ($implementations as $module) {
+    module_invoke($module, 'pgapi_transaction_workflow', $workflow);
   }
-  // Return array with all workflows
+
+  // Return array with all workflows.
   return $workflow;
 }
 
 /**
- * Return human-readable workflow name
+ * Return human-readable workflow name.
  *
- * @param  $id
- *   Workflow ID
+ * @param int $id
+ *   Workflow ID.
+ *
  * @return string
- *   Workflow name
+ *   Workflow name.
  */
 function pgapi_get_workflow($id) {
   $workflow = pgapi_build_workflow();
-  if($workflow[$id]) {
+
+  if ($workflow[$id]) {
     return $workflow[$id];
   }
+
   return t('undefined workflow');
 }
 
 /**
- * Return workflow ID by human-readable workflow name
+ * Return workflow ID by human-readable workflow name.
  *
- * @param  $name
- *   String with workflow name
+ * @param string $name
+ *   String with workflow name.
+ *
  * @return int
- *   Workflow ID
+ *   Workflow ID.
  */
 function pgapi_get_workflow_id($name) {
   $name = drupal_strtolower(t($name));
   $statuses = pgapi_build_workflow();
   $status_id = array_search($name, $statuses);
+
   if ($status_id) {
     return $status_id;
   }
+
   return 0;
 }
 
 /**
- * Menu autoload function
- * Automatically load transaction
+ * Title callback for payment/% page.
  *
- * @param $txnid
- *   Transaction ID
+ * Return title of transaction.
+ *
+ * @param object $transaction
+ *   Current transaction.
+ *
+ * @return string
+ *   Title.
  */
-function txnid_load($txnid) {
-  $txnid = (int) $txnid;
-  return pgapi_transaction_load($txnid);
+function pgapi_payment_title($transaction) {
+  return strip_tags($transaction->title);
+}
+
+/**
+ * Page callback for payment/% page.
+ *
+ * Return form with payment methods.
+ *
+ * @param object $transaction
+ *   Current transaction.
+ *
+ * @return string
+ *   Form.
+ */
+function pgapi_payment_page($transaction) {
+  global $user;
+  // If someone tries to view not own page before transaction status
+  // is pending - show access denied page.
+  if (($user->uid != 1 && $user->uid != $transaction->uid)) {
+    drupal_access_denied();
+  }
+
+  $output = '';
+  $output .= theme('payment', array('transaction' => $transaction));
+
+  drupal_add_css(drupal_get_path('module', 'pgapi') . '/pgapi.css');
+
+  if ($transaction->status == PG_PENDING) {
+    $form = drupal_get_form('pgapi_payment', $transaction);
+    $output .= drupal_render($form);
+  }
+
+  return $output;
+}
+
+/**
+ * Implements hook_FORMID().
+ */
+function pgapi_payment($form, &$form_state, $transaction) {
+  drupal_add_css(drupal_get_path('module', 'pgapi') . '/pgapi.css');
+
+  if (($transaction->status != PG_PENDING) || ($transaction->workflow != PG_WORKFLOW_RECEIVED)) {
+    drupal_access_denied();
+  }
+
+  // Get array with enabled payment systems.
+  $pgapi_gw = pgapi_get_enabled_payment_systems();
+  $default = '';
+  $options = array();
+
+  foreach ($pgapi_gw as $module => $checked) {
+    if ($checked) {
+      // Get data about payment gateway from hook_pgapi_gw().
+      $payment_data = module_invoke($module, 'pgapi_gw', 'payment gateway info', $transaction->amount, $transaction);
+      if ($payment_data) {
+        if ($transaction->gateway == $module) {
+          $default = $transaction->gateway;
+        }
+        else {
+          $default = $module;
+        }
+        $form[$module]['modulename'] = array(
+          '#value' => $payment_data['name'],
+        );
+
+        $prices = '';
+        foreach ($payment_data['price'] as $cur => $price) {
+          $prices .= pgapi_format_price($price, array(
+            'decimal_places' => 2,
+            'decimal' => '.',
+            'thousands' => ',',
+            'symbol_position' => 1,
+            'symbol' => $cur,
+          ));
+        }
+        $form[$module]['price'] = array(
+          '#value' => $prices,
+        );
+
+        $options[$module]['name'] = $payment_data['name'];
+        $options[$module]['price'] = $prices;
+      }
+    }
+
+    $form['description'] = array(
+      '#markup' => t('Please select service that you like to pay with.'),
+    );
+
+    $form['gateway'] = array(
+      '#type' => 'tableselect',
+      '#multiple' => FALSE,
+      '#header' => array(
+        'name' => t('Payment system'),
+        'price' => t('Amount to pay'),
+      ),
+      '#options' => $options,
+      '#default_value' => $default,
+      '#empty' => t('Please contact website admin. No one payment gateway are enabled.'),
+      '#ajax' => array(
+        'wrapper' => 'pgapi-wrapper-form',
+        'callback' => 'pgapi_ajax_form_callback',
+        'effect' => 'slide',
+        'progress' => array(
+          'type' => 'none',
+        ),
+      ),
+    );
+  }
+
+  $form['pgapi_wrapper'] = array(
+    '#prefix' => '<div id = "pgapi-wrapper-form">',
+    '#suffix' => '</div>',
+    '#tree' => TRUE,
+  );
+
+  $form['txnid'] = array(
+    '#type' => 'value',
+    '#value' => $transaction->txnid,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Process purchase'),
+    '#submit' => array('pgapi_payment_submit'),
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel purchase'),
+  );
+
+  if (!empty($form_state['values']['gateway'])) {
+    $default = $form_state['values']['gateway'];
+  }
+
+  $data = module_invoke($default, 'pgapi_gw', 'ajax_form', $transaction);
+  if(is_array($data)){
+    $form['pgapi_wrapper'] += $data['element'];
+    $form['submit']['#submit'][] = $data['submit'];
+  }
+
+  return $form;
+}
+
+function pgapi_ajax_form_callback($form, &$form_state) {
+  return $form['pgapi_wrapper'];
+}
+
+/**
+ * Submit function for payment form. Process transaction and redirect
+ * to payment system page.
+ */
+function pgapi_payment_submit($form, &$form_state) {
+  $values = $form_state['values'];
+  if ($values['txnid']) {
+    // Load transaction by ID.
+    $transaction = pgapi_transaction_load($values['txnid']);
+    if ($values['op'] == $values['submit']) {
+      $transaction->gateway = $values['gateway'];
+      pgapi_transaction_save($transaction);
+
+    }
+    elseif ($values['op'] == $values['cancel']) {
+      // If user clicked "Cancel" button - cancel transaction.
+      $transaction->status = PG_CANCELED;
+      $transaction->workflow = PG_WORKFLOW_CANCELED;
+      $transaction->description = t('User canceled payment');
+      pgapi_transaction_save($transaction);
+      drupal_goto('payment/' . $transaction->txnid);
+    }
+  }
 }

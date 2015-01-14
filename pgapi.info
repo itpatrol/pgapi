@@ -1,6 +1,4 @@
-; $Id$
 name = Payment Gateway API
 description = Payment Gateway API.
 package = "Payment Gateway API"
-core = 6.x
-
+core = 7.x

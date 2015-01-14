@@ -1,123 +1,134 @@
 <?php
-
-/********************************************************************
- * Constants
- ********************************************************************/
-
-define("c2coActionUrlSingle" ,"https://www.2checkout.com/checkout/spurchase");
-define("c2coActionUrlMulti" ,"https://www.2checkout.com/checkout/spurchase");
-
-/********************************************************************
- * Drupal Hooks
- ********************************************************************/
-
+/**
+ * @file
+ * Payment Gateway 2co.
+ */
 
 /**
- * Implementation of hook_menu()
+ * Constants.
+ */
+define("PG_2CO_ACTION_URL_SINGLE", 'https://www.2checkout.com/checkout/spurchase');
+define("PG_2CO_ACTION_URL_MULTI", 'https://www.2checkout.com/checkout/spurchase');
+
+/**
+ * Implements hook_menu().
  */
 function pg_2co_menu() {
   $items['2co/done'] = array(
-      'title'           => 'Internal Data',
-      'page callback'   => 'pg_2co_done_payment',
-      'access callback' => TRUE,
-      'file'            => 'pg_2co.admin.inc',
-      'type'            => MENU_CALLBACK
+    'title' => 'Internal Data',
+    'page callback' => 'pg_2co_done_payment',
+    'access callback' => TRUE,
+    'file' => 'pg_2co.admin.inc',
+    'type' => MENU_CALLBACK,
   );
   $items['admin/pgdata/pgsettings/2co'] = array(
-      'title'           => '2co',
-      'description'     => '2co payment settings.',
-      'page callback'   => 'drupal_get_form',
-      'page arguments'  => array('pg_2co_settings'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer pgapi'),
-      'file'            => 'pg_2co.admin.inc',
-      'type'            => MENU_LOCAL_TASK,
+    'title' => '2co',
+    'description' => '2co payment settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_2co_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_2co.admin.inc',
+    'type' => MENU_LOCAL_TASK,
   );
   return $items;
 }
 
-/********************************************************************
- * Pgapi Gateway Hooks
- ********************************************************************/
-function pg_2co_pgapi_gw($op,$a3=NULL,$a4=NULL){
-  switch($op){
+/**
+ * Implements hook_pgapi_gw().
+ */
+function pg_2co_pgapi_gw($op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
     case 'display name':
-        $ret = t('2co Payment Gateway');
+      $ret = t('2co Payment Gateway');
       break;
+
     case 'payment gateway info':
-        $ret['name']=t('2co');
-        $prices[variable_get('pg_2co_currency_code','USD')] = round(($a3*variable_get('pg_2co_rate','1.00')),2);
-        $ret['price']= $prices;
+      $ret['name'] = t('2co');
+      $prices[variable_get('pg_2co_currency_code', 'USD')] = round(($a3 * variable_get('pg_2co_rate', '1.00')), 2);
+      $ret['price'] = $prices;
       break;
+
     case 'get form':
-        $t=$a3;
-        $form_result = $a4;
-        $ret = pg_2co_extraform($form_result,$t);
+      $t = $a3;
+      $form_result = $a4;
+      $ret = pg_2co_extraform($form_result, $t);
       break;
+
     case 'process form':
-        $form_result = $a4;
-        $t = $a3;
-        $ret = pg_2co_process_form($form_result,$t);
+      $form_result = $a4;
+      $t = $a3;
+      $ret = pg_2co_process_form($form_result, $t);
       break;
   }
+
   return $ret;
 }
 
-function pg_2co_pgapi_transaction($status,&$t){
-  switch($status){
+/**
+ * Implements hook_pgapi_transaction().
+ */
+function pg_2co_pgapi_transaction($status, &$t) {
+  switch ($status) {
     case PG_PENDING:
-        $t->extra['amount'] =  round(($t->amount * variable_get('pg_2co_rate','1.00')),2);
+      $t->extra['amount'] = round(($t->amount * variable_get('pg_2co_rate', '1.00')), 2);
       break;
   }
 }
-function pg_2co_extraform($form_state,$t){
+
+function pg_2co_extraform($form_state, $t) {
   $form['message'] = array(
     '#type' => 'markup',
-    '#value' => t('We will charge !amount from your CC', array ('!amount' => round(($t->amount * variable_get('pg_2co_rate','1.00')),2))),
+    '#value' => t('We will charge !amount from your CC', array(
+      '!amount' => round(($t->amount * variable_get('pg_2co_rate', '1.00')), 2),
+    )),
   );
   return $form;
 }
 
-function pg_2co_process_form($form_result,$t){
-  $output = drupal_get_form('pg_2co_payform',$form_state,$t);
-  //$output = str_ireplace('accept-charset="UTF-8"','accept-charset="cp1251"',$output);
-  $t->method='2co';
+function pg_2co_process_form($form_result, $t) {
+  $form_state = array();
+  $output = drupal_get_form('pg_2co_payform', $form_state, $t);
+  $t->method = '2co';
   pgapi_transaction_save($t);
-  echo '<html><body>'.$output.'<script>pgpayform.submit();</script></body>';
-//  echo '<html><body>'.$output.'</body>';
-  exit();
+  echo '<html><body>' . $output . '<script>pgpayform.submit();</script></body>';
+  drupal_exit();
 }
 
-function pg_2co_payform($form_state,$post,$t) {
-  global $user;
-  
+function pg_2co_payform($form_state, $post, $t) {
   $form['sid'] = array(
     '#type' => 'hidden',
-    '#default_value' => variable_get('pg_2co_sid',''),
+    '#default_value' => variable_get('pg_2co_sid', ''),
   );
 
-  $amount = number_format($t->amount * variable_get('pg_2co_rate','1.00'),2);
+  $amount = number_format($t->amount * variable_get('pg_2co_rate', '1.00'), 2);
   $form['total'] = array(
     '#type' => 'hidden',
     '#default_value' => $amount,
   );
+
   $form['cart_order_id'] = array(
     '#type' => 'hidden',
     '#default_value' => $t->txnid,
   );
+
   $form['demo'] = array(
     '#type' => 'hidden',
     '#default_value' => variable_get('pg_2co_demo', TRUE),
   );
+
   $form['lang'] = array(
     '#type' => 'hidden',
     '#default_value' => variable_get('pg_2co_language', 'en'),
   );
+
   $form['x_receipt_link_url'] = array(
     '#type' => 'hidden',
     '#default_value' => url('2co/success', array('absolute' => TRUE)),
   );
+
   $form['#attributes'] = array('name' => 'pgpayform');
-  $form['#action'] = variable_get('pg_2co_action_url',c2coActionUrlSingle);
+  $form['#action'] = variable_get('pg_2co_action_url', PG_2CO_ACTION_URL_SINGLE);
+
   return $form;
 }

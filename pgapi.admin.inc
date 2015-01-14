@@ -2,69 +2,134 @@
 
 /**
  * @file
- * Administative functions for PGAPI module
+ * Administative functions for PGAPI module.
  */
 
 /**
- * Callback function for admin/pgdata page
+ * Menu callback to list sub-items.
  */
-function pgapi_pgdata() {
-  $item = menu_get_item('admin/pgdata');
-  $content = system_admin_menu_block($item);
-  $output = theme('admin_block_content', $content);
+function pgapi_admin_menu_block_page() {
+  $item = menu_get_item();
+  module_load_include('inc', 'system', 'system.admin');
+
+  if ($content = system_admin_menu_block($item)) {
+    $output = theme('admin_block_content', array('content' => $content));
+  }
+  else {
+    $output = t('You do not have any administrative items.');
+  }
+
   return $output;
 }
 
 /**
- * Form with common PGAPI settings
+ * Form-builder for PGAPI currency settings.
  */
-function pgapi_common() {
-  // Build form
-  $form = array();
-  $form['#tree'] = TRUE;
+function pgapi_admin_currency_settings($form, &$form_state) {
+  $pgapi_currency = variable_get('pgapi_currency', array());
 
-  $pgapi_gw = pgapi_get_enabled_payment_systems()
+  $form['currency'] = array(
+    '#tree' => TRUE,
+  );
 
-  foreach (module_implements('pgapi_gw') as $module) {
-    if ($module_name = module_invoke($module, 'pgapi_gw','display name')) {
-      $form[$module]['modulename'] = array ('#value' => $module_name);
-      $default = '';
-      if ($pgapi_gw[$module]) {
-        $default = 'checked';
-      }
-      $form[$module]['checkbox']=array(
-        '#type'           => 'checkbox',
-        '#default_value'  => $default,
-        '#domain_setting' => TRUE,
-      );
-    }
-  }
-  $form['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Update status of payment gateways'),
+  $form['currency']['symbol'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Symbol'),
+    '#default_value' => isset($pgapi_currency['symbol']) ? $pgapi_currency['symbol'] : '',
+    '#description' => t("Please enter symbol of the Account Balance currency."),
+    '#required' => TRUE,
+  );
+
+  $form['currency']['decimal_places'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Decimal places'),
+    '#default_value' => isset($pgapi_currency['decimal_places']) ? $pgapi_currency['decimal_places'] : '',
+    '#description' => t("Please enter number of decimal places."),
+    '#required' => TRUE,
+  );
+
+  $form['currency']['decimal'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Decimal delimiter'),
+    '#default_value' => isset($pgapi_currency['decimal']) ? $pgapi_currency['decimal'] : '',
+    '#description' => t("Please enter decimal delimiter."),
+    '#required' => TRUE,
+  );
+
+  $form['currency']['thousands'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Thousands places'),
+    '#default_value' => isset($pgapi_currency['thousands']) ? $pgapi_currency['thousands'] : '',
+    '#description' => t("Please enter thousands delimeter."),
+    '#required' => TRUE,
+  );
+
+  $form['currency']['symbol_position'] = array(
+    '#type' => 'radios',
+    '#title' => t('Simbol position'),
+    '#options' => array(1 => t('Left'), 0 => t('Right')),
+    '#default_value' => isset($pgapi_currency['symbol_position']) ? $pgapi_currency['symbol_position'] : 0,
+    '#description' => t("Please select symbol position."),
+    '#required' => TRUE,
+  );
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save currency settings'),
   );
 
   return $form;
 }
 
 /**
- * Submit function for PGAPI common settings form
+ * Submit function for PGAPI common settings form.
  */
-function pgapi_common_submit($form, &$form_state){
-  $pgapi_gw = array();
-  foreach ($form_state['values'] as $key => $val) {
-    if ($val['checkbox']) {
-      $pgapi_gw[$key] = true;
-    }
-  }
-  // Save settings for domain module.
-  if (module_exists('domain_conf')) {
-    $current_domain = domain_get_domain();
-    $pgapi_gw = domain_conf_variable_set($current_domain['domain_id'],'pgapi_gw',$pgapi_gw);
+function pgapi_admin_currency_settings_submit($form, &$form_state) {
+  $pgapi_currency = array_filter($form_state['values']['currency']);
+
+  // Save enabled gateways.
+  variable_set('pgapi_currency', $pgapi_currency);
+
+  drupal_set_message(t('Currency settings saved.'));
+}
+
+/**
+ * Form-builder for PGAPI gateway settings.
+ */
+function pgapi_admin_gateway_settings($form, &$form_state) {
+  $pgapi_gw = pgapi_get_enabled_payment_systems();
+  $gateways = pgapi_get_gateway_options();
+
+  if (empty($gateways)) {
+    $form['gateways']['#markup'] = t('No payment gateways available.');
   }
   else {
-    // Save enabled gateways.
-    variable_set('pgapi_gw', $pgapi_gw);
+    $form['gateways'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Payment gateways'),
+      '#options' => $gateways,
+      '#default_value' => $pgapi_gw,
+    );
+    // Add the buttons.
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Update status of payment gateways'),
+    );
   }
+
+  return $form;
+}
+
+/**
+ * Submit function for PGAPI common settings form.
+ */
+function pgapi_admin_gateway_settings_submit($form, &$form_state) {
+  $pgapi_gw = array_filter($form_state['values']['gateways']);
+
+  // Save enabled gateways.
+  variable_set('pgapi_gw', $pgapi_gw);
+
   drupal_set_message(t('Status of payment gateway has been updated.'));
 }

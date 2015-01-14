@@ -1,0 +1,154 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  pg_linkpoint.admin.inc: n/a
+#  pg_linkpoint.module,v 1.2 2010/10/31 05:12:07 gor
+#  pg_linkpoint.info,v 1.2 2010/10/31 05:12:07 gor
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2014-08-19 06:53+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: pg_linkpoint.admin.inc:9
+msgid "Action url"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:11
+msgid "Please enter action url.\nDefault: !url"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:16
+msgid "Store Number"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:18
+msgid "Enter your Store Number assigned to you by Linkpoint."
+msgstr ""
+
+#: pg_linkpoint.admin.inc:23
+msgid "PEM File"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:24
+msgid "Upload your PEM file. You must have this for Linkpoint API to work. Get this by logging in to <a target=\"_blank\" href=\"http://www.linkpointcentral.com\">Linkpoint Central</a> > Support > Download Center"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:31
+msgid "<b>Current file is:</b> !file"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:37
+msgid "Transaction mode"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:38
+msgid "Transaction mode used for processing orders."
+msgstr ""
+
+#: pg_linkpoint.admin.inc:40
+msgid "Production"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:41
+msgid "Test"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:47
+msgid "Transaction Type"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:50
+msgid "PREAUTH"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:51
+msgid "SALE"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:53
+msgid "Linkpoint states for tangible items or anything that will be shipped to always use PREAUTH. If you are selling a download item etc, use SALE. PREAUTH authorizes a credit card but does not charge it. Go to <a target=\"_blank\" href=\"http://www.linkpointcentral.com\">Linkpoint Central</a> > Reports > Transctions to complete the transaction. SALE automatically charges the card."
+msgstr ""
+
+#: pg_linkpoint.admin.inc:58
+msgid "Rate to site currency"
+msgstr ""
+
+#: pg_linkpoint.admin.inc:60
+msgid "Please enter linkpoint rate according to site currency."
+msgstr ""
+
+#: pg_linkpoint.admin.inc:65
+msgid "Submit"
+msgstr ""
+
+#: pg_linkpoint.module:37
+msgid "Linkpoint Global API Payment Gateway"
+msgstr ""
+
+#: pg_linkpoint.module:40;19
+msgid "Linkpoint"
+msgstr ""
+
+#: pg_linkpoint.module:68
+msgid "Credit Card"
+msgstr ""
+
+#: pg_linkpoint.module:72
+msgid "Card Owner"
+msgstr ""
+
+#: pg_linkpoint.module:77
+msgid "Card Number"
+msgstr ""
+
+#: pg_linkpoint.module:95
+msgid "Expiration Month"
+msgstr ""
+
+#: pg_linkpoint.module:114
+msgid "Expiration Year"
+msgstr ""
+
+#: pg_linkpoint.module:119
+msgid "Security Code"
+msgstr ""
+
+#: pg_linkpoint.module:184
+msgid "Buying ticket(s) from Umatax"
+msgstr ""
+
+#: pg_linkpoint.module:225
+msgid "Credit card declined. Error: !error, code:!code"
+msgstr ""
+
+#: pg_linkpoint.module:228
+msgid "Credit card charged"
+msgstr ""
+
+#: pg_linkpoint.module:20
+msgid "Linkpoint payment settings."
+msgstr ""
+
+#: pg_linkpoint.info:0
+msgid "LinkPoint"
+msgstr ""
+
+#: pg_linkpoint.info:0
+msgid "Suppport LinkPoint API payment gateway."
+msgstr ""
+
+#: pg_linkpoint.info:0
+msgid "Payment Gateway API"
+msgstr ""
+
