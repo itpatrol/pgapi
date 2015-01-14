@@ -7,6 +7,23 @@
 function pg_webmoney_done_payment() {
   drupal_set_header('Content-type: text/html; charset=iso-8859-1');
 
+  if (!isset($_POST['LMI_PAYEE_PURSE'])) {
+    echo 'ERROR';
+    drupal_exit();
+  }
+
+  // Load info about webmoney purse.
+  $rate = db_select('pg_webmoney_rates', 'r')
+    ->fields('r', array('secret_key'))
+    ->condition('purse', $_POST['LMI_PAYEE_PURSE'])
+    ->execute()
+    ->fetchObject();
+
+  if (!$rate) {
+    echo 'ERROR';
+    drupal_exit();
+  }
+
   $txnid = $_POST['LMI_PAYMENT_NO'];
   $purse = $_POST['LMI_PAYEE_PURSE'];
   $price = $_POST['LMI_PAYMENT_AMOUNT'];
@@ -14,10 +31,14 @@ function pg_webmoney_done_payment() {
   $lmi_sys_invs_no = $_POST['LMI_SYS_INVS_NO'];
   $lmi_sys_trans_no = $_POST['LMI_SYS_TRANS_NO'];
   $lmi_sys_trans_date = $_POST['LMI_SYS_TRANS_DATE'];
-  $lmi_secret_key = $_POST['LMI_SECRET_KEY'];
+  /**
+   * Load secret key from database if in settings merchant not checked
+   * "send secret key to result page".
+   */
+  $lmi_secret_key = isset($_POST['LMI_SECRET_KEY']) ? $_POST['LMI_SECRET_KEY'] : $rate->secret_key;
   $lmi_payer_purse = $_POST['LMI_PAYER_PURSE'];
   $lmi_payer_wm = $_POST['LMI_PAYER_WM'];
-  $prerequest = $_POST['LMI_PREREQUEST'];
+  $prerequest = isset($_POST['LMI_PREREQUEST']) ? TRUE : FALSE;
   $hash = $_POST['LMI_HASH'];
   $tocheck = strtoupper(md5($purse . $price . $txnid . $lmi_mode . $lmi_sys_invs_no . $lmi_sys_trans_no . $lmi_sys_trans_date . $lmi_secret_key . $lmi_payer_purse . $lmi_payer_wm));
 
