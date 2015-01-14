@@ -5,7 +5,8 @@
  */
 
 function pg_webmoney_done_payment() {
-  drupal_set_header('Content-type: text/html; charset=iso-8859-1');
+  drupal_add_http_header('Content-type', 'text/html');
+  drupal_add_http_header('charset', 'iso-8859-1');
 
   if (!isset($_POST['LMI_PAYEE_PURSE'])) {
     echo 'ERROR';
