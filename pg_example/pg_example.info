@@ -1,0 +1,5 @@
+name = PG EXAMPLE
+description = EXAMPLE MODULE.
+package = "Payment Gateway API"
+dependencies[] = pgapi
+core = "7.x"
