@@ -99,6 +99,16 @@ function pgapi_menu() {
     'weight' => -11,
   );
 
+  $items['admin/config/pgapi/notices_settings'] = array(
+    'title' => 'Payment Notices Settings',
+    'description' => 'Configure notices settings for Payment Gateway API.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pgapi_admin_notices_settings'),
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pgapi.admin.inc',
+    'weight' => -12,
+  );
+
   return $items;
 }
 
@@ -158,8 +168,9 @@ function pgapi_mail($key, &$message, $params) {
 
   $transaction = $params['transaction'];
 
-  // $account = user_load($transaction->uid);
+  $account = user_load($transaction->uid);
   $variables = array();
+  $variables['!username'] = $account->name;
   $variables['!txnid'] = $transaction->txnid;
   $variables['!pg_amount'] = $transaction->amount;
   // @todo Preserve old type and method tokens?
@@ -343,14 +354,18 @@ function pgapi_transaction_save(&$transaction) {
   }
 
   // Send mail to admin.
-  // TODO: add possibility to choose wether send mail or not.
-  $admin_mail = variable_get('pgapi_email', '');
-  if (!$admin_mail) {
-    $admin_mail = variable_get('site_mail', '');
-  }
+  if (variable_get('pgapi_notice_admin', FALSE)) {
+    if ($transaction->status == PG_COMPLETED) {
+      // @todo: Add settings admin email on pgapi module.
+      $admin_mail = variable_get('pgapi_email', '');
+      if (!$admin_mail) {
+        $admin_mail = variable_get('site_mail', '');
+      }
 
-  // $params['transaction'] = $transaction;
-  // drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
+      $params['transaction'] = $transaction;
+      drupal_mail('pgapi', $transaction->status, $admin_mail, user_preferred_language($user), $params);
+    }
+  }
 
   // Unserialize extra data.
   $transaction->extra = unserialize($transaction->extra);
