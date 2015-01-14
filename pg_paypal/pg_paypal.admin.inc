@@ -60,7 +60,7 @@ function pg_paypal_settings($form, $form_state) {
     '#type' => 'textfield',
     '#title' => t('Rate to site currency'),
     '#default_value' => variable_get('pg_paypal_rate', '1.00'),
-    '#description' => t("Please enter Paypal rate according to site currency."),
+    '#description' => t('Please enter Paypal rate according to site currency.'),
   );
 
   $form['submit'] = array(
@@ -118,10 +118,12 @@ function pg_paypal_done_payment() {
   $headers = array(
     'Content-Type' => 'application/x-www-form-urlencoded',
   );
+
   $ipn = $_POST;
   $post = array(
     'cmd' => '_notify-validate',
   );
+
   $post += $ipn;
 
   $request = drupal_http_request(variable_get('pg_paypal_validation_url', PG_PAYPAL_VALIDATION_URL), array(

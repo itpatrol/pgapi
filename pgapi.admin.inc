@@ -52,7 +52,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Decimal delimiter'),
     '#default_value' => isset($pgapi_currency['decimal']) ? $pgapi_currency['decimal'] : '',
-    '#description' => t("Please enter decimal delimiter."),
+    '#description' => t('Please enter decimal delimiter.'),
     '#required' => TRUE,
   );
 
@@ -60,7 +60,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Thousands places'),
     '#default_value' => isset($pgapi_currency['thousands']) ? $pgapi_currency['thousands'] : '',
-    '#description' => t("Please enter thousands delimeter."),
+    '#description' => t('Please enter thousands delimeter.'),
     '#required' => TRUE,
   );
 
@@ -69,7 +69,7 @@ function pgapi_admin_currency_settings($form, &$form_state) {
     '#title' => t('Simbol position'),
     '#options' => array(1 => t('Left'), 0 => t('Right')),
     '#default_value' => isset($pgapi_currency['symbol_position']) ? $pgapi_currency['symbol_position'] : 0,
-    '#description' => t("Please select symbol position."),
+    '#description' => t('Please select symbol position.'),
     '#required' => TRUE,
   );
 

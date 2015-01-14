@@ -99,13 +99,15 @@ function pg_showtransactions_history() {
     'operations' => t('Operations'),
   );
 
-  $query = db_select('pgapi_transaction', 'pgt')->extend('AltPager')
-    ->extend('TableSort')->extend('FormFilterAPI');
+  $query = db_select('pgapi_transaction', 'pgt')
+    ->extend('AltPager')
+    ->extend('TableSort')
+    ->extend('FormFilterAPI');
+
   $query->fields('pgt');
   $query->leftjoin('users', 'u', 'pgt.uid = %alias.uid');
   $query->fields('u', array('name'));
   $query->processFilters('pg_showtransactions_history');
-  $query->extend('TableSort');
   $query->orderByHeader($header);
 
   $transactions = $query->execute()->fetchAll();
@@ -119,13 +121,12 @@ function pg_showtransactions_history() {
         ),
     );
 
-    $account = user_load($txn->uid);
     $class = array('status-' . $txn->status, 'workflow-' . $txn->workflow);
 
     $rows[] = array(
       'data' => array(
         $txn->txnid,
-        $txn->name ? l($txn->name, "user/" . $txn->uid) : variable_get('anonymous', t('anonymous')),
+        $txn->name ? l($txn->name, 'user/' . $txn->uid) : variable_get('anonymous', t('anonymous')),
         $txn->email,
         $txn->title,
         array(
@@ -134,8 +135,8 @@ function pg_showtransactions_history() {
         ),
         pgapi_get_gateway_name($txn->gateway),
         pgapi_get_status($txn->status),
-        array('data' => format_date($txn->created, 'custom', ' d M Y'), 'class' => 'date'),
-        array('data' => format_date($txn->changed, 'custom', ' d M Y'), 'class' => 'date'),
+        array('data' => format_date($txn->created, 'custom', 'd M Y'), 'class' => 'date'),
+        array('data' => format_date($txn->changed, 'custom', 'd M Y'), 'class' => 'date'),
         theme('links', array('links' => $action)),
       ),
       'class' => $class,
@@ -146,7 +147,7 @@ function pg_showtransactions_history() {
     $rows[] = array(
       array(
         'data' => t('No data available.'),
-        'colspan' => '10',
+        'colspan' => 10,
       ),
     );
   }
