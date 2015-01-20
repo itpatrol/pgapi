@@ -76,7 +76,7 @@ function pg_manual_payment_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pg_manual_payment_payform', 2),
     'access callback' => TRUE,
-    'type' => MENU_CALLACK,
+    'type' => MENU_CALLBACK,
   );
 
   $items['admin/pgdata/pgsettings/manual_payment'] = array(
