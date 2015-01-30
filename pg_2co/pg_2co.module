@@ -7,8 +7,8 @@
 /**
  * Constants.
  */
-define("PG_2CO_ACTION_URL_SINGLE", 'https://www.2checkout.com/checkout/spurchase');
-define("PG_2CO_ACTION_URL_MULTI", 'https://www.2checkout.com/checkout/spurchase');
+define("PG_2CO_ACTION_URL_SINGLE", 'https://www.2checkout.com/checkout/purchase');
+define("PG_2CO_ACTION_URL_MULTI", 'https://www.2checkout.com/checkout/purchase');
 
 /**
  * Implements hook_menu().
