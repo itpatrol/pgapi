@@ -14,6 +14,8 @@ define("PG_2CO_ACTION_URL_MULTI", 'https://www.2checkout.com/checkout/purchase')
  * Implements hook_menu().
  */
 function pg_2co_menu() {
+  $items = array();
+
   $items['2co/done'] = array(
     'title' => 'Internal Data',
     'page callback' => 'pg_2co_done_payment',
@@ -21,7 +23,8 @@ function pg_2co_menu() {
     'file' => 'pg_2co.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['admin/pgdata/pgsettings/2co'] = array(
+
+  $items['admin/config/pgapi/gateway_settings/2co'] = array(
     'title' => '2co',
     'description' => '2co payment settings.',
     'page callback' => 'drupal_get_form',
