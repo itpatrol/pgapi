@@ -47,6 +47,14 @@ function pgapi_views_data() {
         'handler' => 'views_handler_argument_numeric',
       ),
     ),
+    'email' => array(
+      'title' => t('Email'),
+      'help' => t('User email.'),
+      'field' => array(
+        'handler' => 'views_handler_field',
+        'click sortable' => FALSE,
+      ),
+    ),
   );
 
   return $data;
