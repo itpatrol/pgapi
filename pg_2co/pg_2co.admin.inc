@@ -103,6 +103,8 @@ function pg_2co_settings_submit($form, &$form_state) {
   if (isset($form_state['values']['pg_2co_rate'])) {
     variable_set('pg_2co_rate', $form_state['values']['pg_2co_rate']);
   }
+
+  drupal_set_message(t('2co settings saved.'));
 }
 
 /**
