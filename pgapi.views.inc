@@ -17,6 +17,17 @@ function pgapi_views_data() {
       ),
       'group' => t('PGAPI'),
     ),
+    'txnid' => array(
+      'title' => 'Txnid',
+      'help' => t('Primary Key: Unique transaction ID.'),
+      'field' => array(
+        'handler' => 'views_handler_field',
+        'click sortable' => TRUE,
+      ),
+      'sort' => array(
+        'handler' => 'views_handler_sort',
+      ),
+    ),
   );
 
   return $data;
