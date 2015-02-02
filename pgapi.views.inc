@@ -144,3 +144,29 @@ function pgapi_views_data() {
 
   return $data;
 }
+
+/**
+ * Implements hook_views_handlers()
+ */
+function pgapi_views_handlers() {
+  return array(
+    'handlers' => array(
+      'pgapi_views_handler_field_amount' => array(
+        'parent' => 'views_handler_field',
+        'file' => 'pgapi_views_handler_field_amount.inc',
+      ),
+      'pgapi_views_handler_field_gateway' => array(
+        'parent' => 'views_handler_field',
+        'file' => 'pgapi_views_handler_field_gateway.inc',
+      ),
+      'pgapi_views_handler_field_status' => array(
+        'parent' => 'views_handler_field',
+        'file' => 'pgapi_views_handler_field_status.inc',
+      ),
+      'pgapi_views_handler_field_edit_link' => array(
+        'parent' => 'views_handler_field_url',
+        'file' => 'pgapi_views_handler_field_edit_link.inc',
+      ),
+    ),
+  );
+}
