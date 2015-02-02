@@ -91,6 +91,20 @@ function pgapi_views_data() {
         'handler' => 'views_handler_sort',
       ),
     ),
+    'status' => array(
+      'title' => t('Status'),
+      'help' => t('Transaction status.'),
+      'field' => array(
+        'handler' => 'pgapi_views_handler_field_status',
+        'click sortable' => FALSE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_field_numeric',
+      ),
+      'sort' => array(
+        'handler' => 'views_handler_sort',
+      ),
+    ),
   );
 
   return $data;
