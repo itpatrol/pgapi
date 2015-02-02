@@ -55,6 +55,14 @@ function pgapi_views_data() {
         'click sortable' => FALSE,
       ),
     ),
+    'title' => array(
+      'title' => t('Title'),
+      'help' => t('Transaction title.'),
+      'field' => array(
+        'handler' => 'views_handler_field',
+        'click sortable' => FALSE,
+      ),
+    ),
   );
 
   return $data;
