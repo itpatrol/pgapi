@@ -119,6 +119,20 @@ function pgapi_views_data() {
         'handler' => 'views_handler_sort_date',
       ),
     ),
+    'changed' => array(
+      'title' => t('Changed'),
+      'help' => t('Transaction changed date.'),
+      'field' => array(
+        'handler' => 'views_handler_field_date',
+        'click sortable' => FALSE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_filter_date',
+      ),
+      'sort' => array(
+        'handler' => 'views_handler_sort_date',
+      ),
+    ),
   );
 
   return $data;
