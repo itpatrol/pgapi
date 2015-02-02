@@ -2,3 +2,8 @@ name = Payment Gateway API
 description = Payment Gateway API.
 package = "Payment Gateway API"
 core = 7.x
+
+files[] = pgapi_views_handler_field_amount.inc
+files[] = pgapi_views_handler_field_gateway.inc
+files[] = pgapi_views_handler_field_status.inc
+files[] = pgapi_views_handler_field_edit_link.inc
