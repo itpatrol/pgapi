@@ -77,6 +77,20 @@ function pgapi_views_data() {
         'handler' => 'views_handler_sort',
       ),
     ),
+    'gateway' => array(
+      'title' => t('Gateway'),
+      'help' => t('Transaction gateway.'),
+      'field' => array(
+        'handler' => 'pgapi_views_handler_field_gateway',
+        'click sortable' => FALSE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_field',
+      ),
+      'sort' => array(
+        'handler' => 'views_handler_sort',
+      ),
+    ),
   );
 
   return $data;
