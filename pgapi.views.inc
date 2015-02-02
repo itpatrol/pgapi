@@ -63,6 +63,20 @@ function pgapi_views_data() {
         'click sortable' => FALSE,
       ),
     ),
+    'amount' => array(
+      'title' => t('Amount'),
+      'help' => t('Transaction amount.'),
+      'field' => array(
+        'handler' => 'pgapi_views_handler_field_amount',
+        'click sortable' => FALSE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_field',
+      ),
+      'sort' => array(
+        'handler' => 'views_handler_sort',
+      ),
+    ),
   );
 
   return $data;
