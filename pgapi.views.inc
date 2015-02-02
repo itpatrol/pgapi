@@ -133,6 +133,13 @@ function pgapi_views_data() {
         'handler' => 'views_handler_sort_date',
       ),
     ),
+    'edit_link' => array(
+      'title' => t('Edit link'),
+      'help' => t('Transaction link edit.'),
+      'field' => array(
+        'handler' => 'pgapi_views_handler_field_edit_link',
+      ),
+    ),
   );
 
   return $data;
