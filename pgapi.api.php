@@ -33,7 +33,7 @@ function hook_pgapi_transaction_all($status, $transaction) {
  * @param object $transaction
  *   Payment object.
  */
-function hook_pgapi_payment_page($transaction, $payment_system) {
+function hook_pgapi_payment_page($transaction) {
   if (isset($_POST['status_failed'])) {
     $transaction->status = PG_FAILED;
     pgapi_transaction_save($transaction);
