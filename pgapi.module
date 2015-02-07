@@ -599,8 +599,9 @@ function pgapi_payment_page($transaction) {
   }
 
   if ($payment_system = arg(2)) {
-    if (module_exists($payment_system)) {
-      module_invoke('pg_' . $payment_system, 'pgapi_payment_page', $transaction);
+    $payment_system_name = 'pg_' . $payment_system;
+    if (module_exists($payment_system_name)) {
+      module_invoke($payment_system_name, 'pgapi_payment_page', $transaction);
     }
   }
 
