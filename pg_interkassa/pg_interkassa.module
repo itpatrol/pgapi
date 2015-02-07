@@ -1,0 +1,169 @@
+<?php
+/**
+ * @file
+ * Interkassa.
+ *
+ * Interkassa payment gateway.
+ */
+
+/**
+ * Constants.
+ */
+define("PG_INTERKASSA_PAY_INTERACTION_URL", 'https://sci.interkassa.com');
+
+/**
+ * Implements hook_menu().
+ */
+function pg_interkassa_menu() {
+  $items = array();
+  $items['interkassa/done'] = array(
+    'title' => 'Internal Data',
+    'page callback' => 'pg_interkassa_done_payment',
+    'access callback' => TRUE,
+    'file' => 'pg_interkassa.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/pgapi/gateway_settings/interkassa'] = array(
+    'title' => 'Interkassa',
+    'description' => 'Interkassa payment settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_interkassa_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_interkassa.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_pgapi_gw().
+ */
+function pg_interkassa_pgapi_gw($op, $a3 = NULL) {
+  switch ($op) {
+    case 'display name':
+      $ret = t('Interkassa');
+      break;
+
+    case 'payment page':
+      $ret = url('payment/interkassa/' . $a3, array('absolute' => TRUE));
+      break;
+
+    case 'payment gateway info':
+      $ret['name'] = theme('image', array(
+        'path' => drupal_get_path('module', 'pg_interkassa') . '/interkassa.png',
+        'alt' => t('Interkassa'),
+        'title' => t('Interkassa'),
+      ));
+
+      $prices[variable_get('pg_interkassa_currency_code', 'USD')] = round(($a3 * variable_get('pg_interkassa_rate', '1.00')), 2);
+      $ret['price'] = $prices;
+      break;
+
+    case 'ajax_form':
+      $t = $a3;
+
+      return array(
+        'element' => pg_interkassa_get_markup(),
+        'submit' => 'pg_interkassa_submit',
+      );
+  }
+
+  return $ret;
+}
+
+/**
+ * Implements hook_pgapi_payment_page().
+ */
+function pg_interkassa_pgapi_payment_page($transaction) {
+  if (isset($_POST['ik_pm_no'], $_POST['ik_inv_st'])) {
+    $tx_nid = check_plain($_POST['ik_pm_no']);
+    $ik_co_id = check_plain($_POST['ik_co_id']);
+    $ik_cur = check_plain($_POST['ik_cur']);
+    $ik_inv_st = check_plain($_POST['ik_inv_st']);
+
+    $co_id = variable_get('pg_interkassa_co_id');
+    $currency = variable_get('pg_interkassa_currency_code', 'USD');
+
+    $allowed_statuses = array(
+      'canceled' => PG_CANCELED,
+      'fail' => PG_FAILED,
+    );
+
+    if ($tx_nid == $transaction->txnid
+      && $co_id == $ik_co_id
+      && $currency == $ik_cur
+      && in_array($ik_inv_st, array_keys($allowed_statuses))
+    ) {
+      $transaction->status = $allowed_statuses[$ik_inv_st];
+      pgapi_transaction_save($transaction);
+    }
+  }
+}
+
+function pg_interkassa_pgapi_transaction($status, $t) {
+  switch ($status) {
+    case PG_PENDING:
+      $t->extra['amount'] = round(($t->amount * variable_get('pg_interkassa_rate', '1.00')), 2);
+      break;
+  }
+}
+
+function pg_interkassa_get_markup() {
+  $form['message'] = array(
+    '#type' => 'markup',
+    '#value' => '<!-- -->',
+  );
+
+  return $form;
+}
+
+function pg_interkassa_submit($form, $form_state) {
+  $form = drupal_build_form('pg_interkassa_payform', $form_state);
+  $output = drupal_render($form);
+
+  echo '<html><body>' . $output . '<script>pgpayform.submit();</script></body>';
+  drupal_exit();
+}
+
+function pg_interkassa_payform($form, $form_state) {
+  $values = $form_state['values'];
+  $t = pgapi_transaction_load($values['txnid']);
+
+  $form['ik_co_id'] = array(
+    '#type' => 'hidden',
+    '#value' => variable_get('pg_interkassa_co_id'),
+  );
+
+  $form['ik_pm_no'] = array(
+    '#type' => 'hidden',
+    '#value' => $t->txnid,
+  );
+
+  $form['ik_desc'] = array(
+    '#type' => 'hidden',
+    '#default_value' => $t->title,
+  );
+
+  $form['ik_am'] = array(
+    '#type' => 'hidden',
+    '#default_value' => round(($t->amount * variable_get('pg_interkassa_rate', '1.00')), 2),
+  );
+
+  $form['ik_suc_u'] = array(
+    '#type' => 'hidden',
+    '#default_value' => url('payment/' . $t->txnid, array('absolute' => TRUE))
+  );
+
+  $form['ik_fal_u'] = array(
+    '#type' => 'hidden',
+    '#default_value' => url('payment/' . $t->txnid, array('absolute' => TRUE))
+  );
+
+  $form['#attributes'] = array('name' => 'pgpayform');
+  $form['#action'] = variable_get('pg_paypal_action_url', PG_INTERKASSA_PAY_INTERACTION_URL);
+
+  return $form;
+}
