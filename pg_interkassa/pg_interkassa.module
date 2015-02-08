@@ -154,12 +154,12 @@ function pg_interkassa_payform($form, $form_state) {
 
   $form['ik_suc_u'] = array(
     '#type' => 'hidden',
-    '#default_value' => url('payment/' . $t->txnid . '/interkassa', array('absolute' => TRUE))
+    '#default_value' => url('payment/' . $t->txnid, array('absolute' => TRUE))
   );
 
   $form['ik_fal_u'] = array(
     '#type' => 'hidden',
-    '#default_value' => url('payment/' . $t->txnid . '/interkassa', array('absolute' => TRUE))
+    '#default_value' => url('payment/' . $t->txnid, array('absolute' => TRUE))
   );
 
   $form['#attributes'] = array('name' => 'pgpayform');
