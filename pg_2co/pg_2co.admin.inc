@@ -7,13 +7,14 @@
 /**
  * Page with settings module.
  */
-function pg_2co_settings() {
+function pg_2co_settings($form, &$form_state) {
   $form['pg_2co_action_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Action url'),
     '#default_value' => variable_get('pg_2co_action_url', PG_2CO_ACTION_URL_SINGLE),
     '#description' => t("Please enter action url.\nDefault: !url", array('!url' => PG_2CO_ACTION_URL_SINGLE)),
   );
+
   $form['pg_2co_sid'] = array(
     '#type' => 'textfield',
     '#title' => t('Vendor account number'),
@@ -78,128 +79,76 @@ function pg_2co_settings_submit($form, &$form_state) {
   if (isset($form_state['values']['pg_2co_action_url'])) {
     variable_set('pg_2co_action_url', $form_state['values']['pg_2co_action_url']);
   }
+
   if (isset($form_state['values']['pg_2co_sid'])) {
     variable_set('pg_2co_sid', $form_state['values']['pg_2co_sid']);
   }
+
   if (isset($form_state['values']['pg_2co_secret_word'])) {
     variable_set('pg_2co_secret_word', $form_state['values']['pg_2co_secret_word']);
   }
+
   if (isset($form_state['values']['pg_2co_demo'])) {
     variable_set('pg_2co_demo', $form_state['values']['pg_2co_demo']);
   }
+
   if (isset($form_state['values']['pg_2co_language'])) {
     variable_set('pg_2co_language', $form_state['values']['pg_2co_language']);
   }
+
   if (isset($form_state['values']['pg_2co_check'])) {
     variable_set('pg_2co_check', $form_state['values']['pg_2co_check']);
   }
+
   if (isset($form_state['values']['pg_2co_rate'])) {
     variable_set('pg_2co_rate', $form_state['values']['pg_2co_rate']);
   }
+
+  drupal_set_message(t('2co settings saved.'));
 }
 
 /**
  * Processing a new payment.
  */
 function pg_2co_done_payment() {
-  $handle = fopen('/tmp/paypal.txt', 'a');
-  $c = "First";
-  $c .= print_r($_POST, TRUE);
-  fwrite($handle, $c);
-  fclose($handle);
+  if (isset($_REQUEST['key'])) {
+    $tx_nid = $_REQUEST['merchant_order_id'];
+    $payment_amount = check_plain($_REQUEST['total']);
+    $payment_currency = check_plain($_REQUEST['currency_code']);
 
-  $txnid = $_POST['item_number'];
-  $payment_amount = check_plain($_POST['mc_gross']);
-  $payment_currency = check_plain($_POST['mc_currency']);
-  $receiver_email = check_plain($_POST['receiver_email']);
+    $hash_secret_word = variable_get('pg_2co_secret_word', '');
+    $hash_sid = variable_get('pg_2co_sid', '');
+    $hash_order = $_REQUEST['order_number'];
 
-  $headers = array(
-    'Content-Type' => 'application/x-www-form-urlencoded',
-  );
-
-  $ipn = $_POST;
-  $post = array(
-    'cmd' => '_notify-validate',
-  );
-  $post += $ipn;
-
-  $request = drupal_http_request(variable_get('pg_2co_validation_url', cPaypalValidationUrl), array(
-    'headers' => $headers,
-    'method' => 'POST',
-    'data' => pg_2co_query_string_encode($post, array('q')),
-  ));
-
-  $description = t('Payment has been received.');
-  $status = "completed";
-
-  if ($request->data != 'VERIFIED') {
-    $handle = fopen('/tmp/paypal.txt', 'a');
-    $c = "Answer";
-    $c .= print_r($request, TRUE);
-    fwrite($handle, $c);
-    fclose($handle);
-    $status = 'denied';
-  }
-
-  $t = pgapi_transaction_load($txnid);
-
-  if ($t->extra['amount'] != $payment_amount) {
-    $description = t('This amount does not match with the original price');
-    $status = 'denied';
-  }
-
-  $currency = variable_get('pg_2co_currency_code', 'USD');
-
-  if ($currency != $payment_currency) {
-    $description = t('This currency does not match with the original currency');
-    $status = 'denied';
-  }
-
-  $email = variable_get('pg_2co_email', '');
-
-  if ($email != $receiver_email) {
-    $description = t('This receiver email does not match with the original email');
-    $status = 'denied';
-  }
-
-  $t->description = $description;
-  $t->status = pgapi_get_status_id($status);
-  pgapi_transaction_save($t);
-}
-
-/**
- * Convert string.
- *
- * @param string $query
- *   String.
- * @param array $exclude
- *   Query params.
- * @param string $parent
- *   String before all keys.
- *
- * @return string
- *   New string.
- */
-function pg_2co_query_string_encode($query, $exclude = array(), $parent = '') {
-  $params = array();
-
-  foreach ($query as $key => $value) {
-    $key = urlencode($key);
-    if ($parent) {
-      $key = $parent . '[' . $key . ']';
+    if (variable_get('pg_2co_demo', TRUE)) {
+      $hash_order = 1;
     }
 
-    if (in_array($key, $exclude)) {
-      continue;
+    $string_to_hash = strtoupper(md5($hash_secret_word . $hash_sid . $hash_order . $payment_amount));
+
+    $description = t('Payment has been received.');
+    $status = 'completed';
+
+    if ($string_to_hash != $_REQUEST['key']) {
+      $status = 'denied';
     }
 
-    if (is_array($value)) {
-      $params[] = pg_2co_query_string_encode($value, $exclude, $key);
+    $t = pgapi_transaction_load($tx_nid);
+
+    if (number_format($t->extra['amount'], 2) != number_format($payment_amount, 2)) {
+      $description = t('This amount does not match with the original price');
+      $status = 'denied';
     }
-    else {
-      $params[] = $key . '=' . urlencode($value);
+
+    $currency = variable_get('pg_2co_currency_code', 'USD');
+
+    if ($currency != $payment_currency) {
+      $description = t('This currency does not match with the original currency');
+      $status = 'denied';
     }
+
+    $t->description = $description;
+    $t->status = pgapi_get_status_id($status);
+    pgapi_transaction_save($t);
   }
-
-  return implode('&', $params);
 }
