@@ -133,3 +133,30 @@ function pgapi_admin_gateway_settings_submit($form, &$form_state) {
 
   drupal_set_message(t('Status of payment gateway has been updated.'));
 }
+
+/**
+ * Implements hook_FORMID().
+ */
+function pgapi_admin_notices_settings($form, &$form_state) {
+  $form['notice_admin'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Alert the administrator about the payment'),
+    '#default_value' => variable_get('pgapi_notice_admin', FALSE),
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update notices settings'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_FORMID_submit().
+ */
+function pgapi_admin_notices_settings_submit($form, &$form_state) {
+  variable_set('pgapi_notice_admin', $form_state['values']['notice_admin']);
+
+  drupal_set_message(t('Notices settings has been updated.'));
+}
