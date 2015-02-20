@@ -26,6 +26,21 @@ function hook_pgapi_transaction_all($status, $transaction) {
 }
 
 /**
+ * Execute pgapi_payment_page.
+ *
+ * Hook used for execute own code on payment page.
+ *
+ * @param object $transaction
+ *   Payment object.
+ */
+function hook_pgapi_payment_page($transaction) {
+  if (isset($_POST['status_failed'])) {
+    $transaction->status = PG_FAILED;
+    pgapi_transaction_save($transaction);
+  }
+}
+
+/**
  * Executes pgapi hook.
  *
  * @param string $op

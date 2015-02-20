@@ -664,6 +664,10 @@ function pgapi_payment_page($transaction) {
     drupal_access_denied();
   }
 
+  if (module_exists($transaction->gateway)) {
+    module_invoke($transaction->gateway, 'pgapi_payment_page', $transaction);
+  }
+
   $output = '';
   $output .= theme('payment', array('transaction' => $transaction));
 
