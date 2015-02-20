@@ -210,7 +210,7 @@ function pgapi_format_price($price, $format = NULL) {
     $formated = theme('pgapi_format_price', array(
       'price' => $formated_price,
       'symbol' => $format['symbol'],
-      'position' => $format['symbol_position'],
+      'position' => isset($format['symbol_position']) ? $format['symbol_position'] : TRUE,
     ));
   }
   else {
