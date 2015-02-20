@@ -53,6 +53,7 @@ function pg_showtransactions_menu() {
     'title' => 'Show Transactions',
     'description' => 'There is transaction history.',
     'page callback' => 'pg_showtransactions_personal_history',
+    'page arguments' => array(1),
     'access callback' => 'user_access',
     'access arguments' => array('show personal transaction'),
     'file' => 'pg_showtransactions.user.inc',
