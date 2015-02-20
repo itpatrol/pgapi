@@ -1,0 +1,5 @@
+name = Interkassa
+description = Interkassa payment gateway.
+package = "Payment Gateway API"
+dependencies[] = pgapi
+core = "7.x"
