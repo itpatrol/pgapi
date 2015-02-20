@@ -156,6 +156,15 @@ function pgapi_theme() {
 }
 
 /**
+* Implements of hook_views_api().
+*/
+function pgapi_views_api() {
+  return array(
+    'api' => 2,
+  );
+}
+
+/**
  * Implemens hook_mail().
  *
  * @todo replace with settings page for email template with tokens.
