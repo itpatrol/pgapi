@@ -7,14 +7,64 @@
  */
 
 /**
- * Implements hook_theme().
+ * Implements hook_menu().
  */
-function pg_manual_payment_theme() {
-  return array(
-    'pg_manual_payment_list' => array(
-      'arguments' => array('form' => NULL),
-    ),
+function pg_manual_payment_menu() {
+  $items['payment/manual_payment/%txnid'] = array(
+    'title' => 'Manual Payment',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_manual_payment_payform', 2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
   );
+
+  $items['admin/config/pgapi/gateway_settings/manual_payment'] = array(
+    'title' => 'Manual Payment',
+    'description' => 'Manual Payment payment settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_manual_payment_list'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_manual_payment.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/config/pgapi/gateway_settings/manual_payment/list'] = array(
+    'title' => 'Manual Payment',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  $items['admin/config/pgapi/gateway_settings/manual_payment/add'] = array(
+    'title' => 'Add Account',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_manual_payment_add'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_manual_payment.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/config/pgapi/gateway_settings/manual_payment/edit/%'] = array(
+    'title' => 'Edit Wallet',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_manual_payment_edit', 6),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer pgapi'),
+    'file' => 'pg_manual_payment.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/pgapi/gateway_settings/manual_payment/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Manual Payment Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pg_manual_payment_settings'),
+    'access arguments' => array('administer pgapi'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'pg_manual_payment.admin.inc',
+  );
+
+  return $items;
 }
 
 /**
@@ -22,7 +72,7 @@ function pg_manual_payment_theme() {
  */
 function pg_manual_payment_mail($key, &$message, $params) {
   $language = $message['language'];
-  // @fixme In Drupal 7, this function has other parameters.
+  // @FIXME In Drupal 7, this function has other parameters.
   $variables = user_mail_tokens($params['user'], $language);
 
   $variables['!purse'] = $params['payment_method']->purse;
@@ -38,105 +88,31 @@ function pg_manual_payment_mail($key, &$message, $params) {
   switch ($key) {
     case 'notice':
       $message['subject'] = t('Payment Notification from !site', $variables, $language->language);
-      $message['body'][] = t("Dear !username
-Your Payment #!txnid will be checked today.
-
-Amount: !price
-Payment Account: !purse
-
-Best regards,
-!site
-", $variables, $language->language);
+      $message['body'][] = t("Dear !username\n" .
+        "Your Payment #!txnid will be checked today.\n\n" .
+        "Amount: !price\n" .
+        "Payment Account: !purse\n\n" .
+        "Best regards,\n" .
+        "!site", $variables, $language->language);
       break;
 
     case 'notice_admin':
       $message['subject'] = t('Payment Notification from !site', $variables, $language->language);
-      $message['body'][] = t("Dear Admin
-User !username just sent a payment #!txnid
-
-Amount: !price
-Payment Account: !purse
-
-Please check it out and process it.
-
-Best regards,
-!site
-", $variables, $language->language);
+      $message['body'][] = t("Dear Admin\n" .
+        "User !username just sent a payment #!txnid\n\n" .
+        "Amount: !price\n" .
+        "Payment Account: !purse\n\n" .
+        "Please check it out and process it.\n\n" .
+        "Best regards,\n" .
+        "!site", $variables, $language->language);
       break;
   }
-}
-
-
-/**
- * Implements hook_menu().
- */
-function pg_manual_payment_menu() {
-  $items['payment/manual_payment/%txnid'] = array(
-    'title' => 'Manual Payment',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pg_manual_payment_payform', 2),
-    'access callback' => TRUE,
-    'type' => MENU_CALLACK,
-  );
-
-  $items['admin/pgdata/pgsettings/manual_payment'] = array(
-    'title' => 'Manual Payment',
-    'description' => 'Manual Payment payment settings.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pg_manual_payment_list'),
-    'access callback' => 'user_access',
-    'access arguments' => array('administer pgapi'),
-    'file' => 'pg_manual_payment.admin.inc',
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  $items['admin/pgdata/pgsettings/manual_payment/list'] = array(
-    'title' => 'Accounts',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pg_manual_payment_list'),
-    'access callback' => 'user_access',
-    'access arguments' => array('administer pgapi'),
-    'file' => 'pg_manual_payment.admin.inc',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-
-  $items['admin/pgdata/pgsettings/manual_payment/add'] = array(
-    'title' => 'Add Account',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pg_manual_payment_add'),
-    'access callback' => 'user_access',
-    'access arguments' => array('administer pgapi'),
-    'file' => 'pg_manual_payment.admin.inc',
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  $items['admin/pgdata/pgsettings/manual_payment/edit/%'] = array(
-    'title' => 'Edit Wallet',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pg_manual_payment_edit', 5),
-    'access callback' => 'user_access',
-    'access arguments' => array('administer pgapi'),
-    'file' => 'pg_manual_payment.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
-
-  $items['admin/pgdata/pgsettings/manual_payment/settings'] = array(
-    'title' => 'Settings',
-    'description' => 'Manual Payment Settings',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pg_manual_payment_settings'),
-    'access arguments' => array('administer pgapi'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'pg_manual_payment.admin.inc',
-  );
-
-  return $items;
 }
 
 /**
  * Implements hook_pgapi_gw().
  */
-function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
+function pg_manual_payment_pgapi_gw($op, $a3 = NULL) {
   switch ($op) {
     case 'display name':
       $ret = t('Manual Payment Payment Gateway');
@@ -152,7 +128,7 @@ function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
       $result = db_select('pg_manual_payment_accounts', 'a')
         ->fields('a', array('name', 'rate', 'symbol'))
         ->orderBy('name')
-        ->execute()
+         ->execute()
         ->fetchAll();
 
       $prices = array();
@@ -163,17 +139,13 @@ function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
       $ret['price'] = $prices;
       break;
 
-    case 'process form':
-      $form_result = $a4;
+    case 'ajax_form':
       $t = $a3;
-      $ret = pg_manual_payment_process_form($form_result, $t);
-      break;
 
-    case 'get form':
-      $t = $a3;
-      $form_result = $a4;
-      $ret = pg_manual_payment_extraform($form_result, $t);
-      break;
+      return array(
+        'element' => pg_manual_payment_get_wallets($t),
+        'submit' => 'pg_manual_payment_submit',
+      );
   }
 
   return $ret;
@@ -182,11 +154,11 @@ function pg_manual_payment_pgapi_gw($op, $a3 = NULL, &$a4 = NULL) {
 /**
  * Implements hook_pgapi_transaction().
  */
-function pg_manual_payment_pgapi_transaction($status, &$t) {
+function pg_manual_payment_pgapi_transaction($status, $t) {
   switch ($status) {
     case PG_PENDING:
       $result = db_select('pg_manual_payment_accounts', 'a')
-        ->fields('a', array('paid', 'rate', 'amount'))
+        ->fields('a', array('paid', 'rate'))
         ->orderBy('name')
         ->execute()
         ->fetchAll();
@@ -204,7 +176,7 @@ function pg_manual_payment_pgapi_transaction($status, &$t) {
 /**
  * Implements hook_FORMID().
  */
-function pg_manual_payment_extraform($form_state, $t) {
+function pg_manual_payment_get_wallets($t) {
   $templates = db_select('pg_manual_payment_accounts', 'a')
     ->fields('a')
     ->orderBy('name')
@@ -232,27 +204,32 @@ function pg_manual_payment_extraform($form_state, $t) {
   return $form;
 }
 
-function pg_manual_payment_process_form(&$form_result, $t) {
-  $t->method = 'pg_manual_payment';
-  $t->extra['wallet'] = $form_result['wallet'];
+function pg_manual_payment_submit($form, $form_state) {
+  $form = drupal_build_form('pg_manual_payment_payform', $form_state);
+  $output = drupal_render($form);
 
-  pgapi_transaction_save($t);
-  drupal_goto('payment/manual_payment/' . $t->txnid);
+  echo '<html><body>' . $output . '<script>pgpayform.submit();</script></body>';
+  drupal_exit();
 }
 
 /**
  * Implements hook_FORMID().
  */
-function pg_manual_payment_payform($form_state, $t) {
+function pg_manual_payment_payform($form, $form_state) {
   global $user;
+
+  $values = $form_state['values'];
+  $t = pgapi_transaction_load($values['txnid']);
 
   if ($user->uid != 1 and $user->uid != $t->uid) {
     drupal_access_denied();
   }
 
+  $wallet = $values['pgapi_wrapper']['wallet'];
+
   $account = db_select('pg_manual_payment_accounts', 'a')
     ->fields('a')
-    ->condition('paid', $t->extra['wallet'])
+    ->condition('paid', $wallet)
     ->execute()
     ->fetchObject();
 
@@ -277,7 +254,7 @@ function pg_manual_payment_payform($form_state, $t) {
   $form['payment']['ammount'] = array(
     '#type' => 'textfield',
     '#title' => t('Ammount'),
-    '#value' => $t->extra['prices'][$t->extra['wallet']],
+    '#value' => $t->extra['prices'][$wallet],
     '#description' => t('Please send your payment on this wallet'),
   );
 
@@ -299,6 +276,8 @@ function pg_manual_payment_payform($form_state, $t) {
     '#value' => t('Submit'),
   );
 
+  $form['#submit'][] = 'pg_manual_payment_payform_submit';
+
   return $form;
 }
 
@@ -306,7 +285,7 @@ function pg_manual_payment_payform($form_state, $t) {
  * Implements hook_FORMID_submit().
  */
 function pg_manual_payment_payform_submit($form, &$form_state) {
-  $t = txnid_load($form_state['values']['txnid']);
+  $t = pgapi_transaction_load($form_state['values']['txnid']);
   $user = user_load($t->uid);
 
   $account = db_select('pg_manual_payment_accounts', 'a')
@@ -327,35 +306,4 @@ function pg_manual_payment_payform_submit($form, &$form_state) {
   }
 
   drupal_set_message(t('Your payment will be checked soon. You will receive email notification.'));
-}
-
-/**
- * Implements theme_hook().
- */
-function theme_pg_manual_payment_list(&$form) {
-  $header = array(
-    theme('table_select_header_cell'),
-    t('Account Name'),
-    t('Account Number'),
-    t('Rate'),
-  );
-
-  $rows = array();
-  foreach (element_children($form) as $key) {
-    $row = array();
-
-    if (is_array($form[$key]['purse'])) {
-      $row[] = drupal_render($form['check'][$key]);
-      $row[] = drupal_render($form[$key]['edit']);
-      $row[] = drupal_render($form[$key]['purse']);
-      $row[] = drupal_render($form[$key]['rate']);
-
-      $rows[] = $row;
-    }
-  }
-
-  $output = theme('table', $header, $rows);
-  $output .= drupal_render($form);
-
-  return $output;
 }
