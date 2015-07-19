@@ -1,1 +1,2 @@
-test content
+coding_standards:
+  name: [codespell,drupal,drupalpractice]
